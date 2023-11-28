@@ -32,10 +32,17 @@ enum class EStatusTypeEnum
 	ATTACKDOWN,
 	DEFENSEUP,
 	DEFENSEDOWN,
+	MAGICATTACKUP,
+	MAGICATTACKDOWN,
+	MAGICDEFENSEUP,
+	MAGICDEFENSEDOWN,
 	ACCURACYUP,
 	ACCURACYDOWN,
 	EVASIONUP,
-	EVASIONDOWN
+	EVASIONDOWN,
+	BURN,
+	CHILL,
+	STUN
 };
 
 USTRUCT(BlueprintType)
@@ -47,6 +54,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString AbilityName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
@@ -64,10 +74,13 @@ public:
 	float Accuracy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int MaxCooldown;
+	int32 MaxCooldown;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Cooldown;
+	int32 Cooldown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StatusChance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EStatusTypeEnum StatusType;

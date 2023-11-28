@@ -691,6 +691,220 @@ void UBattleManager::AdjustCooldowns()
 	}
 }
 
+void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
+{
+	bool HitsTarget = true;
+	float HitChance = (Source.Accuracy * Ability.Accuracy * (1 + Source.AccuracyBuff)) / (Target.Evasion * (1 + Target.EvasionBuff));
+	if (HitChance < 1.0f)
+	{
+		HitsTarget = FMath::RandRange(0.f, 1.f) <= HitChance;
+	}
+	if (HitsTarget)
+	{
+		float Damage = (Ability.Power * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
+		// Check for elements here
+		if (Target.bIsDefending)
+		{
+			Target.Health -= Damage / 2;
+		}
+		else
+		{
+			Target.Health -= Damage;
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Missed...")));
+		}
+	}
+}
+
+void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, float StatusPower, FEntityStruct& Target)
+{
+
+	float NewBuff;
+	// Remember to check the status chances.
+	switch (Status)
+	{
+	case EStatusTypeEnum::ATTACKUP:
+
+		NewBuff = Target.AttackBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.AttackBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::ATTACKDOWN:
+
+		NewBuff =  Target.AttackBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.AttackBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::DEFENSEUP:
+
+		NewBuff = Target.DefenseBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.DefenseBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::DEFENSEDOWN:
+
+		NewBuff = Target.DefenseBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.DefenseBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::MAGICATTACKUP:
+
+		NewBuff = Target.MagicAttackBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.MagicAttackBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::MAGICATTACKDOWN:
+
+		NewBuff = Target.MagicAttackBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.MagicAttackBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::MAGICDEFENSEUP:
+
+		NewBuff = Target.MagicDefenseBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.MagicDefenseBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::MAGICDEFENSEDOWN:
+
+		NewBuff = Target.MagicDefenseBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.MagicDefenseBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::ACCURACYUP:
+
+		NewBuff = Target.AccuracyBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.AccuracyBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::ACCURACYDOWN:
+
+		NewBuff = Target.AccuracyBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.AccuracyBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::EVASIONUP:
+
+		NewBuff = Target.EvasionBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.EvasionBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::EVASIONDOWN:
+
+		NewBuff = Target.EvasionBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.EvasionBuff = NewBuff;
+		break;
+	}
+}
+
+void UBattleManager::AdjustBuffs(FEntityStruct& Target)
+{
+	if (FMath::Abs(Target.AttackBuff) != 0)
+	{
+		if (Target.AttackBuff > 0)
+		{
+			Target.AttackBuff -= 0.05;
+		}
+		else
+		{
+			Target.AttackBuff += 0.05;
+		}
+	}
+	if (FMath::Abs(Target.DefenseBuff) != 0)
+	{
+		if (Target.DefenseBuff > 0)
+		{
+			Target.DefenseBuff -= 0.05;
+		}
+		else
+		{
+			Target.DefenseBuff += 0.05;
+		}
+	}
+	if (FMath::Abs(Target.MagicAttackBuff) != 0)
+	{
+		if (Target.MagicAttackBuff > 0)
+		{
+			Target.MagicAttackBuff -= 0.05;
+		}
+		else
+		{
+			Target.MagicAttackBuff += 0.05;
+		}
+	}
+	if (FMath::Abs(Target.MagicDefenseBuff) != 0)
+	{
+		if (Target.MagicDefenseBuff > 0)
+		{
+			Target.MagicDefenseBuff -= 0.05;
+		}
+		else
+		{
+			Target.MagicDefenseBuff += 0.05;
+		}
+	}
+	if (FMath::Abs(Target.AccuracyBuff) != 0)
+	{
+		if (Target.AccuracyBuff > 0)
+		{
+			Target.AccuracyBuff -= 0.05;
+		}
+		else
+		{
+			Target.AccuracyBuff += 0.05;
+		}
+	}
+	if (FMath::Abs(Target.EvasionBuff) != 0)
+	{
+		if (Target.EvasionBuff > 0)
+		{
+			Target.EvasionBuff -= 0.05;
+		}
+		else
+		{
+			Target.EvasionBuff += 0.05;
+		}
+	}
+}
+
+
+void UBattleManager::HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
+{
+}
+
+void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
+{
+	if (Source.EntityType == EEntityType::PLAYER)
+	{
+		Target.Health += Ability.Power * 2;
+		Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+	} 
+	else
+	{
+		// I will need to add some sort of HitToHP modifier. This is based on the percent max hp.
+		Target.Health += Target.MaxHealth * 0.3;
+		Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+	}
+}
+
+void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
+{
+	if (!Target.bIsDead)
+	{
+		if (Target.BurnStacks > 0)
+		{
+			float Damage = Target.MaxHealth * 0.0007 * Target.BurnStacks;
+			// Check fire resistance
+		}
+	}
+}
+
 void UBattleManager::HandleEXP()
 {
 	for (FPlayerStruct& Player : Players)

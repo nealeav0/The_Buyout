@@ -1,0 +1,4 @@
+Name,AbilityName,Description,MoveType,TargetType,Power,Accuracy,MaxCooldown,Cooldown,StatusType,StatusPower
+0,"Tackle","An inaccurate attack that targets a single player",ATTACK,RANDOM,60,0.7,0,0,0,0
+1,"Quake","Attacks all players",ATTACK,ALL,30,1.0,0,0,0,0
+2,"Shell","Retreats into shell to raise defense",MAGIC,ALLY,0,0,0,0,DEFENSEUP,0.5

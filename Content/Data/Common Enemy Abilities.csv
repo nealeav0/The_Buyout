@@ -1,0 +1,4 @@
+Name,AbilityName,Description,MoveType,TargetType,Power,Accuracy,MaxCooldown,Cooldown,StatusType,StatusPower
+0,"Hit and Jump","Hits a player",ATTACK,RANDOM,14,1.0,0,0,0,0
+1,"Screech","Screams at a player to lower their attack",MAGIC,RANDOM,0,1.0,0,0,ATTACKDOWN,0.3
+2,"Sweeping Hit","Hits all the players",ATTACK,ALL,7,1.0,0,0,0,0
