@@ -7,6 +7,8 @@
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Engine/GameEngine.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 
 #define LOCTEXT_NAMESPACE "UMG"
@@ -49,7 +51,9 @@ void UMainMenuWidget::OnQuitClicked()
     if (GetParent())
         RemoveFromParent();
     // close (execute console command quit)
-    FGenericPlatformMisc::RequestExit(false);
+    // right now they both crash :)
+    // FGenericPlatformMisc::RequestExit(false);
+    // UKismetSystemLibrary::QuitGame(GetWorld(), GetParent(), EQuitPreference::Quit, false);
 }
 
 
