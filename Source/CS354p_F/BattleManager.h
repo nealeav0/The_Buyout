@@ -6,6 +6,7 @@
 #include "MainCharacter.h"
 #include "EnemyBase.h"
 #include "CommonEnemy.h"
+#include "EntityBase.h"
 #include "UObject/NoExportTypes.h"
 #include "BattleManager.generated.h"
 
@@ -97,6 +98,28 @@ public:
 	void AdjustBuffs(FEnemyStruct &Target);
 
 	void AdjustCooldowns();
+
+	void HandleAttack(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
+
+	void HandleStatus(EStatusTypeEnum Status, float StatusChance, float StatusPower, FEntityStruct& Target);
+
+	void AdjustBuffs(FEntityStruct& Target);
+
+	void HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
+
+	void HandleHealing(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
+
+	void HandleBurnDamage(FEntityStruct& Target);
+
+	// Round scripting
+
+	/*void StartRound(); Perhaps we could have a counter in each array to represent the number of actions a player can take [1, 1, 1]
+
+	void EndRound();
+
+	void PlayerToEnemyTransition();
+
+	void EnemyToPlayerTransition();*/
 
 	UPROPERTY()
 	float TotalEXP = 0.f;

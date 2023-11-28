@@ -1,0 +1,2 @@
+Name,Name,Level,PlayerAbilities,MaxHealth,Health,Attack,Defense,Accuracy,Evasion,EXP,AttackBuff,DefenseBuff,EvasionBuff,AccuracyBuff,Location,bIsDefending
+0,Player,0,(),210,210,6.6,6.2,4,4,0,0,0,0,0,,False

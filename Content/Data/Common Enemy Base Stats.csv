@@ -1,0 +1,2 @@
+Name,FName,Level,EnemyAbilities,MaxHealth,Health,Attack,Defense,Accuracy,Evasion,EXP,AttackBuff,DefenseBuff,EvasionBuff,AccuracyBuff,Location,bIsDefending
+0,CommonEnemy,0,(),65,65,4,4,4,4,6.5,0,0,0,0,,False
