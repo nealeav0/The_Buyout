@@ -62,7 +62,7 @@ void ACommonEnemy::BeginPlay()
 	if (GetWorld()->GetAuthGameMode() && !GetWorld()->GetAuthGameMode()->IsA(ABattleGameModeBase::StaticClass()))
     {
 		itercounter = 0;
-		CurrentDirection = Movements[0];
+		CurrentDirection = Movements[2];
         GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &ACommonEnemy::Roam, 0.05f, true);
     }
 }
@@ -76,12 +76,20 @@ void ACommonEnemy::Tick(float DeltaTime)
 // mock roaming
 void ACommonEnemy::Roam()
 {
+	/* old implementation, kind of just goes in whatever direction
 	if (itercounter % 50 == 0) 
 		CurrentDirection = Movements[FMath::RandRange(0, Movements.Num() - 1)];
 	
 	FVector NewLocation = GetActorLocation() + (10 * CurrentDirection);
 	SetActorLocation(NewLocation);
-	// we should check if the new location is outside of navmesh we move it back in ( vector * -1 )
+	// we should check if the new location is valid or not; if not, choose a different direction until it is valid
+	itercounter++; */
+
+	// let's just have it move side to side
+	if (itercounter % 50 == 0) {
+		CurrentDirection *= -1.f;
+	}
+	SetActorLocation(GetActorLocation() + (10 * CurrentDirection));
 	itercounter++;
 }
 

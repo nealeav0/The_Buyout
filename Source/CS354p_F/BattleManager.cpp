@@ -266,7 +266,7 @@ void UBattleManager::LeaveBattle() {
 	MainPlayerController->CloseBattleUI();
 	MainPlayerController = nullptr;
 	CommonEnemy = nullptr;
-	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("DefaultMap")), true, "");
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("OverworldMap")), true, "");
 }
 
 void UBattleManager::LoadBattle()
