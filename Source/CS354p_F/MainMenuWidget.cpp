@@ -46,6 +46,8 @@ void UMainMenuWidget::OnStartClicked()
 
 void UMainMenuWidget::OnQuitClicked()
 {
+    if (GetParent())
+        RemoveFromParent();
     // close (execute console command quit)
     FGenericPlatformMisc::RequestExit(false);
 }
