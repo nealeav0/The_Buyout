@@ -25,13 +25,13 @@ public:
 	void CloseBattleUI();
 
 	UFUNCTION()
-	void UpdateBattleStats(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct);
+	void UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
 
 	UFUNCTION()
 	void UpdateTurnUI(bool bIsPlayerTurn);
 
 	UFUNCTION()
-	void InitUI(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
+	void InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputMappingContext* DefaultMappingContext;

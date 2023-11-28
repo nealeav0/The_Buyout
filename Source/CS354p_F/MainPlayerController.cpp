@@ -42,7 +42,7 @@ void AMainPlayerController::CloseBattleUI()
 	}
 }
 
-void AMainPlayerController::UpdateBattleStats(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct)
+void AMainPlayerController::UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct)
 {
 	if (BattleWidget)
 		BattleWidget->UpdateStats(PlayerStruct, EnemyStruct);
@@ -54,7 +54,7 @@ void AMainPlayerController::UpdateTurnUI(bool bIsPlayerTurn)
 		BattleWidget->UpdateTurn(bIsPlayerTurn);
 }
 
-void AMainPlayerController::InitUI(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
+void AMainPlayerController::InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
 {
 	if (BattleWidget)
 		BattleWidget->InitializeUI(PlayerStruct, EnemyStruct, bIsPlayerTurn, PlayerAbilities);

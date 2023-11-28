@@ -39,6 +39,9 @@ public:
 	float EXP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FAbilityStruct> Abilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDead;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

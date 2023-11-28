@@ -53,7 +53,7 @@ void ACommonEnemy::BeginPlay()
 			GameInstance->CommonDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
 			for (FAbilityStruct* Ability : AbilityData)
 			{
-				EnemyStats.EnemyAbilites.Add(*Ability);
+				EnemyStats.Abilities.Add(*Ability);
 			}
 		}
 	}

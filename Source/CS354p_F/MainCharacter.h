@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
 #include "Engine/DataTable.h"
+#include "EntityBase.h"
 #include "Ability.h"
 #include "MainCharacter.generated.h"
 
@@ -94,7 +95,7 @@ public:
 	AMainCharacter();
 
 	UPROPERTY(EditAnywhere)
-	FPlayerStruct PlayerStats = FPlayerStruct();
+	FEntityStruct PlayerStats = FEntityStruct();
 
 	// Temporary
 	/*UPROPERTY(EditAnywhere)
@@ -146,7 +147,7 @@ public:
 	void Escape();
 
 	UFUNCTION(BlueprintCallable)
-	FPlayerStruct GetPlayerStruct();
+	FEntityStruct GetEntityStruct();
 
 	UFUNCTION() 
 	void OnOverlapBegin(class UPrimitiveComponent* newComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

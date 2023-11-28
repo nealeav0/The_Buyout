@@ -23,9 +23,11 @@ class CS354P_F_API UBattleManager : public UObject
 public:
 	UBattleManager();
 
-	TArray<FPlayerStruct> Players;
+	TArray<FEntityStruct> Players;
 
-	TArray<FEnemyStruct> Enemies;
+	TArray<FEntityStruct> Enemies;
+
+	TArray<int32> PlayerActions = { 1 };
 
 	//FTurnDelegate TurnDelegate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -49,9 +51,9 @@ public:
 
 	void StartTurn();
 
-	void AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target);
+	/*void AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target);
 
-	void AttackHandler(FAbilityStruct Ability, FPlayerStruct &Target);
+	void AttackHandler(FAbilityStruct Ability, FPlayerStruct &Target);*/
 
 	void DefendHandler();
 
@@ -67,11 +69,13 @@ public:
 
 	UFUNCTION() void StartBattle();
 
-	void PrepareForBattle(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct);
+	void PrepareForBattle(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
 
-	UFUNCTION(BlueprintCallable) FPlayerStruct GetPlayer();
+	UFUNCTION(BlueprintCallable) 
+	FEntityStruct GetPlayer();
 
-	UFUNCTION(BlueprintCallable) FEnemyStruct GetEnemy();
+	UFUNCTION(BlueprintCallable) 
+	FEntityStruct GetEnemy();
 
 	void SetPlayerAbility();
 
@@ -81,7 +85,7 @@ public:
 
 	void HandleEnemyInput(FAbilityStruct SelectedAbility);
 
-	void HandleStatus(EStatusTypeEnum Status, float StatusPower, FPlayerStruct &Target);
+	/*void HandleStatus(EStatusTypeEnum Status, float StatusPower, FPlayerStruct &Target);
 
 	void HandleStatus(EStatusTypeEnum Status, float StatusPower, FEnemyStruct &Target);
 
@@ -91,11 +95,11 @@ public:
 
 	void HandleHealing(FAbilityStruct Ability, FPlayerStruct &Target);
 
-	void HandleHealing(FAbilityStruct Ability, FEnemyStruct &Target);
+	void HandleHealing(FAbilityStruct Ability, FEnemyStruct &Target);*/
 
-	void AdjustBuffs(FPlayerStruct &Target);
+	/*void AdjustBuffs(FPlayerStruct &Target);
 
-	void AdjustBuffs(FEnemyStruct &Target);
+	void AdjustBuffs(FEnemyStruct &Target);*/
 
 	void AdjustCooldowns();
 
@@ -113,13 +117,13 @@ public:
 
 	// Round scripting
 
-	/*void StartRound(); Perhaps we could have a counter in each array to represent the number of actions a player can take [1, 1, 1]
+	void StartRound(); //Perhaps we could have a counter in each array to represent the number of actions a player can take [1, 1, 1]
 
 	void EndRound();
 
 	void PlayerToEnemyTransition();
 
-	void EnemyToPlayerTransition();*/
+	void EnemyToPlayerTransition();
 
 	UPROPERTY()
 	float TotalEXP = 0.f;

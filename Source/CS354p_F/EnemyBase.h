@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Engine/DataTable.h"
 #include "Ability.h"
+#include "EntityBase.h"
 #include "EnemyBase.generated.h"
 
 USTRUCT(BlueprintType)
@@ -84,7 +85,7 @@ public:
 	AEnemyBase();
 
 	UPROPERTY(EditAnywhere)
-	FEnemyStruct EnemyStats = FEnemyStruct();
+	FEntityStruct EnemyStats = FEntityStruct();
 
 protected:
 	// Called when the game starts or when spawned
@@ -98,5 +99,5 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
-	FEnemyStruct GetEnemyStruct();
+	FEntityStruct GetEntityStruct();
 };

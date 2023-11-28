@@ -76,14 +76,17 @@ void AMainCharacter::BeginPlay()
 		// Set the player's stats based on level
 		if (GameInstance->PlayerBaseDataTable)
 		{
-			FPlayerStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FPlayerStruct>(FName(TEXT("0")), FString(TEXT("Getting Stats")));
-			
-			PlayerStats.MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, PlayerStats.Level));
-			PlayerStats.Health = PlayerStats.MaxHealth;
-			PlayerStats.Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, PlayerStats.Level));
-			PlayerStats.Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, PlayerStats.Level));
-			PlayerStats.Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, PlayerStats.Level) * 2);
-			PlayerStats.Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, PlayerStats.Level) * 2);
+			FPlayerStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FPlayerStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Stats")));
+
+			if (PlayerBase)
+			{
+				PlayerStats.MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, PlayerStats.Level));
+				PlayerStats.Health = PlayerStats.MaxHealth;
+				PlayerStats.Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, PlayerStats.Level));
+				PlayerStats.Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, PlayerStats.Level));
+				PlayerStats.Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, PlayerStats.Level) * 2);
+				PlayerStats.Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, PlayerStats.Level) * 2);
+			}
 		}
 
 		// Set the player's abilities
@@ -94,7 +97,7 @@ void AMainCharacter::BeginPlay()
 			GameInstance->PlayerDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
 			for (FAbilityStruct* Ability : AbilityData)
 			{
-				PlayerStats.PlayerAbilities.Add(*Ability);
+				PlayerStats.Abilities.Add(*Ability);
 				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, PlayerStats.PlayerAbilities.Last().AbilityName);
 			}
 		}
@@ -157,7 +160,7 @@ void AMainCharacter::Escape()
 	}
 }
 
-FPlayerStruct AMainCharacter::GetPlayerStruct()
+FEntityStruct AMainCharacter::GetEntityStruct()
 {
 	return PlayerStats;
 }
@@ -175,8 +178,8 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		{
 			PlayerStats.Location = GetActorLocation();
 			GameInstance->SetPlayerLastLocation(PlayerStats.Location);
-			enemy->GetEnemyStruct().Location = enemy->GetActorLocation();
-			GameInstance->BattleManager()->PrepareForBattle(GetPlayerStruct(), enemy->GetEnemyStruct());
+			enemy->GetEntityStruct().Location = enemy->GetActorLocation();
+			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}
 	}
