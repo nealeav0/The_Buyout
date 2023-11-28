@@ -8,7 +8,7 @@ AEnemyBase::AEnemyBase()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	EnemyStats.EnemyAbilites.Add(FAbilityStruct());
+	EnemyStats.Abilities.Add(FAbilityStruct());
 }
 
 // Called when the game starts or when spawned
@@ -32,7 +32,7 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
-FEnemyStruct AEnemyBase::GetEnemyStruct()
+FEntityStruct AEnemyBase::GetEntityStruct()
 {
 	return EnemyStats;
 }

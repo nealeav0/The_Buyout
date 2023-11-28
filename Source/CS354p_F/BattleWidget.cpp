@@ -32,7 +32,7 @@ void UBattleWidget::NativeConstruct()
     Ability6->OnClicked.AddUniqueDynamic(this, &UBattleWidget::OnAbility6Clicked);
 }
 
-void UBattleWidget::UpdateStats(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct)
+void UBattleWidget::UpdateStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct)
 {
     /* -- Player Stats -- */
     if (PlayerLabel) {
@@ -142,7 +142,7 @@ void UBattleWidget::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
     }
 }
 
-void UBattleWidget::InitializeUI(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
+void UBattleWidget::InitializeUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
 {
     UpdateStats(PlayerStruct, EnemyStruct);
     UpdateTurn(bIsPlayerTurn);

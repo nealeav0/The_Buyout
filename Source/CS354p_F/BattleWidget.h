@@ -16,7 +16,7 @@ class CS354P_F_API UBattleWidget : public UUserWidget
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void UpdateStats(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct);
+	void UpdateStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateTurn(bool bIsPlayerTurn);
@@ -25,7 +25,7 @@ public:
 	void UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities);
 
     UFUNCTION(BlueprintCallable)
-	void InitializeUI(FPlayerStruct PlayerStruct, FEnemyStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
+	void InitializeUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
 
 	UFUNCTION(BlueprintCallable)
 	void OnDefendClicked();
