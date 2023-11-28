@@ -18,7 +18,10 @@ class CS354P_F_API AMainPlayerController : public APlayerController
 public:
 	AMainPlayerController();
 
-	UFUNCTION()
+    UFUNCTION()
+	void OpenMainMenuUI();
+
+    UFUNCTION()
 	void OpenBattleUI();
 
 	UFUNCTION()
@@ -50,10 +53,17 @@ protected:
 	void OnMovePressed(const FInputActionValue& Value);
 	void OnCameraMoved(const FInputActionValue& Value);
 
-	/* HUD */
+	/* Battle HUD */
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UBattleWidget> BattleWidgetClass;
 
 	UPROPERTY()
 	class UBattleWidget* BattleWidget;
+
+	/* Main Menu */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UMainMenuWidget> MainMenuWidgetClass;
+
+	UPROPERTY()
+	class UMainMenuWidget* MainMenuWidget;
 };
