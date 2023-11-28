@@ -740,18 +740,6 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
 		Target.AttackBuff = NewBuff;
 		break;
-	case EStatusTypeEnum::DEFENSEUP:
-
-		NewBuff = Target.DefenseBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.DefenseBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::DEFENSEDOWN:
-
-		NewBuff = Target.DefenseBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.DefenseBuff = NewBuff;
-		break;
 	case EStatusTypeEnum::MAGICATTACKUP:
 
 		NewBuff = Target.MagicAttackBuff += StatusPower;
@@ -763,6 +751,18 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 		NewBuff = Target.MagicAttackBuff -= StatusPower;
 		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
 		Target.MagicAttackBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::DEFENSEUP:
+
+		NewBuff = Target.DefenseBuff += StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.DefenseBuff = NewBuff;
+		break;
+	case EStatusTypeEnum::DEFENSEDOWN:
+
+		NewBuff = Target.DefenseBuff -= StatusPower;
+		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+		Target.DefenseBuff = NewBuff;
 		break;
 	case EStatusTypeEnum::MAGICDEFENSEUP:
 
@@ -816,17 +816,6 @@ void UBattleManager::AdjustBuffs(FEntityStruct& Target)
 			Target.AttackBuff += 0.05;
 		}
 	}
-	if (FMath::Abs(Target.DefenseBuff) != 0)
-	{
-		if (Target.DefenseBuff > 0)
-		{
-			Target.DefenseBuff -= 0.05;
-		}
-		else
-		{
-			Target.DefenseBuff += 0.05;
-		}
-	}
 	if (FMath::Abs(Target.MagicAttackBuff) != 0)
 	{
 		if (Target.MagicAttackBuff > 0)
@@ -836,6 +825,17 @@ void UBattleManager::AdjustBuffs(FEntityStruct& Target)
 		else
 		{
 			Target.MagicAttackBuff += 0.05;
+		}
+	}
+	if (FMath::Abs(Target.DefenseBuff) != 0)
+	{
+		if (Target.DefenseBuff > 0)
+		{
+			Target.DefenseBuff -= 0.05;
+		}
+		else
+		{
+			Target.DefenseBuff += 0.05;
 		}
 	}
 	if (FMath::Abs(Target.MagicDefenseBuff) != 0)

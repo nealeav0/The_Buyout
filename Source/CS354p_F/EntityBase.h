@@ -23,87 +23,87 @@ struct FEntityStruct : public FTableRowBase
 
 public:
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEntityType EntityType;
-
-	UPROPERTY()
-	int32 Level;
-
-	UPROPERTY()
-	float EXP;
-
-	UPROPERTY()
-	bool bIsDead;
-
-	UPROPERTY()
-	float MaxHealth;
-
-	UPROPERTY()
-	float Health;
-
-	UPROPERTY()
-	float Attack;
-
-	UPROPERTY()
-	float Defense;
-
-	UPROPERTY()
-	float MagicAttack;
-
-	UPROPERTY()
-	float MagicDefense;
-
-	UPROPERTY()
-	float Accuracy;
-
-	UPROPERTY()
-	float Evasion;
-
-	UPROPERTY()
-	float AttackBuff;
-
-	UPROPERTY()
-	float DefenseBuff;
-
-	UPROPERTY()
-	float MagicAttackBuff;
-
-	UPROPERTY()
-	float MagicDefenseBuff;
-
-	UPROPERTY()
-	float AccuracyBuff;
-
-	UPROPERTY()
-	float EvasionBuff;
-
-	UPROPERTY()
-	float FireResistance;
-
-	UPROPERTY()
-	float IceResistance;
-
-	UPROPERTY()
-	float ThunderResistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Location;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EXP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsDead;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Attack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MagicAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Defense;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MagicDefense;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Accuracy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Evasion;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FireResistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float IceResistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ThunderResistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MagicAttackBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DefenseBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MagicDefenseBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AccuracyBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EvasionBuff;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDefending;
 
 	// Status Struct Stuff
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 BurnStacks;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ChillStacks;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 StunStacks;
 
 	FEntityStruct()
