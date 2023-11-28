@@ -76,14 +76,17 @@ void AMainCharacter::BeginPlay()
 		// Set the player's stats based on level
 		if (GameInstance->PlayerBaseDataTable)
 		{
-			FPlayerStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FPlayerStruct>(FName(TEXT("0")), FString(TEXT("Getting Stats")));
+			FPlayerStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FPlayerStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Stats")));
 			
-			PlayerStats.MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, PlayerStats.Level));
-			PlayerStats.Health = PlayerStats.MaxHealth;
-			PlayerStats.Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, PlayerStats.Level));
-			PlayerStats.Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, PlayerStats.Level));
-			PlayerStats.Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, PlayerStats.Level) * 2);
-			PlayerStats.Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, PlayerStats.Level) * 2);
+			if (PlayerBase)
+			{
+				PlayerStats.MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, PlayerStats.Level));
+				PlayerStats.Health = PlayerStats.MaxHealth;
+				PlayerStats.Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, PlayerStats.Level));
+				PlayerStats.Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, PlayerStats.Level));
+				PlayerStats.Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, PlayerStats.Level) * 2);
+				PlayerStats.Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, PlayerStats.Level) * 2);
+			}
 		}
 
 		// Set the player's abilities

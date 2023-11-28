@@ -6,6 +6,8 @@
 #include "MainGameInstance.h"
 #include "BattleGameModeBase.h"
 #include "BattleWidget.h"
+#include "MainMenuGameModeBase.h"
+#include "MainMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
@@ -14,11 +16,24 @@
 #include "MainGameInstance.h"
 
 ABattleGameModeBase* BattleMode;
+AMainMenuGameModeBase* MainMenuMode;
 
 AMainPlayerController::AMainPlayerController()
 {
 	BattleWidgetClass = nullptr;
 	BattleWidget = nullptr;
+	MainMenuWidgetClass = nullptr;
+	MainMenuWidget = nullptr;
+}
+
+void AMainPlayerController::OpenMainMenuUI() {
+	if (MainMenuWidgetClass) {
+		MainMenuWidget = CreateWidget<UMainMenuWidget>(this, MainMenuWidgetClass);
+		MainMenuWidget->AddToPlayerScreen();
+		
+		if (MainMenuWidget)
+			MainMenuWidget->InitializeUI();
+	}
 }
 
 void AMainPlayerController::OpenBattleUI()
@@ -70,14 +85,14 @@ void AMainPlayerController::BeginPlay()
 	}
 
 	BattleMode = Cast<ABattleGameModeBase>(GetWorld()->GetAuthGameMode());
+	MainMenuMode = Cast<AMainMenuGameModeBase>(GetWorld()->GetAuthGameMode());
 
 	if (BattleMode) {
 		OpenBattleUI();
 		
 		// set up the click-only input behavior 
 		FInputModeUIOnly InputMode;
-		// if we want to later lock the mouse cursor (can't move outside the PIE), we can change this
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
 		if (BattleWidget)
 			InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
 		SetInputMode(InputMode);
@@ -86,7 +101,23 @@ void AMainPlayerController::BeginPlay()
 		bShowMouseCursor = true;
 		bEnableClickEvents = true;
 		bEnableMouseOverEvents = true;
-	} else {
+
+	} else if (MainMenuMode) { // main/starting menu 
+		OpenMainMenuUI();
+
+		// set up the click-only input behavior 
+		FInputModeUIOnly InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		if (MainMenuWidget)
+			InputMode.SetWidgetToFocus(MainMenuWidget->TakeWidget());
+		SetInputMode(InputMode);
+
+		// let's also show the cursor
+		bShowMouseCursor = true;
+		bEnableClickEvents = true;
+		bEnableMouseOverEvents = true;
+
+	} else { // we're in the overworld
 		// set up no click behavior
 		FInputModeGameOnly InputMode;
 		InputMode.SetConsumeCaptureMouseDown(false);
@@ -104,12 +135,13 @@ void AMainPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	BattleMode = Cast<ABattleGameModeBase>(GetWorld()->GetAuthGameMode());
+	MainMenuMode = Cast<AMainMenuGameModeBase>(GetWorld()->GetAuthGameMode());
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
 		// in BattleMode we don't want to move
 		// so only bind these if we're in the overworld
-		if (!BattleMode) { 
+		if (!BattleMode && !MainMenuMode) { 
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
 		}
