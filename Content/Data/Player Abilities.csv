@@ -1,7 +1,7 @@
-Name,AbilityName,Description,MoveType,TargetType,Power,Accuracy,MaxCooldown,Cooldown,StatusChance,StatusType,StatusPower
-0,"Normal Attack","Make a normal attack on a single enemy.",ATTACK,RANDOM,40,1.0,0,0,0,NONE,0
-1,"Burn Strike","Burn all enemies",ATTACK,ALL,20,1.0,0,0,NONE,0
-2,"Cripling Strike","Attack an enemy, lowering their attack",ATTACK,SINGLE,30,1.0,1,0,1.0,ATTACKDOWN,0.3
-3,"Debilitate","Lower all enemies defense",MAGIC,ALL,0,1.0,1,0,1.0,DEFENSEDOWN,0.3
-4,"Heal All","Heal all allies",HEAL,ALLIES,40,1.0,1,0,0,NONE,0
-5,"Temper","Give an ally an attack boost",MAGIC,ALLY,0,0,1,0,0,ATTACKUP,0.5
+Name,AbilityName,Level,Description,MoveType,TargetType,Power,Accuracy,MaxCooldown,Cooldown,StatusChance,StatusType,StatusPower
+0,"Normal Attack",1,"Make a normal attack on a single enemy.",ATTACK,RANDOM,40,1.0,0,0,0,NONE,0
+1,"Burn Strike",1,"Burn all enemies",ATTACK,ALL,20,1.0,0,0,0.5,BURN,0
+2,"Cripling Strike",1,"Attack an enemy, lowering their attack",ATTACK,SINGLE,30,1.0,1,0,1.0,ATTACKDOWN,0.3
+3,"Debilitate",1,"Lower all enemies defense",MAGIC,ALL,0,1.0,1,0,1.0,DEFENSEDOWN,0.3
+4,"Heal All",1,"Heal all allies",HEAL,ALLIES,40,1.0,1,0,0,NONE,0
+5,"Temper",1,"Give an ally an attack boost",MAGIC,ALLY,0,0,1,0,0,ATTACKUP,0.5

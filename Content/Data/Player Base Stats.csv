@@ -1,2 +1,4 @@
 Name,Name,Level,PlayerAbilities,MaxHealth,Health,Attack,Defense,Accuracy,Evasion,EXP,AttackBuff,DefenseBuff,EvasionBuff,AccuracyBuff,Location,bIsDefending
-0,Player,0,(),210,210,6.6,6.2,4,4,0,0,0,0,0,,False
+warrior,"Player1",0,,210,210,6.6,6.2,4,4,0,0,0,0,0,(),False
+mage,"Player2",0,,165,165,4.2,5.4,4.1,4.3,0,0,0,0,0,(),False
+ranger,"Player3",0,,175,175,6.2,5.5,4.4,4.5,0,0,0,0,0,(),False
