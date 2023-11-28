@@ -41,7 +41,7 @@ public:
 
 	FAbilityStruct LoadedAbility;
 
-	FEnemyStruct LoadedEnemyTarget;
+	/*FEnemyStruct LoadedEnemyTarget;*/
 
 	bool bAbilityChosen = false;
 

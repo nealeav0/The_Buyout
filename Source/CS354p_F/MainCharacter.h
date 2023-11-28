@@ -18,72 +18,72 @@ enum class ECharacterActionStateEnum : uint8  {
 	MOVE UMETA(DisplayName = "Moving")
 };
 
-USTRUCT(BlueprintType)
-struct FPlayerStruct : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Level;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FAbilityStruct> PlayerAbilities;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Defense;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Evasion;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Accuracy;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EXP;
-
-	// AtkBuf (multiplier added to player attack)
-	// > 1 benefits player
-	// < 1 benefits enemy  
-	UPROPERTY()
-	float AttackBuff;
-
-	// DefBuf (multiplier added to player's received attacks)
-	// < 1 benefits player
-	// > 1 benefits enemy 
-	UPROPERTY()
-	float DefenseBuff;
-
-	UPROPERTY()
-	float EvasionBuff;
-
-	UPROPERTY()
-	float AccuracyBuff;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Location;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsDefending;
-
-	FPlayerStruct()
-	{
-		Name = FString("Player");
-		Level = 1;
-	}
-};
+//USTRUCT(BlueprintType)
+//struct FPlayerStruct : public FTableRowBase
+//{
+//	GENERATED_USTRUCT_BODY()
+//
+//public:
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	FString Name;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	int Level;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	TArray<FAbilityStruct> PlayerAbilities;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float MaxHealth;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Health;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Attack;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Defense;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Evasion;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Accuracy;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float EXP;
+//
+//	// AtkBuf (multiplier added to player attack)
+//	// > 1 benefits player
+//	// < 1 benefits enemy  
+//	UPROPERTY()
+//	float AttackBuff;
+//
+//	// DefBuf (multiplier added to player's received attacks)
+//	// < 1 benefits player
+//	// > 1 benefits enemy 
+//	UPROPERTY()
+//	float DefenseBuff;
+//
+//	UPROPERTY()
+//	float EvasionBuff;
+//
+//	UPROPERTY()
+//	float AccuracyBuff;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	FVector Location;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	bool bIsDefending;
+//
+//	FPlayerStruct()
+//	{
+//		Name = FString("Player");
+//		Level = 1;
+//	}
+//};
 
 UCLASS()
 class CS354P_F_API AMainCharacter : public ACharacter
@@ -96,6 +96,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FEntityStruct PlayerStats = FEntityStruct();
+	TArray<FEntityStruct> Players = { PlayerStats, FEntityStruct() };
 
 	// Temporary
 	/*UPROPERTY(EditAnywhere)
