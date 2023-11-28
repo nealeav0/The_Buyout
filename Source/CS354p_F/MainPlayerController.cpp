@@ -73,6 +73,29 @@ void AMainPlayerController::BeginPlay()
 
 	if (BattleMode) {
 		OpenBattleUI();
+		
+		// set up the click-only input behavior 
+		FInputModeUIOnly InputMode;
+		// if we want to later lock the mouse cursor (can't move outside the PIE), we can change this
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		if (BattleWidget)
+			InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
+		SetInputMode(InputMode);
+
+		// let's also show the cursor
+		bShowMouseCursor = true;
+		bEnableClickEvents = true;
+		bEnableMouseOverEvents = true;
+	} else {
+		// set up no click behavior
+		FInputModeGameOnly InputMode;
+		InputMode.SetConsumeCaptureMouseDown(false);
+		SetInputMode(InputMode);
+		
+		// also hide cursor
+		bShowMouseCursor = false;
+		bEnableClickEvents = false;
+		bEnableMouseOverEvents = false;
 	}
 }
 
