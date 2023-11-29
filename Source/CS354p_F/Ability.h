@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -22,6 +22,15 @@ enum class EMoveTypeEnum
 	ATTACK,
 	MAGIC,
 	HEAL
+};
+
+UENUM()
+enum class EElementTypeEnum
+{
+	FIRE,
+	ICE,
+	THUNDER,
+	NONELEMENTAL,
 };
 
 UENUM()
@@ -53,10 +62,19 @@ struct FAbilityStruct : public FTableRowBase
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsLearned;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString AbilityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxLevel;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> APCosts;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Description;
@@ -65,10 +83,19 @@ public:
 	EMoveTypeEnum MoveType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPhysical;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EElementTypeEnum ElementType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ElementalPercent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ETargetTypeEnum TargetType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Power;
+	TArray<float> Power;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Accuracy;
@@ -94,7 +121,14 @@ public:
 		Description = FString(TEXT("ATTACK a SINGLE RANDOM target"));
 		MoveType = EMoveTypeEnum::ATTACK;
 		TargetType = ETargetTypeEnum::RANDOM;
-		Power = 30.0f;
+		MaxLevel = 1;
+		Level = 1;
+		Power = {0, 30.0f};
+		APCosts = { 0, 0 };
+		bIsLearned = true;
+		bIsPhysical = true;
+		ElementType = EElementTypeEnum::NONELEMENTAL;
+		ElementalPercent = 0;
 		Accuracy = 1.0f;
 		MaxCooldown = 0;
 		Cooldown = 0;
@@ -120,7 +154,7 @@ public:
 		AbilityName = Name;
 		Description = NewDescription;
 		TargetType = NewTargetType;
-		Power = NewPower;
+		Power = { NewPower };
 		Accuracy = NewAccuracy;
 		MaxCooldown = NewMaxCooldown;
 		Cooldown = NewCooldown;

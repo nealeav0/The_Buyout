@@ -21,94 +21,6 @@ UBattleManager::UBattleManager()
 	CommonEnemy = nullptr;
 }
 
-void UBattleManager::StartTurn()
-{	
-	bEnemyDied = false;
-	
-	// Enemy chooses a target
-	// Target = Player
-	// Attack = Bash
-	// AttackHandler()
-	// Enemy chooses an attack/action
-	// Enemy calls EndTurn();
-	if (!bPlayerTurn)
-	{
-		if (!Enemies[0].bIsDead)
-		{
-			int EnemyIndex = FMath::RandHelper(Enemies[0].Abilities.Num());
-			HandleEnemyInput(Enemies[0].Abilities[EnemyIndex]);
-		}
-		else {
-			EndRound();
-		}
-	}
-	// Stops at this point as it is the player's turn
-	
-	/*for (FE &Player : Players)
-	{
-		AdjustBuffs(Player);
-	}
-	for (FEnemyStruct &Enemy : Enemies)
-	{
-		AdjustBuffs(Enemies[0]);
-	}*/
-}
-
-/*
-
-=== player handlers ===
-
-*/
-// @params The instigator, the attack power of attack, and target
-// I need to add handling to who started the attack
-//
-//void UBattleManager::AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target)
-//{
-//	// If it hits
-//	bool HitsTarget = true;
-//	float HitChance = (Players[0].Accuracy * Ability.Accuracy * (1 + Players[0].AccuracyBuff)) / (Target.Evasion * (1 + Target.EvasionBuff));
-//	// if (GEngine)
-//		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Player has a hit chance of %f"), HitChance));
-//	if (HitChance < 1.0f)
-//	{
-//		HitsTarget = FMath::RandRange(0.f, 1.f) <= HitChance;
-//	}
-//	if (HitsTarget)
-//	{
-//		float Damage = (Ability.Power * Players[0].Attack * (1 + Players[0].AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
-//		Target.Health -= Damage;
-//		// if (GEngine)
-//		// {
-//			// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player did %f damage"), Damage));
-//		// }
-//	}
-//	else
-//	{
-//		if (GEngine)
-//		{
-//			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Player missed...")));
-//			
-//		}		
-//	}
-//	HandleStatus(Ability.StatusType, Ability.StatusPower, Target);
-//
-//	// TimerManager()bn 
-//	// Update UI
-//	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
-//	// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Enemy has %f remaining health"), Target.Health));
-//	if (Target.Health <= 0)
-//	{
-//		TotalEXP += Target.EXP;
-//		bBattleEnd = true;
-//		// animate enemy death
-//		bEnemyDied = true;
-//		CommonEnemy->Die();
-//		// somehow flag to delete in overworld
-//	}
-//	// GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::EndTurn, 0.5f, false);
-//}
-
-
 void UBattleManager::DefendHandler()
 {
 	if (GEngine)
@@ -125,108 +37,6 @@ void UBattleManager::EscapeHandler()
 	Cast<AMainCharacter>(MainPlayerController->GetPawn())->Escape();
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 0.5f, false);
 }
-
-/*
-
-=== enemy handlers ===
-
-*/
-
-//void UBattleManager::AttackHandler(FAbilityStruct Ability, FPlayerStruct &Target)
-//{
-//	/*
-//	Attack : Does the normal attack ability
-//	Ability : OnButtonPress open another menu which has a list of buttons that contain the names of the abilities that player has. OnMouseHover, then we show a menu with a description.
-//	Defend : Defend
-//	Order : Switch to a character who has not taken their turn yet.
-//	
-//	*/
-//	// It it hits
-//	bool HitsTarget = true;
-//	float HitChance = (Enemies[0].Accuracy * Ability.Accuracy * (1 + Enemies[0].AccuracyBuff)) / (Target.Evasion * (1 + Target.EvasionBuff));
-//	// if (GEngine)
-//		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Enemy has a hit chance of %f"), HitChance));
-//	if (HitChance < 1.0f) 
-//	{
-//		HitsTarget = FMath::RandRange(0.f, 1.f) <= HitChance;
-//	}
-//	if (HitsTarget)
-//	{
-//		float Damage = (Ability.Power * Enemies[0].Attack * (1 + Enemies[0].AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
-//		if (Target.bIsDefending)
-//		{
-//			// if (GEngine)
-//				// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defending")));
-//			Target.Health -= Damage / 2;
-//			// if (GEngine)
-//				// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Enemy did %f damage"), Damage / 2));
-//		}
-//		else
-//		{
-//			Target.Health -= Damage;
-//			// if (GEngine)
-//				// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Enemy did %f damage"), Damage));
-//		}
-//	}
-//	else
-//	{
-//		if (GEngine)
-//		{
-//			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Enemy missed...")));
-//		}
-//	}
-//	// Play Animation
-//	// TimerManager();
-//	// Update UI
-//	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
-//	// if (GEngine)
-//		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Player has %f remaining health"), Target.Health));
-//	if (Target.Health <= 0)
-//	{
-//		bBattleEnd = true;
-//	}
-//	//GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::EndTurn, 0.5f, false);
-//}
-
-void UBattleManager::EndTurn()
-{
-	bPlayerTurn = !bPlayerTurn;
-	// if (GEngine)
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Player's Turn: %B."), bPlayerTurn));
-	if (!bBattleEnd) {
-		MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
-		MainPlayerController->UpdateTurnUI(bPlayerTurn);
-		if(bPlayerTurn) {
-			// GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Blue, FString::Printf(TEXT("~ now player turn ~")));
-			// GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Blue, FString::Printf(TEXT("Player AtkBuf: %f"), Players[0].AttackBuff));
-			// GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Blue, FString::Printf(TEXT("Player DefBuf: %f"), Players[0].DefenseBuff));
-			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::StartTurn, 0.5f, false);
-		} else {
-			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::StartTurn, 1.5f, false);
-		}
-		
-	}
-	else
-	{
-		//if (GEngine)
-		//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("BATTLE ENDED! RETURNING TO THE OVERWORLD...")));
-
-		//
-		//if (bEnemyDied) {
-		//	// let's add some buffer time for death animations to finish
-		//	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 1.0f, false);
-		//} else {
-		//	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 0.5f, false);
-		//}
-	}
-	// Prepare to jump to overworld.
-}
-
-/*
-
-=== general functions ===
-
-*/
 
 void UBattleManager::LeaveBattle() {
 	// before we leave the battle, let's clean up a bit
@@ -255,7 +65,6 @@ void UBattleManager::LoadBattle()
 {
 	bBattleEnd = false;
 	bPlayerTurn = true;
-	bAbilityChosen = false;
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("BattleMap")), true, "");
 }
 
@@ -280,10 +89,6 @@ void UBattleManager::PrepareForBattle(FEntityStruct Player, FEntityStruct Enemy)
 	Players.Empty();
 	Enemies.Empty();
 	Players.Add(Player);
-	/*if (Players[0].PlayerAbilities.IsEmpty())
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, FString::Printf(TEXT("Array is empty")));
-	}*/
 	Enemies.Add(Enemy);
 	TotalEXP = 0;
 }
@@ -308,14 +113,13 @@ void UBattleManager::SetPlayerAbility()
 	}
 	else 
 	{
-		bAbilityChosen = true;
-		AdjustCooldowns(); // I'm putting this here since round handling is a little scuffed.
+		
+		 // I'm putting this here since round handling is a little scuffed.
 		if (Players[0].Abilities[AbilityIndex].MaxCooldown > 0)
 			Players[0].Abilities[AbilityIndex].Cooldown = Players[0].Abilities[AbilityIndex].MaxCooldown;
 		HandlePlayerInput(Players[0].Abilities[AbilityIndex]); // Temporary. I want to be able to choose enemies first.
 		// maybe just have a parameter here that takes in ability index and sets it instead of setting ability index in BattleWidget
 	}
-	
 }
 
 void UBattleManager::SetEnemyTarget()
@@ -328,7 +132,6 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 {
 	// Load in the specified ability
 	FAbilityStruct Ability = SelectedAbility;
-	bAbilityChosen = false;
 	AbilityIndex = 0;
 
 	// Until I have support for UI buttons, the attacks will just be RANDOM or ALL
@@ -472,192 +275,8 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		}
 		break;
 	}
-	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::EnemyToPlayerTransition, 0.5f, false);
+	//GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::EnemyToPlayerTransition, 0.5f, false);
 }
-
-//void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusPower, FPlayerStruct& Target)
-//{
-//	switch (Status)
-//	{
-//	case EStatusTypeEnum::ATTACKUP:
-//		Target.AttackBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::ATTACKDOWN:
-//		Target.AttackBuff -= StatusPower;
-//		break;
-//	case EStatusTypeEnum::DEFENSEUP:
-//		Target.DefenseBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::DEFENSEDOWN:
-//		Target.DefenseBuff -= StatusPower;
-//		break;
-//	case EStatusTypeEnum::ACCURACYUP:
-//		Target.AccuracyBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::ACCURACYDOWN:
-//		Target.AccuracyBuff -= StatusPower;
-//		break;
-//	case EStatusTypeEnum::EVASIONUP:
-//		Target.EvasionBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::EVASIONDOWN:
-//		Target.EvasionBuff -= StatusPower;
-//		break;
-//	}
-//}
-//
-//void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusPower, FEnemyStruct &Target)
-//{
-//	switch (Status)
-//	{
-//	case EStatusTypeEnum::ATTACKUP:
-//		Target.AttackBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::ATTACKDOWN:
-//		Target.AttackBuff -= StatusPower;
-//		break;
-//	case EStatusTypeEnum::DEFENSEUP:
-//		Target.DefenseBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::DEFENSEDOWN:
-//		Target.DefenseBuff -= StatusPower;
-//		break;
-//	case EStatusTypeEnum::ACCURACYUP:
-//		Target.AccuracyBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::ACCURACYDOWN:
-//		Target.AccuracyBuff -= StatusPower;
-//		break;
-//	case EStatusTypeEnum::EVASIONUP:
-//		Target.EvasionBuff += StatusPower;
-//		break;
-//	case EStatusTypeEnum::EVASIONDOWN:
-//		Target.EvasionBuff -= StatusPower;
-//		break;
-//	}
-//}
-
-//void UBattleManager::HandleMagic(FAbilityStruct Ability, FPlayerStruct& Target)
-//{
-//	// Magic abilities include the ability to target yourself.
-//	/*if (Ability.TargetType == ETargetTypeEnum::ALLY || Ability.TargetType == ETargetTypeEnum::ALLIES)
-//	{*/
-//		HandleStatus(Ability.StatusType, Ability.StatusPower, Target);
-//	
-//}
-
-//void UBattleManager::HandleMagic(FAbilityStruct Ability, FEnemyStruct& Target)
-//{
-//	HandleStatus(Ability.StatusType, Ability.StatusPower, Target);
-//}
-//
-//void UBattleManager::HandleHealing(FAbilityStruct Ability, FPlayerStruct &Target)
-//{
-//	Target.Health += Ability.Power * 2;
-//	Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
-//}
-//
-//void UBattleManager::HandleHealing(FAbilityStruct Ability, FEnemyStruct& Target)
-//{
-//	// I will need to add some sort of HitToHP modifier. This is based on the percent max hp.
-//	Target.Health += Target.MaxHealth * 0.3;
-//}
-//
-//void UBattleManager::AdjustBuffs(FPlayerStruct& Target)
-//{
-//	if (FMath::Abs(Target.AttackBuff) != 0)
-//	{
-//		if (Target.AttackBuff > 0)
-//		{
-//			Target.AttackBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.AttackBuff += 0.05;
-//		}
-//	}
-//	if (FMath::Abs(Target.DefenseBuff) != 0)
-//	{
-//		if (Target.DefenseBuff > 0)
-//		{
-//			Target.DefenseBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.DefenseBuff += 0.05;
-//		}
-//	}
-//	if (FMath::Abs(Target.AccuracyBuff) != 0)
-//	{
-//		if (Target.AccuracyBuff > 0)
-//		{
-//			Target.AccuracyBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.AccuracyBuff += 0.05;
-//		}
-//	}
-//	if (FMath::Abs(Target.EvasionBuff) != 0)
-//	{
-//		if (Target.EvasionBuff > 0)
-//		{
-//			Target.EvasionBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.EvasionBuff += 0.05;
-//		}
-//	}
-//}
-//
-//void UBattleManager::AdjustBuffs(FEnemyStruct& Target)
-//{
-//	if (FMath::Abs(Target.AttackBuff) != 0)
-//	{
-//		if (Target.AttackBuff > 0)
-//		{
-//			Target.AttackBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.AttackBuff += 0.05;
-//		}
-//	}
-//	if (FMath::Abs(Target.DefenseBuff) != 0)
-//	{
-//		if (Target.DefenseBuff > 0)
-//		{
-//			Target.DefenseBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.DefenseBuff += 0.05;
-//		}
-//	}
-//	if (FMath::Abs(Target.AccuracyBuff) != 0)
-//	{
-//		if (Target.AccuracyBuff > 0)
-//		{
-//			Target.AccuracyBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.AccuracyBuff += 0.05;
-//		}
-//	}
-//	if (FMath::Abs(Target.EvasionBuff) != 0)
-//	{
-//		if (Target.EvasionBuff > 0)
-//		{
-//			Target.EvasionBuff -= 0.05;
-//		}
-//		else
-//		{
-//			Target.EvasionBuff += 0.05;
-//		}
-//	}
-//}
 
 // Keep in mind, this happens during the end of a round, not the player's turn.
 void UBattleManager::AdjustCooldowns()
@@ -677,23 +296,24 @@ void UBattleManager::AdjustCooldowns()
 void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
 {
 	bool HitsTarget = true;
-	float HitChance = (Source.Accuracy * Ability.Accuracy * (1 + Source.AccuracyBuff)) / (Target.Evasion * (1 + Target.EvasionBuff));
-	if (HitChance < 1.0f)
+	// If you are stunned, you cannot dodge
+	if (Target.StunStacks == 0)
 	{
-		HitsTarget = FMath::RandRange(0.f, 1.f) <= HitChance;
-	}
+		float HitChance = (Source.Accuracy * Ability.Accuracy * (1 + Source.AccuracyBuff)) / (Target.Evasion * (1 + Target.EvasionBuff));
+		if (HitChance < 1.0f)
+		{
+			HitsTarget = FMath::RandRange(0.f, 1.f) <= HitChance;
+		}
+	} 
 	if (HitsTarget)
 	{
-		float Damage = (Ability.Power * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
+		float Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
 		// Check for elements here
-		if (Target.bIsDefending)
+		if (Ability.ElementType != EElementTypeEnum::NONELEMENTAL) 
 		{
-			Target.Health -= Damage / 2;
+			Damage *= (1 - Ability.ElementalPercent) + (Ability.ElementalPercent * (1 - Target.ElementalResistances[(int32) Ability.ElementType]));
 		}
-		else
-		{
-			Target.Health -= Damage;
-		}
+		Target.Health = Target.bIsDefending ? Damage / 2 : Damage;
 		HandleStatus(Ability.StatusType, Ability.StatusChance, Ability.StatusPower, Target);
 	}
 	else
@@ -884,7 +504,7 @@ void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source,
 {
 	if (Source.EntityType == EEntityType::PLAYER)
 	{
-		Target.Health += Ability.Power * 2;
+		Target.Health += Ability.Power[Ability.Level - 1] * 2;
 		Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 	} 
 	else
@@ -916,28 +536,31 @@ void UBattleManager::StartRound()
 			PlayerActions[i] = 1;
 		}
 	}
+	PlayerIndex = 0;
 }
 
 void UBattleManager::EndRound()
 {
-	bBattleEnd = true;
+	bool bPlayersDead = true;
+	bool bEnemiesDead = true;
 	AdjustCooldowns();
 	for (FEntityStruct Player : Players)
 	{
 		AdjustBuffs(Player);
 		Player.bIsDefending = false;
-		/*if (!Player.bIsDead)
+		if (!Player.bIsDead)
 		{
-			bBattleEnd = false;
-		}*/
+			bPlayersDead = false;
+		}
 	}
 	for (FEntityStruct Enemy : Enemies)
 	{
 		AdjustBuffs(Enemy);
 		if (!Enemy.bIsDead) {
-			bBattleEnd = false;
+			bEnemiesDead = false;
 		}
 	}
+	bBattleEnd = bPlayersDead || bEnemiesDead;
 	if (!bBattleEnd)
 	{
 		MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
@@ -967,8 +590,7 @@ void UBattleManager::PlayerToEnemyTransition()
 	{
 		HandleBurnDamage(Player);
 	}
-	bPlayerTurn = false;
-	StartTurn();
+	EnemyTurn();
 }
 
 void UBattleManager::EnemyToPlayerTransition()
@@ -979,6 +601,45 @@ void UBattleManager::EnemyToPlayerTransition()
 	}
 	bPlayerTurn = true;
 	EndRound();
+}
+
+void UBattleManager::PlayerTurn()
+{
+	bPlayerTurn = false;
+	for (int32 Actions : PlayerActions)
+	{
+		if (Actions > 0)
+		{
+			bPlayerTurn = true;
+		}
+	}
+
+	if (!bPlayerTurn)
+	{
+		GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
+	}	
+}
+
+void UBattleManager::EnemyTurn()
+{
+	for (FEntityStruct Enemy : Enemies)
+	{
+		if (!Enemy.bIsDead)
+		{
+			// Random Targetting behavior
+			int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
+			HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+
+			// Enemies are only allowed to act twice at most
+			/*if (Enemy.HasteStacks > 1)
+			{
+				Enemy.HasteStacks = 0;
+				EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
+				HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+			}*/
+		}
+	}
+	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::EnemyToPlayerTransition, 0.5f, false);
 }
 
 void UBattleManager::HandleEXP()

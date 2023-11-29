@@ -69,13 +69,7 @@ public:
 	float Evasion;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FireResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float IceResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ThunderResistance;
+	TArray<float> ElementalResistances;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackBuff;
@@ -125,9 +119,7 @@ public:
 		DefenseBuff = 0.f;
 		AccuracyBuff = 0.f;
 		EvasionBuff = 0.f;
-		FireResistance = 0.f;
-		IceResistance = 0.f;
-		ThunderResistance = 0.f;
+		ElementalResistances = { 0, 0, 0 };
 		Location = FVector(0, 0, 0);
 		bIsDefending = false;
 		BurnStacks = 0;

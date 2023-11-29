@@ -43,13 +43,11 @@ public:
 
 	/*FEnemyStruct LoadedEnemyTarget;*/
 
-	bool bAbilityChosen = false;
-
-	bool bTargetChosen = false;
+	int PlayerIndex = 0; // Q and E to cycle through players.
 
 	int AbilityIndex = 0;
 
-	void StartTurn();
+	/*void StartTurn();*/
 
 	/*void AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target);
 
@@ -63,11 +61,14 @@ public:
 
 	FTimerHandle TransitionTimer;
 
-	UFUNCTION() void LeaveBattle();
+	UFUNCTION() 
+	void LeaveBattle();
 
-	UFUNCTION() void LoadBattle();
+	UFUNCTION() 
+	void LoadBattle();
 
-	UFUNCTION() void StartBattle();
+	UFUNCTION() 
+	void StartBattle();
 
 	void PrepareForBattle(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
 
@@ -84,22 +85,6 @@ public:
 	void HandlePlayerInput(FAbilityStruct SelectedAbility);
 
 	void HandleEnemyInput(FAbilityStruct SelectedAbility);
-
-	/*void HandleStatus(EStatusTypeEnum Status, float StatusPower, FPlayerStruct &Target);
-
-	void HandleStatus(EStatusTypeEnum Status, float StatusPower, FEnemyStruct &Target);
-
-	void HandleMagic(FAbilityStruct Ability, FPlayerStruct& Target);
-
-	void HandleMagic(FAbilityStruct Ability, FEnemyStruct& Target);
-
-	void HandleHealing(FAbilityStruct Ability, FPlayerStruct &Target);
-
-	void HandleHealing(FAbilityStruct Ability, FEnemyStruct &Target);*/
-
-	/*void AdjustBuffs(FPlayerStruct &Target);
-
-	void AdjustBuffs(FEnemyStruct &Target);*/
 
 	void AdjustCooldowns();
 
@@ -124,6 +109,10 @@ public:
 	void PlayerToEnemyTransition();
 
 	void EnemyToPlayerTransition();
+
+	void PlayerTurn();
+
+	void EnemyTurn();
 
 	UPROPERTY()
 	float TotalEXP = 0.f;

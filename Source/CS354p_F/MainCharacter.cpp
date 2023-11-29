@@ -110,21 +110,16 @@ void AMainCharacter::BeginPlay()
 		}
 
 		// Set the player's abilities
-		if (GameInstance->PlayerDataTable)
+		if (GameInstance->PlayerAbilityDataTable)
 		{
 			// Get all of the player abilities from data and place them into the PlayerAbilities array.
 			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->PlayerDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
+			GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
 			for (FAbilityStruct* Ability : AbilityData)
 			{
 				PlayerStats.Abilities.Add(*Ability);
-				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, PlayerStats.PlayerAbilities.Last().AbilityName);
 			}
 		}
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Level: %d"), PlayerStats.Level));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Max Health: %f"), PlayerStats.MaxHealth));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Attack: %f"), PlayerStats.Attack));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defense: %f"), PlayerStats.Defense));
 	}
 
 	Hitbox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnOverlapBegin);
