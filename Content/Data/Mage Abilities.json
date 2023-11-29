@@ -81,6 +81,6 @@
 		"Cooldown": 0,
 		"StatusChance": 0.3,
 		"StatusType": "STUN",
-		"StatusPower": 2
+		"StatusPower": 1
     }
 ]

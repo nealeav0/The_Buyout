@@ -141,9 +141,14 @@ void AMainPlayerController::SetupInputComponent()
 	{
 		// in BattleMode we don't want to move
 		// so only bind these if we're in the overworld
-		if (!BattleMode && !MainMenuMode) { 
+		if (!(BattleMode || MainMenuMode)) { 
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
+		} 
+		if (BattleMode)
+		{
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
 		}
 	}
 } 
@@ -163,5 +168,38 @@ void AMainPlayerController::OnCameraMoved(const FInputActionValue& Value)
 	AMainCharacter* character = Cast<AMainCharacter>(this->GetCharacter());
 	if (character)
 		character->MoveCameraEvent(MovementVector);
+}
+
+void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
+{
+	float Navigation = Value.Get<float>();
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		if (GameInstance->BattleManager()->bPlayerTurn)
+		{
+			if (GameInstance->BattleManager()->bSelectingPlayer)
+			{
+				GameInstance->BattleManager()->SelectPlayer(Navigation);
+			}
+			else if (GameInstance->BattleManager()->bSelectingAbility)
+			{
+				GameInstance->BattleManager()->SelectAbility(Navigation);
+			}
+			else if (GameInstance->BattleManager()->bSelectingTarget)
+			{
+				GameInstance->BattleManager()->SelectTarget(Navigation);
+			}
+		}
+	}
+}
+
+void AMainPlayerController::OnConfirmPressed()
+{
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		GameInstance->BattleManager()->ConfirmSelection();
+	}
 }
 

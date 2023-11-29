@@ -39,25 +39,33 @@ public:
 
 	bool bBattleEnd = false;
 
-	FAbilityStruct LoadedAbility;
+	//FAbilityStruct LoadedAbility;
 
 	/*FEnemyStruct LoadedEnemyTarget;*/
 
-	int PlayerIndex = 0; // Q and E to cycle through players.
+	int PlayerIndex = 0; // Q and E to cycle through players. Spacebar to confirm.
 
-	int AbilityIndex = 0;
+	int AbilityIndex = 0; // Q and E to cycle through abilities. Spacebar to confirm.
 
-	/*void StartTurn();*/
+	int TargetIndex = 0; // Q and E to cycle through enemies. Spacebar to confirm.
 
-	/*void AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target);
+	bool bSelectingPlayer;
 
-	void AttackHandler(FAbilityStruct Ability, FPlayerStruct &Target);*/
+	void SelectPlayer(float Navigation);
+
+	bool bSelectingAbility;
+
+	void SelectAbility(float Navigation);
+
+	bool bSelectingTarget;
+
+	void SelectTarget(float Navigation);
+
+	void ConfirmSelection();
 
 	void DefendHandler();
 
 	void EscapeHandler();
-
-	void EndTurn();
 
 	FTimerHandle TransitionTimer;
 

@@ -44,6 +44,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* MoveCameraAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* NavigateAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* ConfirmAction;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -52,6 +58,8 @@ protected:
 	// Events
 	void OnMovePressed(const FInputActionValue& Value);
 	void OnCameraMoved(const FInputActionValue& Value);
+	void OnNavigatePressed(const FInputActionValue& Value);
+	void OnConfirmPressed();
 
 	/* Battle HUD */
 	UPROPERTY(EditAnywhere)

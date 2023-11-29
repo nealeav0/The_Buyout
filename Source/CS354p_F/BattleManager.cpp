@@ -21,11 +21,94 @@ UBattleManager::UBattleManager()
 	CommonEnemy = nullptr;
 }
 
+void UBattleManager::SelectPlayer(float Navigation)
+{
+	if (Navigation < 0)
+	{
+		PlayerIndex--;
+		if (PlayerIndex < 0)
+			PlayerIndex = Players.Num() - 1;
+		// TODO: Make the PlayerIndex the next valid player if the current PlayerIndex has no actions left
+	}
+	else
+	{
+		PlayerIndex++;
+		if (PlayerIndex > Players.Num() - 1)
+			PlayerIndex = 0;
+	}
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player Index: %d"), PlayerIndex));
+}
+
+void UBattleManager::SelectAbility(float Navigation)
+{
+	if (Navigation < 0)
+	{
+		AbilityIndex--;
+		if (AbilityIndex < 0)
+			AbilityIndex = Players[PlayerIndex].Abilities.Num() - 1;
+	}
+	else
+	{
+		AbilityIndex++;
+		if (AbilityIndex > Players[PlayerIndex].Abilities.Num() - 1)
+			AbilityIndex = 0;
+	}
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Ability Index: %d"), AbilityIndex));
+}
+
+void UBattleManager::SelectTarget(float Navigation)
+{
+	if (Navigation < 0)
+	{
+		TargetIndex--;
+		if (TargetIndex < 0)
+			AbilityIndex = Enemies.Num() - 1;
+	}
+	else
+	{
+		TargetIndex++;
+		if (TargetIndex > Enemies.Num() - 1)
+			TargetIndex = 0;
+	}
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d"), TargetIndex));
+}
+
+void UBattleManager::ConfirmSelection()
+{
+	if (bSelectingPlayer)
+	{
+		bSelectingPlayer = false;
+		bSelectingAbility = true;
+	}
+	else if (bSelectingAbility)
+	{
+		float Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].Cooldown;
+		if (Cooldown > 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Turns left on Cooldown: % d"), Cooldown));
+		}
+		else
+		{
+			bSelectingAbility = false;
+			bSelectingTarget = true;
+		}
+	}
+	else if (bSelectingTarget)
+	{
+		bSelectingTarget = false;
+		HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
+	}
+}
+
 void UBattleManager::DefendHandler()
 {
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The Player is defending.")));
-	Players[0].bIsDefending = true;
+	Players[PlayerIndex].bIsDefending = true;
+	PlayerActions[PlayerIndex]--;
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
 }
 
@@ -45,14 +128,22 @@ void UBattleManager::LeaveBattle() {
 	HandleEXP();
 
 	// We should set all of the temporary stuff back to 0;
-	Players[0].AttackBuff = 0;
-	Players[0].DefenseBuff = 0;
-	Players[0].AccuracyBuff = 0;
-	Players[0].EvasionBuff = 0;
-
-	for (FAbilityStruct& Ability : Players[0].Abilities)
+	for (FEntityStruct& Player : Players)
 	{
-		Ability.Cooldown = 0;
+		Player.AttackBuff = 0;
+		Player.MagicAttackBuff = 0;
+		Player.DefenseBuff = 0;
+		Player.MagicDefenseBuff = 0;
+		Player.AccuracyBuff = 0;
+		Player.EvasionBuff = 0;
+		Player.BurnStacks = 0;
+		Player.ChillStacks = 0;
+		Player.StunStacks = 0;
+
+		for (FAbilityStruct& Ability : Player.Abilities)
+		{
+			Ability.Cooldown = 0;
+		}
 	}
 
 	MainPlayerController->CloseBattleUI();
@@ -91,6 +182,9 @@ void UBattleManager::PrepareForBattle(FEntityStruct Player, FEntityStruct Enemy)
 	Players.Add(Player);
 	Enemies.Add(Enemy);
 	TotalEXP = 0;
+	bSelectingPlayer = true;
+	bSelectingAbility = false;
+	bSelectingTarget = false;
 }
 
 FEntityStruct UBattleManager::GetPlayer()
@@ -113,10 +207,6 @@ void UBattleManager::SetPlayerAbility()
 	}
 	else 
 	{
-		
-		 // I'm putting this here since round handling is a little scuffed.
-		if (Players[0].Abilities[AbilityIndex].MaxCooldown > 0)
-			Players[0].Abilities[AbilityIndex].Cooldown = Players[0].Abilities[AbilityIndex].MaxCooldown;
 		HandlePlayerInput(Players[0].Abilities[AbilityIndex]); // Temporary. I want to be able to choose enemies first.
 		// maybe just have a parameter here that takes in ability index and sets it instead of setting ability index in BattleWidget
 	}
@@ -144,16 +234,16 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 			{
 			case ETargetTypeEnum::SINGLE:
 				// Missing Targeting
-				HandleAttack(Ability, Players[0], Enemies[0]);
+				HandleAttack(Ability, Players[PlayerIndex], Enemies[TargetIndex]);
 				break;
 			case ETargetTypeEnum::ALL:
 				for (FEntityStruct &Enemy : Enemies)
 				{
-					HandleAttack(Ability, Players[0], Enemy);
+					HandleAttack(Ability, Players[PlayerIndex], Enemy);
 				}
 				break;
 			case ETargetTypeEnum::RANDOM:
-				int TargetIndex = FMath::RandHelper(Enemies.Num());
+				TargetIndex = FMath::RandHelper(Enemies.Num());
 				HandleAttack(Ability, Players[0], Enemies[TargetIndex]);
 				break;
 			}
@@ -164,17 +254,17 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 			switch (Ability.TargetType)
 			{
 			case ETargetTypeEnum::ALLY:
-				HandleMagic(Ability, Players[0], Players[0]);
+				HandleMagic(Ability, Players[PlayerIndex], Players[TargetIndex]);
 				break;
 			case ETargetTypeEnum::ALLIES:
 				for (FEntityStruct&Player : Players)
 				{
-					HandleMagic(Ability, Players[0], Player);
+					HandleMagic(Ability, Players[PlayerIndex], Player);
 				}
 				break;
 			case ETargetTypeEnum::SINGLE:
 				// Missing Targeting
-				HandleMagic(Ability, Players[0], Enemies[0]);
+				HandleMagic(Ability, Players[PlayerIndex], Enemies[TargetIndex]);
 				break;
 			case ETargetTypeEnum::ALL:
 				for (FEntityStruct&Enemy : Enemies)
@@ -183,8 +273,8 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 				}
 				break;
 			case ETargetTypeEnum::RANDOM:
-				int TargetIndex = FMath::RandHelper(Enemies.Num());
-				HandleMagic(Ability, Players[0], Enemies[TargetIndex]);
+				TargetIndex = FMath::RandHelper(Enemies.Num());
+				HandleMagic(Ability, Players[PlayerIndex], Enemies[TargetIndex]);
 				break;
 			}
 			break;
@@ -192,17 +282,27 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 			switch (Ability.TargetType)
 			{
 			case ETargetTypeEnum::ALLY:
-				HandleHealing(Ability, Players[0], Players[0]);
+				HandleHealing(Ability, Players[PlayerIndex], Players[TargetIndex]);
 				break;
 			case ETargetTypeEnum::ALLIES:
 				for (FEntityStruct&Player : Players)
 				{
-					HandleHealing(Ability, Players[0], Player);
+					HandleHealing(Ability, Players[PlayerIndex], Player);
 				}
 				break;
 			}
 			break;
 	}
+
+	if (Players[PlayerIndex].Abilities[AbilityIndex].MaxCooldown > 0)
+		Players[PlayerIndex].Abilities[AbilityIndex].Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].MaxCooldown + 1; // The +1 is to make sure the next round is a cooldown round
+
+	/*if (Players[PlayerIndex].HasteStacks > 1)
+	{
+		PlayerActions[PlayerIndex]++;
+	}*/
+
+	PlayerActions[PlayerIndex]--;
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
 }
 
@@ -226,7 +326,7 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			int TargetIndex = FMath::RandHelper(Enemies.Num());
+			TargetIndex = FMath::RandHelper(Enemies.Num());
 			HandleAttack(Ability, Enemies[0], Players[TargetIndex]);
 			break;
 		}
@@ -255,7 +355,7 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			int TargetIndex = FMath::RandHelper(Enemies.Num());
+			TargetIndex = FMath::RandHelper(Enemies.Num());
 			HandleMagic(Ability, Enemies[0], Players[TargetIndex]);
 			break;
 		}
@@ -296,7 +396,7 @@ void UBattleManager::AdjustCooldowns()
 void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
 {
 	bool HitsTarget = true;
-	// If you are stunned, you cannot dodge
+	// If you are stunned, you cannot dodge. This does not use up STUN stacks.
 	if (Target.StunStacks == 0)
 	{
 		float HitChance = (Source.Accuracy * Ability.Accuracy * (1 + Source.AccuracyBuff)) / (Target.Evasion * (1 + Target.EvasionBuff));
@@ -307,13 +407,38 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 	} 
 	if (HitsTarget)
 	{
-		float Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
+		float Damage;
+		if (Ability.bIsPhysical)
+		{
+			Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
+		}
+		else
+		{
+			Damage = (Ability.Power[Ability.Level - 1] * Source.MagicAttack * (1 + Source.MagicAttackBuff)) / (Target.MagicDefense * (1 + Target.MagicDefenseBuff));
+		}
+
 		// Check for elements here
 		if (Ability.ElementType != EElementTypeEnum::NONELEMENTAL) 
 		{
-			Damage *= (1 - Ability.ElementalPercent) + (Ability.ElementalPercent * (1 - Target.ElementalResistances[(int32) Ability.ElementType]));
+			float ElementalModifier = (1 - Ability.ElementalPercent) + (Ability.ElementalPercent * (1 - Target.ElementalResistances[(int32) Ability.ElementType]));
+
+			// If a target is afflicted with CHILL, they take 50% more damage from ICE element attacks. Each time an attack is amplified, a stack is used. Fire damage removes CHILL
+			if (Target.ChillStacks > 0)
+			{
+				if (Ability.ElementType == EElementTypeEnum::ICE)
+				{
+					ElementalModifier *= 1.5;
+					Target.ChillStacks--;
+				}
+				else if (Ability.ElementType == EElementTypeEnum::FIRE)
+				{
+					Target.ChillStacks = 0;
+				}
+			}
+			Damage *= ElementalModifier;
 		}
-		Target.Health = Target.bIsDefending ? Damage / 2 : Damage;
+		Target.Health -= Target.bIsDefending ? Damage / 2 : Damage;
+		
 		HandleStatus(Ability.StatusType, Ability.StatusChance, Ability.StatusPower, Target);
 	}
 	else
@@ -323,173 +448,196 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("Missed...")));
 		}
 	}
+	Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Enemy has %f remaining health"), Target.Health));
 	if (Target.Health <= 0)
 	{
 		TotalEXP += Target.EXP;
 		// animate enemy death
+		
 		Target.bIsDead = true;
 		CommonEnemy->Die();
 		// somehow flag to delete in overworld
 	}
-	 //GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
 }
 
 void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, float StatusPower, FEntityStruct& Target)
 {
-
-	float NewBuff;
-	// Remember to check the status chances.
-	switch (Status)
+	// No point in modifying a dead target.
+	if (!Target.bIsDead)
 	{
-	case EStatusTypeEnum::ATTACKUP:
+		float NewBuff;
+		// Remember to check the status chances.
+		switch (Status)
+		{
+		case EStatusTypeEnum::ATTACKUP:
 
-		NewBuff = Target.AttackBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.AttackBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::ATTACKDOWN:
+			NewBuff = Target.AttackBuff += StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.AttackBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::ATTACKDOWN:
 
-		NewBuff =  Target.AttackBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.AttackBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::MAGICATTACKUP:
+			NewBuff = Target.AttackBuff -= StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.AttackBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::MAGICATTACKUP:
 
-		NewBuff = Target.MagicAttackBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.MagicAttackBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::MAGICATTACKDOWN:
+			NewBuff = Target.MagicAttackBuff += StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.MagicAttackBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::MAGICATTACKDOWN:
 
-		NewBuff = Target.MagicAttackBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.MagicAttackBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::DEFENSEUP:
+			NewBuff = Target.MagicAttackBuff -= StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.MagicAttackBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::DEFENSEUP:
 
-		NewBuff = Target.DefenseBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.DefenseBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::DEFENSEDOWN:
+			NewBuff = Target.DefenseBuff += StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.DefenseBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::DEFENSEDOWN:
 
-		NewBuff = Target.DefenseBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.DefenseBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::MAGICDEFENSEUP:
+			NewBuff = Target.DefenseBuff -= StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.DefenseBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::MAGICDEFENSEUP:
 
-		NewBuff = Target.MagicDefenseBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.MagicDefenseBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::MAGICDEFENSEDOWN:
+			NewBuff = Target.MagicDefenseBuff += StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.MagicDefenseBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::MAGICDEFENSEDOWN:
 
-		NewBuff = Target.MagicDefenseBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.MagicDefenseBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::ACCURACYUP:
+			NewBuff = Target.MagicDefenseBuff -= StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.MagicDefenseBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::ACCURACYUP:
 
-		NewBuff = Target.AccuracyBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.AccuracyBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::ACCURACYDOWN:
+			NewBuff = Target.AccuracyBuff += StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.AccuracyBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::ACCURACYDOWN:
 
-		NewBuff = Target.AccuracyBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.AccuracyBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::EVASIONUP:
+			NewBuff = Target.AccuracyBuff -= StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.AccuracyBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::EVASIONUP:
 
-		NewBuff = Target.EvasionBuff += StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.EvasionBuff = NewBuff;
-		break;
-	case EStatusTypeEnum::EVASIONDOWN:
+			NewBuff = Target.EvasionBuff += StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.EvasionBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::EVASIONDOWN:
 
-		NewBuff = Target.EvasionBuff -= StatusPower;
-		NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-		Target.EvasionBuff = NewBuff;
-		break;
+			NewBuff = Target.EvasionBuff -= StatusPower;
+			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+			Target.EvasionBuff = NewBuff;
+			break;
+		case EStatusTypeEnum::BURN:
+
+			Target.BurnStacks += StatusPower;
+			Target.BurnStacks = FMath::Clamp(Target.BurnStacks, 0, 9);
+			break;
+		case EStatusTypeEnum::CHILL:
+
+			Target.ChillStacks += StatusPower;
+			Target.ChillStacks = FMath::Clamp(Target.ChillStacks, 0, 9);
+			break;
+		case EStatusTypeEnum::STUN:
+
+			Target.StunStacks += StatusPower;
+			Target.StunStacks = FMath::Clamp(Target.StunStacks, 0, 9);
+			break;
+		}
+		
 	}
 }
 
 void UBattleManager::AdjustBuffs(FEntityStruct& Target)
 {
-	if (Target.bIsDefending)
+	// No point in modifying a dead target
+	if (!Target.bIsDead)
 	{
-		Target.bIsDefending = false;
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The Player stopped defending.")));
-	}
-	if (FMath::Abs(Target.AttackBuff) != 0)
-	{
-		if (Target.AttackBuff > 0)
+		if (Target.bIsDefending)
 		{
-			Target.AttackBuff -= 0.05;
+			Target.bIsDefending = false;
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The Player stopped defending.")));
 		}
-		else
+		if (FMath::Abs(Target.AttackBuff) != 0)
 		{
-			Target.AttackBuff += 0.05;
+			if (Target.AttackBuff > 0)
+			{
+				Target.AttackBuff -= 0.05;
+			}
+			else
+			{
+				Target.AttackBuff += 0.05;
+			}
 		}
-	}
-	if (FMath::Abs(Target.MagicAttackBuff) != 0)
-	{
-		if (Target.MagicAttackBuff > 0)
+		if (FMath::Abs(Target.MagicAttackBuff) != 0)
 		{
-			Target.MagicAttackBuff -= 0.05;
+			if (Target.MagicAttackBuff > 0)
+			{
+				Target.MagicAttackBuff -= 0.05;
+			}
+			else
+			{
+				Target.MagicAttackBuff += 0.05;
+			}
 		}
-		else
+		if (FMath::Abs(Target.DefenseBuff) != 0)
 		{
-			Target.MagicAttackBuff += 0.05;
+			if (Target.DefenseBuff > 0)
+			{
+				Target.DefenseBuff -= 0.05;
+			}
+			else
+			{
+				Target.DefenseBuff += 0.05;
+			}
 		}
-	}
-	if (FMath::Abs(Target.DefenseBuff) != 0)
-	{
-		if (Target.DefenseBuff > 0)
+		if (FMath::Abs(Target.MagicDefenseBuff) != 0)
 		{
-			Target.DefenseBuff -= 0.05;
+			if (Target.MagicDefenseBuff > 0)
+			{
+				Target.MagicDefenseBuff -= 0.05;
+			}
+			else
+			{
+				Target.MagicDefenseBuff += 0.05;
+			}
 		}
-		else
+		if (FMath::Abs(Target.AccuracyBuff) != 0)
 		{
-			Target.DefenseBuff += 0.05;
+			if (Target.AccuracyBuff > 0)
+			{
+				Target.AccuracyBuff -= 0.05;
+			}
+			else
+			{
+				Target.AccuracyBuff += 0.05;
+			}
 		}
-	}
-	if (FMath::Abs(Target.MagicDefenseBuff) != 0)
-	{
-		if (Target.MagicDefenseBuff > 0)
+		if (FMath::Abs(Target.EvasionBuff) != 0)
 		{
-			Target.MagicDefenseBuff -= 0.05;
-		}
-		else
-		{
-			Target.MagicDefenseBuff += 0.05;
-		}
-	}
-	if (FMath::Abs(Target.AccuracyBuff) != 0)
-	{
-		if (Target.AccuracyBuff > 0)
-		{
-			Target.AccuracyBuff -= 0.05;
-		}
-		else
-		{
-			Target.AccuracyBuff += 0.05;
-		}
-	}
-	if (FMath::Abs(Target.EvasionBuff) != 0)
-	{
-		if (Target.EvasionBuff > 0)
-		{
-			Target.EvasionBuff -= 0.05;
-		}
-		else
-		{
-			Target.EvasionBuff += 0.05;
+			if (Target.EvasionBuff > 0)
+			{
+				Target.EvasionBuff -= 0.05;
+			}
+			else
+			{
+				Target.EvasionBuff += 0.05;
+			}
 		}
 	}
 }
@@ -517,12 +665,26 @@ void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source,
 
 void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 {
+	// No point in modifying a dead target
 	if (!Target.bIsDead)
 	{
 		if (Target.BurnStacks > 0)
 		{
-			float Damage = Target.MaxHealth * 0.0007 * Target.BurnStacks;
+			// Burns remove at least 7% of max health without accounting for resistance
+			float Damage = Target.MaxHealth * 0.07 * Target.BurnStacks;
 			// Check fire resistance
+			Damage *= (1 - Target.ElementalResistances[(int32) EElementTypeEnum::FIRE]);
+			Target.Health -= Damage;
+			Target.BurnStacks--;
+
+			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+			MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+			if (Target.Health <= 0)
+			{
+				TotalEXP += Target.EXP;
+				Target.bIsDead = true;
+				CommonEnemy->Die();
+			}
 		}
 	}
 }
@@ -533,14 +695,18 @@ void UBattleManager::StartRound()
 	{
 		if (!Players[i].bIsDead)
 		{
-			PlayerActions[i] = 1;
+			PlayerActions[i] = Players[i].StunStacks == 0 ? 1 : 0;		
 		}
 	}
+	// TODO: Stun Handling if for some reason everyone is stunned
 	PlayerIndex = 0;
 }
 
 void UBattleManager::EndRound()
 {
+	bSelectingPlayer = true;
+	bSelectingAbility = false;
+	bSelectingTarget = false;
 	bool bPlayersDead = true;
 	bool bEnemiesDead = true;
 	AdjustCooldowns();
@@ -551,6 +717,10 @@ void UBattleManager::EndRound()
 		if (!Player.bIsDead)
 		{
 			bPlayersDead = false;
+			if (Player.StunStacks > 1)
+			{
+				Player.StunStacks--;
+			}
 		}
 	}
 	for (FEntityStruct Enemy : Enemies)
@@ -558,6 +728,10 @@ void UBattleManager::EndRound()
 		AdjustBuffs(Enemy);
 		if (!Enemy.bIsDead) {
 			bEnemiesDead = false;
+			if (Enemy.StunStacks > 1)
+			{
+				Enemy.StunStacks--;
+			}
 		}
 	}
 	bBattleEnd = bPlayersDead || bEnemiesDead;
@@ -569,23 +743,19 @@ void UBattleManager::EndRound()
 	}
 	else
 	{
+		if (bPlayersDead)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("The players are dead")));
+		if (bEnemiesDead)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("The enemies are dead")));
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("BATTLE ENDED! RETURNING TO THE OVERWORLD...")));
-		if (Enemies[0].bIsDead)
-		{
 			// let's add some buffer time for death animations to finish
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 1.0f, false);
-		}
-		else 
-		{
-			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 0.5f, false);
-		}
 	}
 }
 
 void UBattleManager::PlayerToEnemyTransition()
 {
-	
 	for (FEntityStruct Player : Players)
 	{
 		HandleBurnDamage(Player);
@@ -622,21 +792,25 @@ void UBattleManager::PlayerTurn()
 
 void UBattleManager::EnemyTurn()
 {
+	MainPlayerController->UpdateTurnUI(bPlayerTurn); // Updating the turn UI
 	for (FEntityStruct Enemy : Enemies)
 	{
 		if (!Enemy.bIsDead)
 		{
-			// Random Targetting behavior
-			int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
-			HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
-
-			// Enemies are only allowed to act twice at most
-			/*if (Enemy.HasteStacks > 1)
+			if (Enemy.StunStacks == 0)
 			{
-				Enemy.HasteStacks = 0;
-				EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
+				// Random Targetting behavior
+				int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
 				HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
-			}*/
+
+				// Enemies are only allowed to act twice at most
+				/*if (Enemy.HasteStacks > 1)
+				{
+					Enemy.HasteStacks = 0;
+					EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
+					HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+				}*/
+			}
 		}
 	}
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::EnemyToPlayerTransition, 0.5f, false);

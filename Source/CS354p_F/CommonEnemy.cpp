@@ -38,16 +38,22 @@ void ACommonEnemy::BeginPlay()
 
 			if (CommonBase)
 			{
+				if (EnemyStats.Level == 0)
+				{
+					EnemyStats.Level = 1;
+				}
 				EnemyStats.MaxHealth = FMath::Floor((*CommonBase).MaxHealth * FMath::Pow(1.191, EnemyStats.Level));
 				EnemyStats.Health = EnemyStats.MaxHealth;
 				EnemyStats.Attack = FMath::Floor((*CommonBase).Attack * FMath::Pow(1.29, EnemyStats.Level));
 				EnemyStats.MagicAttack = FMath::Floor((*CommonBase).MagicAttack * FMath::Pow(1.29, EnemyStats.Level));
 				EnemyStats.Defense = FMath::Floor((*CommonBase).Defense + (*CommonBase).Defense * (EnemyStats.Level / 25));
 				EnemyStats.MagicDefense = FMath::Floor((*CommonBase).MagicDefense + (*CommonBase).Defense * (EnemyStats.Level / 25));
-				EnemyStats.Accuracy = FMath::Floor((*CommonBase).Accuracy * FMath::Pow(1.0844, EnemyStats.Level) * 2);
-				EnemyStats.Evasion = FMath::Floor((*CommonBase).Evasion * FMath::Pow(1.0844, EnemyStats.Level) * 2);
+				EnemyStats.Accuracy = FMath::Floor((*CommonBase).Accuracy * 0.84  * FMath::Pow(1.0844, EnemyStats.Level) * 2);
+				EnemyStats.Evasion = FMath::Floor((*CommonBase).Evasion * 0.84  * FMath::Pow(1.0844, EnemyStats.Level) * 2);
 				EnemyStats.EXP = FMath::Floor((*CommonBase).EXP * FMath::Pow(1.2, EnemyStats.Level));
 				EnemyStats.ElementalResistances = (*CommonBase).ElementalResistances;
+				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common EXP: %f"), EnemyStats.EXP));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common Base EXP: %f"), (*CommonBase).EXP));*/
 			}	
 		}
 

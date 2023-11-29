@@ -111,10 +111,12 @@ public:
 		bIsDead = false;
 		MaxHealth = 0.f;
 		Health = MaxHealth;
-		Attack = 0.f;
-		Defense = 0.f;
-		MagicAttack = 0.f;
-		MagicDefense = 0.f;
+		Attack = 4;
+		Defense = 4;
+		MagicAttack = 4;
+		MagicDefense = 4;
+		Accuracy = 4;
+		Evasion = 4;
 		AttackBuff = 0.f;
 		DefenseBuff = 0.f;
 		AccuracyBuff = 0.f;
