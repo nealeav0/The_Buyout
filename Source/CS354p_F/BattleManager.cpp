@@ -21,6 +21,9 @@ UBattleManager::UBattleManager()
 	CommonEnemy = nullptr;
 }
 
+/**
+* Using the keyboard, you can navigate a carousel to choose a party member.
+*/
 void UBattleManager::SelectPlayer(float Navigation)
 {
 	if (Navigation < 0)
@@ -40,6 +43,9 @@ void UBattleManager::SelectPlayer(float Navigation)
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Index: %d. Player: %s"), PlayerIndex, *(Players[PlayerIndex].Name)));
 }
 
+/**
+* Using the keyboard, you can navigate a carousel to choose a ability.
+*/
 void UBattleManager::SelectAbility(float Navigation)
 {
 	if (Navigation < 0)
@@ -59,6 +65,9 @@ void UBattleManager::SelectAbility(float Navigation)
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Ability Index: %d. Ability: %s"), AbilityIndex, *(Players[PlayerIndex].Abilities[AbilityIndex].AbilityName)));
 }
 
+/**
+* Using the keyboard, you can navigate a carousel to choose a target. If the ability targets an ally, then you must choose one or all of the party members 
+*/
 void UBattleManager::SelectTarget(float Navigation)
 {
 	if (Navigation < 0)
@@ -105,6 +114,12 @@ void UBattleManager::SelectTarget(float Navigation)
 	
 }
 
+/**
+* Depending on the state of the Battle Manager, this determines the validity our Player, Ability, and Target choice.
+* If we are currently selecting a player, we cannot choose a player that is dead or lacks actions.
+* If we are currently selecting an ability, we cannot choose an ability that is under cooldown.
+* If we are currently selecting a target, we cannot choose a dead enemy.
+*/
 void UBattleManager::ConfirmSelection()
 {
 	if (bSelectingPlayer)
@@ -167,6 +182,9 @@ void UBattleManager::EscapeHandler()
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 0.5f, false);
 }
 
+/**
+* Prepare to segue out of battle. At the end of battle, players are given EXP. In addition, all temporary buffs, debuffs, cooldowns, and status effects are reset back to 0
+*/
 void UBattleManager::LeaveBattle() {
 	// before we leave the battle, let's clean up a bit
 	
@@ -205,7 +223,7 @@ void UBattleManager::LoadBattle()
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("BattleMap")), true, "");
 }
 
-// initialize the info we need as soon as the battle is loaded in
+// Initialize the info we need as soon as the battle is loaded in
 void UBattleManager::StartBattle()
 {
 	// we need to fetch the new playercontroller instance at the beginning of each battle
@@ -221,6 +239,9 @@ void UBattleManager::StartBattle()
 	Rounds++;
 }
 
+/**
+* Prepares to segue to battle mode. It adds the players and enemies to the Battle Manager, and it initializes the Player Actions.
+*/
 void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityStruct Enemy)
 {
 	Players.Empty();
@@ -262,12 +283,15 @@ void UBattleManager::SetPlayerAbility()
 	}
 }
 
+// I might use this to help determine which player to target.
 void UBattleManager::SetEnemyTarget()
 {
 
 }
 
-// Choose an ability. Call HandlePlayerInput
+/**
+* Handle the enemy's input. Abilities have two properties that are checked: Move Types and Target Types. Once a player uses an ability with a cooldown, the ability goes on cooldown and cannot be used until the cooldown is up.
+*/
 void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 {
 	// Load in the specified ability
@@ -357,7 +381,7 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 }
 
 /**
-* 
+* Handle the enemy's input. Abilities have two properties that are checked: Move Types and Target Types.
 */
 void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 {
