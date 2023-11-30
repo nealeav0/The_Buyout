@@ -133,9 +133,6 @@ public:
 	UPROPERTY()
 	float TotalEXP = 0.f;
 
-	UPROPERTY()
-	float EXPThreshold = 10.f;
-
 	void HandleEXP();
 
 };

@@ -140,7 +140,7 @@ void UBattleManager::ConfirmSelection()
 		float Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].Cooldown;
 		if (Cooldown > 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Turns left on Cooldown: % d"), Cooldown));
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Turns left on Cooldown: %d"), Cooldown + 1));
 		}
 		else
 		{
@@ -185,7 +185,7 @@ void UBattleManager::ConfirmSelection()
 void UBattleManager::DefendHandler()
 {
 	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The Player is defending.")));
+		GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The warrior is defending.")));
 	Players[PlayerIndex].bIsDefending = true;
 	PlayerActions[PlayerIndex]--;
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
@@ -270,8 +270,8 @@ void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityS
 	Enemies.Add(Enemy);
 	TotalEXP = 0;
 	PlayerActions.Init(1, Players.Num());
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Action array size: %d"), PlayerActions.Num()));
+	/*if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Action array size: %d"), PlayerActions.Num()));*/
 	bSelectingPlayer = true;
 	bSelectingAbility = false;
 	bSelectingTarget = false;
@@ -324,7 +324,6 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 {
 	// Load in the specified ability
 	FAbilityStruct Ability = SelectedAbility;
-	AbilityIndex = 0;
 
 	// Until I have support for UI buttons, the attacks will just be RANDOM or ALL
 
@@ -405,6 +404,11 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 	}*/
 
 	PlayerActions[PlayerIndex]--;
+
+	PlayerIndex = 0;
+	AbilityIndex = 0;
+	TargetIndex = 0;
+
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerTurn, 0.5f, false);
 }
 
@@ -431,8 +435,8 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			TargetIndex = FMath::RandHelper(Enemies.Num());
-			HandleAttack(Ability, Enemies[0], Players[TargetIndex]);
+			int EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			HandleAttack(Ability, Enemies[0], Players[EnemyTargetIndex]);
 			break;
 		}
 		break;
@@ -460,8 +464,8 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			TargetIndex = FMath::RandHelper(Enemies.Num());
-			HandleMagic(Ability, Enemies[0], Players[TargetIndex]);
+			int EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			HandleMagic(Ability, Enemies[0], Players[EnemyTargetIndex]);
 			break;
 		}
 		break;
@@ -575,19 +579,6 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		if (Target.EntityType == EEntityType::ENEMY)
 		{
 			CommonEnemy->Die();
-			// If all the enemies are dead, we need to end the round
-			/*if (CheckEnemiesIsDead())
-			{
-				EndRound();
-			}*/
-		}
-		else
-		{
-			// If all the players are dead, we need to end the round.
-			/*if (CheckPlayersIsDead())
-			{
-				EndRound();
-			}*/
 		}
 		// somehow flag to delete in overworld
 	}
@@ -715,7 +706,7 @@ void UBattleManager::AdjustBuffs(FEntityStruct& Target)
 		{
 			Target.bIsDefending = false;
 			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The Player stopped defending.")));
+				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("%s stopped defending."), *(Target.Name)));
 		}
 		if (FMath::Abs(Target.AttackBuff) != 0)
 		{
@@ -1026,16 +1017,24 @@ void UBattleManager::EnemyTurn()
 		{
 			if (Enemy.StunStacks == 0)
 			{
-				// Random Targetting behavior
-				int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
-				HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+				// We should not attack if there are no valid targets
+				if (!CheckPlayersIsDead())
+				{
+					// Random Targetting behavior
+					int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
+					HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+				}
+				
 
 				// Enemies are only allowed to act twice at most
 				/*if (Enemy.HasteStacks > 1)
 				{
 					Enemy.HasteStacks = 0;
-					EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
-					HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+					if (!CheckPlayersIsDead())
+					{
+						EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
+						HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+					}
 				}*/
 			}
 		}
@@ -1109,13 +1108,13 @@ void UBattleManager::HandleEXP()
 	{
 		Player.EXP += TotalEXP;
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s has %f EXP"), *(Player.Name), Player.EXP));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("EXP Threshold is %f"), EXPThreshold));
-		if (Player.EXP >= EXPThreshold)
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("EXP Threshold is %f"), Player.EXPThreshold));
+		if (Player.EXP >= Player.EXPThreshold)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s has leveled up!"), *(Player.Name)));
 			Player.Level++;
-			Player.EXP = FMath::Fmod(Player.EXP, EXPThreshold); // Handle overflow
-			EXPThreshold *= 2; //Update Threshold
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("New EXP threshold: %.0f."), 50 * FMath::Pow(1.39, Player.Level)));
+			Player.EXP = FMath::Fmod(Player.EXP, Player.EXPThreshold); // Handle overflow
 		}
 	}
 }

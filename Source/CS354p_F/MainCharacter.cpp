@@ -83,6 +83,8 @@ void AMainCharacter::BeginPlay()
 
 			if (PlayerBase)
 			{
+				// Since the BattleManager does not empty its arrays until PrepareForBattle, we can use whatever is stored inside.
+				
 				if (Players[0].Level == 0)
 				{
 					Players[0].Level = 1;
@@ -90,7 +92,11 @@ void AMainCharacter::BeginPlay()
 				Players[0].Name = (*PlayerBase).Name;
 				Players[0].EntityType = (*PlayerBase).EntityType;
 				Players[0].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[0].Level));
-				Players[0].Health = Players[0].MaxHealth;
+				if (GameInstance->BattleManager()->Players.IsEmpty())
+				{
+					Players[0].Health = Players[0].MaxHealth;
+				}
+				Players[0].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[0].Level));
 				Players[0].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[0].Level));
 				Players[0].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[0].Level));
 				Players[0].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[0].Level));
@@ -112,7 +118,11 @@ void AMainCharacter::BeginPlay()
 				Players[1].Name = (*PlayerBase).Name;
 				Players[1].EntityType = (*PlayerBase).EntityType;
 				Players[1].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[1].Level));
-				Players[1].Health = Players[1].MaxHealth;
+				if (GameInstance->BattleManager()->Players.IsEmpty())
+				{
+					Players[1].Health = Players[1].MaxHealth;
+				}
+				Players[1].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[1].Level));
 				Players[1].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[1].Level));
 				Players[1].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[1].Level));
 				Players[1].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[1].Level));

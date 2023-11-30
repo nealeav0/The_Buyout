@@ -39,6 +39,9 @@ public:
 	float EXP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EXPThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FAbilityStruct> Abilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
