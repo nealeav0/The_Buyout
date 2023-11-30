@@ -11,9 +11,6 @@
 
 #define LOCTEXT_NAMESPACE "UMG"
 
-UMainGameInstance* GameInstance;
-UBattleManager* BattleManager;
-
 void UBattleWidget::NativeConstruct()
 {
     Super::NativeConstruct();

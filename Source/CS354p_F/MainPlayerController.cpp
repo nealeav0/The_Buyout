@@ -131,20 +131,7 @@ void AMainPlayerController::BeginPlay()
 	if (BattleMode) {
 		OpenBattleUI();
 		// set up the click-only input behavior 
-		/* neal's conflicts
-		//FInputModeUIOnly InputMode;
-		FInputModeGameOnly InputMode;
-		InputMode.SetConsumeCaptureMouseDown(true);
-		//InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-		if (BattleWidget)
-			//InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
-		SetInputMode(InputMode);
-
-		// let's also show the cursor
-		bShowMouseCursor = true;
-		bEnableClickEvents = true;
-		bEnableMouseOverEvents = true; */
-		UpdateInputMode(BattleWidget, true);
+		UpdateInputMode(BattleWidget, false); // needs to be udated to true later
 
 	} else if (MainMenuMode) { // main/starting menu 
 		OpenMainMenuUI();
