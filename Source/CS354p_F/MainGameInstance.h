@@ -27,6 +27,9 @@ public:
 	UDataTable* PlayerAbilityDataTable;
 
 	UPROPERTY()
+	UDataTable* MageAbilityDataTable;
+
+	UPROPERTY()
 	UDataTable* PlayerBaseDataTable;
 
 	UPROPERTY()
@@ -38,6 +41,10 @@ public:
 	// /Script/Engine.DataTable'/Game/Data/Player_Abilities.Player_Abilities'
 	UPROPERTY()
 	FSoftObjectPath PlayerAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Abilities.Player_Abilities'"));
+
+	// /Script/Engine.DataTable'/Game/Data/Mage_Abilities.Mage_Abilities'
+	UPROPERTY()
+	FSoftObjectPath MageAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Mage_Abilities.Mage_Abilities'"));
 
 	// /Script/Engine.DataTable'/Game/Data/Player_Base_Stats.Player_Base_Stats'
 	UPROPERTY()

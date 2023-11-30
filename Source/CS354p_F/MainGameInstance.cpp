@@ -35,6 +35,17 @@ void UMainGameInstance::Init()
 		}
 	}
 
+	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(MageAbilityDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			MageAbilityDataTable = ReturnedTable;
+
+		}
+	}
+
 	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerBaseDataPath);
 	if (AssetHandle)
 	{

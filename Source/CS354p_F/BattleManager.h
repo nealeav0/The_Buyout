@@ -27,7 +27,7 @@ public:
 
 	TArray<FEntityStruct> Enemies;
 
-	TArray<int32> PlayerActions = { 1 };
+	TArray<int32> PlayerActions;
 
 	//FTurnDelegate TurnDelegate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -78,7 +78,7 @@ public:
 	UFUNCTION() 
 	void StartBattle();
 
-	void PrepareForBattle(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
+	void PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityStruct EnemyStruct);
 
 	UFUNCTION(BlueprintCallable) 
 	FEntityStruct GetPlayer();
@@ -102,6 +102,8 @@ public:
 
 	void AdjustBuffs(FEntityStruct& Target);
 
+	void AdjustStatus(FEntityStruct& Target);
+
 	void HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
 
 	void HandleHealing(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
@@ -121,6 +123,12 @@ public:
 	void PlayerTurn();
 
 	void EnemyTurn();
+	
+	bool CheckPlayersIsDead();
+
+	bool CheckEnemiesIsDead();
+
+	void Die(FEntityStruct& Target);
 
 	UPROPERTY()
 	float TotalEXP = 0.f;

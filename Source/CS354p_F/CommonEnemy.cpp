@@ -42,6 +42,7 @@ void ACommonEnemy::BeginPlay()
 				{
 					EnemyStats.Level = 1;
 				}
+				EnemyStats.Name = (*CommonBase).Name;
 				EnemyStats.MaxHealth = FMath::Floor((*CommonBase).MaxHealth * FMath::Pow(1.191, EnemyStats.Level));
 				EnemyStats.Health = EnemyStats.MaxHealth;
 				EnemyStats.Attack = FMath::Floor((*CommonBase).Attack * FMath::Pow(1.29, EnemyStats.Level));

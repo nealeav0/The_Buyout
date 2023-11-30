@@ -91,10 +91,12 @@ void AMainPlayerController::BeginPlay()
 		OpenBattleUI();
 		
 		// set up the click-only input behavior 
-		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		//FInputModeUIOnly InputMode;
+		FInputModeGameOnly InputMode;
+		InputMode.SetConsumeCaptureMouseDown(true);
+		//InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
 		if (BattleWidget)
-			InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
+			//InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
 		SetInputMode(InputMode);
 
 		// let's also show the cursor
@@ -147,8 +149,8 @@ void AMainPlayerController::SetupInputComponent()
 		} 
 		if (BattleMode)
 		{
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
+			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
+			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, & AMainPlayerController::OnConfirmPressed);
 		}
 	}
 } 
@@ -173,6 +175,7 @@ void AMainPlayerController::OnCameraMoved(const FInputActionValue& Value)
 void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 {
 	float Navigation = Value.Get<float>();
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f navigate."), Navigation));
 	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 	if (GameInstance)
 	{

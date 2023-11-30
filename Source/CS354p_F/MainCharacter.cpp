@@ -65,7 +65,10 @@ void AMainCharacter::BeginPlay()
 			// let's go back to where we last were before the battle
 			// make sure this is NOT the very beginning of the game
 			if (GameInstance->BattleManager()->Rounds > 0) {
-				Players[0] = GameInstance->BattleManager()->GetPlayer();
+				for (int i = 0; i < Players.Num(); i++)
+				{
+					Players[i] = GameInstance->BattleManager()->Players[i];
+				}
 				SetActorLocation(GameInstance->GetPlayerLastLocation());
 				GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::ReadyForBattle, 3.f, false); // give player enough time to run away before retriggering battle if they had just escaped
 			} else {
@@ -124,10 +127,21 @@ void AMainCharacter::BeginPlay()
 		{
 			// Get all of the player abilities from data and place them into the PlayerAbilities array.
 			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
+			GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting warrior abilities"), AbilityData);
 			for (FAbilityStruct* Ability : AbilityData)
 			{
 				Players[0].Abilities.Add(*Ability);
+			}
+		}
+
+		// Set the mage's abilities
+		if (GameInstance->MageAbilityDataTable)
+		{
+			TArray<FAbilityStruct*> AbilityData;
+			GameInstance->MageAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting mage abilities"), AbilityData);
+			for (FAbilityStruct* Ability : AbilityData)
+			{
+				Players[1].Abilities.Add(*Ability);
 			}
 		}
 	}
@@ -207,7 +221,7 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			}
 			GameInstance->SetPlayerLastLocation(Players[0].Location);
 			enemy->GetEntityStruct().Location = enemy->GetActorLocation();
-			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
+			GameInstance->BattleManager()->PrepareForBattle(Players, enemy->GetEntityStruct());
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}
 	}
