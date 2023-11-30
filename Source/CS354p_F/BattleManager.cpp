@@ -151,15 +151,34 @@ void UBattleManager::ConfirmSelection()
 	}
 	else if (bSelectingTarget)
 	{
-		// In case the player chooses to pick a dead enemy.
-		if (Enemies[TargetIndex].bIsDead)
+		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Enemy %d is alread dead."), TargetIndex));
+			if (Players[TargetIndex].bIsDead)
+			{
+				if (GEngine && Players.IsValidIndex(TargetIndex))
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%s is already dead."), *(Players[TargetIndex].Name)));
+				}
+					
+			}
+			else
+			{
+				bSelectingTarget = false;
+				HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
+			}
 		}
 		else
 		{
-			bSelectingTarget = false;
-			HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
+			// In case the player chooses to pick a dead enemy.
+			if (Enemies[TargetIndex].bIsDead)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Enemy %d is already dead."), TargetIndex));
+			}
+			else
+			{
+				bSelectingTarget = false;
+				HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
+			}
 		}
 	}
 }
@@ -270,16 +289,25 @@ FEntityStruct UBattleManager::GetEnemy()
 
 void UBattleManager::SetPlayerAbility()
 {
-	// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, Players[0].PlayerAbilities[AbilityIndex].AbilityName);
 
-	if (Players[0].Abilities[AbilityIndex].Cooldown > 0)
+	if (Players[PlayerIndex].bIsDead || PlayerActions[PlayerIndex] == 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("This ability is under cooldown.")));
-	}
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player %d is unavailable."), PlayerIndex));
+
+		
+	}	
 	else 
 	{
-		HandlePlayerInput(Players[0].Abilities[AbilityIndex]); // Temporary. I want to be able to choose enemies first.
-		// maybe just have a parameter here that takes in ability index and sets it instead of setting ability index in BattleWidget
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player Actions remaining: %d"), PlayerActions[PlayerIndex]));
+		if (Players[PlayerIndex].Abilities[AbilityIndex].Cooldown > 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("This ability is under cooldown.")));
+		}
+		else
+		{
+			HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]); // Temporary. I want to be able to choose enemies first.
+			// maybe just have a parameter here that takes in ability index and sets it instead of setting ability index in BattleWidget
+		}
 	}
 }
 
@@ -534,6 +562,8 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		}
 	}
 	Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s: %f/%f"), *(Target.Name), Target.Health, Target.MaxHealth));
 	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
 	if (Target.Health <= 0)
 	{
@@ -664,7 +694,6 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 			Target.StunStacks = FMath::Clamp(Target.StunStacks, 0, 9);
 			break;
 		}
-		
 	}
 }
 
@@ -1056,6 +1085,8 @@ void UBattleManager::Die(FEntityStruct& Target)
 {
 	if (Target.Health <= 0)
 	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s is dead."), *(Target.Name)));
 		Target.bIsDead = true;
 		Target.bIsDefending = false;
 		Target.AttackBuff = 0;

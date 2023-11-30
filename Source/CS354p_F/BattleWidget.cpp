@@ -161,36 +161,66 @@ void UBattleWidget::OnEscapeClicked()
 
 void UBattleWidget::OnAbility1Clicked()
 {
+    BattleManager->PlayerIndex = 0;
     BattleManager->AbilityIndex = 0;
+    BattleManager->TargetIndex = 0;
+    BattleManager->bSelectingPlayer = false;
+    BattleManager->bSelectingAbility = false;
+    BattleManager->bSelectingTarget = false;
     BattleManager->SetPlayerAbility();
 }
 
 void UBattleWidget::OnAbility2Clicked()
 {
+    BattleManager->PlayerIndex = 0;
     BattleManager->AbilityIndex = 1;
+    BattleManager->TargetIndex = 0;
+    BattleManager->bSelectingPlayer = false;
+    BattleManager->bSelectingAbility = false;
+    BattleManager->bSelectingTarget = false;
     BattleManager->SetPlayerAbility();
 }
 
 void UBattleWidget::OnAbility3Clicked()
 {
+    BattleManager->PlayerIndex = 0;
     BattleManager->AbilityIndex = 2;
+    BattleManager->TargetIndex = 0;
+    BattleManager->bSelectingPlayer = false;
+    BattleManager->bSelectingAbility = false;
+    BattleManager->bSelectingTarget = false;
     BattleManager->SetPlayerAbility();
 }
 
 void UBattleWidget::OnAbility4Clicked()
 {
+    BattleManager->PlayerIndex = 0;
     BattleManager->AbilityIndex = 3;
+    BattleManager->TargetIndex = 0;
+    BattleManager->bSelectingPlayer = false;
+    BattleManager->bSelectingAbility = false;
+    BattleManager->bSelectingTarget = false;
     BattleManager->SetPlayerAbility();
 }
 
 void UBattleWidget::OnAbility5Clicked()
 {
+    BattleManager->PlayerIndex = 0;
     BattleManager->AbilityIndex = 4;
+    BattleManager->TargetIndex = 0;
+    BattleManager->bSelectingPlayer = false;
+    BattleManager->bSelectingAbility = false;
+    BattleManager->bSelectingTarget = false;
     BattleManager->SetPlayerAbility();
 }
 
 void UBattleWidget::OnAbility6Clicked()
 {
+    BattleManager->PlayerIndex = 0;
     BattleManager->AbilityIndex = 5;
+    BattleManager->TargetIndex = 0;
+    BattleManager->bSelectingPlayer = false;
+    BattleManager->bSelectingAbility = false;
+    BattleManager->bSelectingTarget = false;
     BattleManager->SetPlayerAbility();
 }
