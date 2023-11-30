@@ -18,9 +18,13 @@ TArray<FVector> Movements = {
 
 ACommonEnemy::ACommonEnemy()
 {
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	MeshComponent->SetupAttachment(RootComponent);
+	MeshComponent->SetMobility(EComponentMobility::Movable); // doesn't work here for some odd reason
     TriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("TriggerComponent"));
-	TriggerComponent->SetupAttachment(RootComponent);
+	TriggerComponent->SetupAttachment(MeshComponent);
 	TriggerComponent->InitSphereRadius(200.f);
+	TriggerComponent->SetMobility(EComponentMobility::Movable);
 
 	SpawnLocation = GetActorLocation();
 }

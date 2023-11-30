@@ -176,9 +176,17 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 		if (GameInstance)
 		{
+			// set up player to respawn where they last were 
 			PlayerStats.Location = GetActorLocation();
 			GameInstance->SetPlayerLastLocation(PlayerStats.Location);
+			// save all enemy positions in overworld so we know where to respawn them again 
+			TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
+			TArray<AActor*> SpawnedEnemies;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, SpawnedEnemies);
+			// handle info for this specific enemy we've encountered
 			enemy->GetEntityStruct().Location = enemy->GetActorLocation();
+			// enemy->GetEntityStruct() prints 0 0 0 but enemy->GetActorLocation is right 
+			// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("(Location of Enemy :: X: %.2f, Y: %.2f, Z: %.2f) "), enemy->GetEntityStruct().Location.X, enemy->GetEntityStruct().Location.Y, enemy->GetEntityStruct().Location.Z));
 			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}

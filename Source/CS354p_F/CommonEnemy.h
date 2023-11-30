@@ -22,10 +22,14 @@ public:
 	ACommonEnemy();
 
 	FORCEINLINE class USphereComponent* GetTriggerComponent() const { return TriggerComponent; }
+	FORCEINLINE class UStaticMeshComponent* GetMeshComponent() const { return MeshComponent; }
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Enemy")
+	class UStaticMeshComponent* MeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true")) class USphereComponent* TriggerComponent;
 

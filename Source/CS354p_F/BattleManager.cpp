@@ -712,6 +712,9 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		Target.bIsDead = true;
 		CommonEnemy->Die();
 		// somehow flag to delete in overworld
+		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (GameInstance)
+			GameInstance->RemoveEnemyAtLocation(Target.Location);
 	}
 	 //GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
 }

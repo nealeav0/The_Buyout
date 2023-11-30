@@ -59,6 +59,9 @@ public:
 	TArray<ACommonEnemy*> Enemies;
 
 	UPROPERTY()
+	TArray<FVector> EnemyLocations;
+
+	UPROPERTY()
 	FVector PlayerLastSavedLocation;
 
 	UFUNCTION()
@@ -67,5 +70,15 @@ public:
 	UFUNCTION()
 	FVector GetPlayerLastLocation();
 
-	// void DestroyCurrentEnemy();
+	UFUNCTION()
+	void SaveEnemyLocations(TArray<FVector> AllLocations);
+
+	UFUNCTION()
+	void RemoveEnemyAtLocation(FVector Location);
+
+	UFUNCTION()
+	void SpawnEnemies();
+
+	UFUNCTION()
+	void SpawnEnemyAtLocation(FVector Location);
 };
