@@ -2,7 +2,7 @@
 
 
 #include "MainMenuWidget.h"
-#include "MainGameInstance.h"
+#include "MainPlayerController.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
@@ -13,7 +13,7 @@
 
 #define LOCTEXT_NAMESPACE "UMG"
 
-// UMainGameInstance* GameInstance;
+AMainPlayerController* PC;
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -24,9 +24,11 @@ void UMainMenuWidget::NativeConstruct()
     
     StartButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnStartClicked);
     QuitButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnQuitClicked);
+
+    PC = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
-void UMainMenuWidget::InitializeUI()
+void UMainMenuWidget::InitializeStartUI()
 {
     if (StartLabel) {
         StartLabel->SetText(FText::FromString("START GAME"));
@@ -42,18 +44,13 @@ void UMainMenuWidget::OnStartClicked()
     // open overworld level
     UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("OverworldMap")), true, "");
     // remove from parent
-    if (GetParent())
-        RemoveFromParent();
+    PC->CloseMainMenuUI();
 }
 
 void UMainMenuWidget::OnQuitClicked()
 {
-    if (GetParent())
-        RemoveFromParent();
-    // close (execute console command quit)
-    // right now they both crash :)
-    // FGenericPlatformMisc::RequestExit(false);
-    // UKismetSystemLibrary::QuitGame(GetWorld(), GetParent(), EQuitPreference::Quit, false);
+    PC->CloseMainMenuUI();
+    PC->ConsoleCommand("quit");
 }
 
 

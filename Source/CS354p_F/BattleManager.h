@@ -33,6 +33,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FDataTableRowHandle DataHandle = FDataTableRowHandle();
 
+	class UMainGameInstance* GameInstance;
+
 	int Rounds = 0;
 
 	bool bPlayerTurn = true;

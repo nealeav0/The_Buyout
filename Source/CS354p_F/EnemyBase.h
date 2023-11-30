@@ -36,4 +36,7 @@ public:
 
 	UFUNCTION()
 	FEntityStruct GetEntityStruct();
+    
+	UFUNCTION()
+	void SetEntityStructLocation(FVector Location);
 };

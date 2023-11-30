@@ -2,6 +2,8 @@
 
 
 #include "CS354p_FGameModeBase.h"
+#include "MainGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 ACS354p_FGameModeBase::ACS354p_FGameModeBase()
 {
@@ -13,4 +15,7 @@ ACS354p_FGameModeBase::ACS354p_FGameModeBase()
 	if (PlayerControllerBPClass.Class)
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance) // temp
+		GameInstance->SpawnEnemies();
 }
