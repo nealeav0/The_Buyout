@@ -1,7 +1,7 @@
 [
 	{
 		"Name": "warrior",
-		"EntityType": "NPC",
+		"EntityType": "Player",
 		"Location":
 		{
 			"X": 0,
@@ -34,7 +34,7 @@
 	},
 	{
 		"Name": "mage",
-		"EntityType": "NPC",
+		"EntityType": "Player",
 		"Location":
 		{
 			"X": 0,
@@ -67,7 +67,7 @@
 	},
 	{
 		"Name": "ranger",
-		"EntityType": "NPC",
+		"EntityType": "Player",
 		"Location":
 		{
 			"X": 0,
