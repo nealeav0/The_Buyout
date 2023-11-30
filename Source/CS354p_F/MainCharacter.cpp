@@ -183,10 +183,15 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
 			TArray<AActor*> SpawnedEnemies;
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, SpawnedEnemies);
+			TArray<FVector> AllLocations;
+			for (AActor* CurrEnemy : SpawnedEnemies) {
+				AllLocations.Add(CurrEnemy->GetActorLocation());
+			}
+			GameInstance->SaveEnemyLocations(AllLocations);
 			// handle info for this specific enemy we've encountered
-			enemy->GetEntityStruct().Location = enemy->GetActorLocation();
-			// enemy->GetEntityStruct() prints 0 0 0 but enemy->GetActorLocation is right 
-			// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("(Location of Enemy :: X: %.2f, Y: %.2f, Z: %.2f) "), enemy->GetEntityStruct().Location.X, enemy->GetEntityStruct().Location.Y, enemy->GetEntityStruct().Location.Z));
+			enemy->SetEntityStructLocation(enemy->GetActorLocation());
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("(Location of Enemy :: X: %.2f, Y: %.2f, Z: %.2f) "), enemy->GetEntityStruct().Location.X, enemy->GetEntityStruct().Location.Y, enemy->GetEntityStruct().Location.Z));
+			// set up battle manager
 			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}
