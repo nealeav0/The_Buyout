@@ -11,22 +11,38 @@ UBattleManager* UMainGameInstance::BattleManager()
 	return IsValid(BattleManagerInstance) ? BattleManagerInstance : BattleManagerInstance = NewObject<UBattleManager>(this, FName("Battle Manager"));
 }
 
+UAbilityManager* UMainGameInstance::AbilityManager()
+{
+	return IsValid(AbilityManagerInstance) ? AbilityManagerInstance : AbilityManagerInstance = NewObject<UAbilityManager>(this, FName("Ability Manager"));
+}
+
 void UMainGameInstance::Init()
 {
 	Super::Init();
 
-	UBattleManager* manager = BattleManager();
-	UE_LOG(LogTemp, Warning, TEXT("Data has been updated"));
+	UBattleManager* BManager = BattleManager();
+	UAbilityManager* AManager = AbilityManager();
 
 	// To Do: Intialize the manager for use
-	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerDataPath);
+	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
 		if (ReturnedTable)
 		{
-			PlayerDataTable = ReturnedTable;
+			PlayerAbilityDataTable = ReturnedTable;
 			
+		}
+	}
+
+	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(MageAbilityDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			MageAbilityDataTable = ReturnedTable;
+
 		}
 	}
 
@@ -41,24 +57,24 @@ void UMainGameInstance::Init()
 		}
 	}
 
-	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(CommonDataPath);
+	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(EnemyAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
 		if (ReturnedTable)
 		{
-			CommonDataTable = ReturnedTable;
+			EnemyAbilityDataTable = ReturnedTable;
 
 		}
 	}
 
-	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(CommonBaseDataPath);
+	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(EnemyBaseDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
 		if (ReturnedTable)
 		{
-			CommonBaseDataTable = ReturnedTable;
+			EnemyBaseDataTable = ReturnedTable;
 
 		}
 	}

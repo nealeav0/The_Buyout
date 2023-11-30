@@ -57,7 +57,6 @@ public:
 	UFUNCTION()
 	void UpdateTurnUI(bool bIsPlayerTurn);
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputMappingContext* DefaultMappingContext;
 
@@ -66,6 +65,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* MoveCameraAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* NavigateAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* ConfirmAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* PauseAction;
@@ -77,6 +82,8 @@ protected:
 	// Events
 	void OnMovePressed(const FInputActionValue& Value);
 	void OnCameraMoved(const FInputActionValue& Value);
+	void OnNavigatePressed(const FInputActionValue& Value);
+	void OnConfirmPressed();
     void OnPausePressed(const FInputActionValue &Value);
 
 	UFUNCTION()

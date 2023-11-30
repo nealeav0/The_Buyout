@@ -65,7 +65,10 @@ void AMainCharacter::BeginPlay()
 			// let's go back to where we last were before the battle
 			// make sure this is NOT the very beginning of the game
 			if (GameInstance->BattleManager()->Rounds > 0) {
-				PlayerStats = GameInstance->BattleManager()->GetPlayer();
+				for (int i = 0; i < Players.Num(); i++)
+				{
+					Players[i] = GameInstance->BattleManager()->Players[i];
+				}
 				SetActorLocation(GameInstance->GetPlayerLastLocation());
 				GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::ReadyForBattle, 3.f, false); // give player enough time to run away before retriggering battle if they had just escaped
 			} else {
@@ -76,35 +79,88 @@ void AMainCharacter::BeginPlay()
 		// Set the player's stats based on level
 		if (GameInstance->PlayerBaseDataTable)
 		{
-			FPlayerStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FPlayerStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Stats")));
+			FEntityStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Warrior Stats")));
 
 			if (PlayerBase)
 			{
-				PlayerStats.MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, PlayerStats.Level));
-				PlayerStats.Health = PlayerStats.MaxHealth;
-				PlayerStats.Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, PlayerStats.Level));
-				PlayerStats.Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, PlayerStats.Level));
-				PlayerStats.Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, PlayerStats.Level) * 2);
-				PlayerStats.Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, PlayerStats.Level) * 2);
+				// Since the BattleManager does not empty its arrays until PrepareForBattle, we can use whatever is stored inside.
+				
+				if (Players[0].Level == 0)
+				{
+					Players[0].Level = 1;
+				}
+				Players[0].Name = (*PlayerBase).Name;
+				Players[0].EntityType = (*PlayerBase).EntityType;
+				Players[0].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[0].Level));
+				if (GameInstance->BattleManager()->Players.IsEmpty())
+				{
+					Players[0].Health = Players[0].MaxHealth;
+				}
+				Players[0].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[0].Level));
+				Players[0].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[0].Level));
+				Players[0].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[0].Level));
+				Players[0].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[0].Level));
+				Players[0].MagicDefense = FMath::Floor((*PlayerBase).MagicDefense * FMath::Pow(1.11, Players[0].Level));
+				Players[0].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[0].Level) * 2);
+				Players[0].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[0].Level) * 2);
+				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Max Health: %f"), Players[0].MaxHealth));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Health: %f"), Players[0].Health));*/
+			}
+
+			PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("mage")), FString(TEXT("Getting Mage Stats")));
+
+			if (PlayerBase)
+			{
+				if (Players[1].Level == 0)
+				{
+					Players[1].Level = 1;
+				}
+				Players[1].Name = (*PlayerBase).Name;
+				Players[1].EntityType = (*PlayerBase).EntityType;
+				Players[1].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[1].Level));
+				if (GameInstance->BattleManager()->Players.IsEmpty())
+				{
+					Players[1].Health = Players[1].MaxHealth;
+				}
+				Players[1].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[1].Level));
+				Players[1].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[1].Level));
+				Players[1].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[1].Level));
+				Players[1].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[1].Level));
+				Players[1].MagicDefense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[1].Level));
+				Players[1].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[1].Level) * 2);
+				Players[1].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[1].Level) * 2);
 			}
 		}
 
 		// Set the player's abilities
-		if (GameInstance->PlayerDataTable)
+		if (Players[0].Abilities.IsEmpty())
 		{
-			// Get all of the player abilities from data and place them into the PlayerAbilities array.
-			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->PlayerDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
+			if (GameInstance->PlayerAbilityDataTable)
 			{
-				PlayerStats.Abilities.Add(*Ability);
-				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, PlayerStats.PlayerAbilities.Last().AbilityName);
+				// Get all of the player abilities from data and place them into the PlayerAbilities array.
+				TArray<FAbilityStruct*> AbilityData;
+				GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting warrior abilities"), AbilityData);
+				for (FAbilityStruct* Ability : AbilityData)
+				{
+					Players[0].Abilities.Add(*Ability);
+				}
 			}
 		}
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Level: %d"), PlayerStats.Level));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Max Health: %f"), PlayerStats.MaxHealth));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Attack: %f"), PlayerStats.Attack));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defense: %f"), PlayerStats.Defense));
+
+		// Set the mage's abilities
+		if (Players[1].Abilities.IsEmpty())
+		{
+			if (GameInstance->MageAbilityDataTable)
+			{
+				TArray<FAbilityStruct*> AbilityData;
+				GameInstance->MageAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting mage abilities"), AbilityData);
+				for (FAbilityStruct* Ability : AbilityData)
+				{
+					Players[1].Abilities.Add(*Ability);
+				}
+
+			}
+		}
 	}
 
 	Hitbox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnOverlapBegin);
@@ -162,7 +218,7 @@ void AMainCharacter::Escape()
 
 FEntityStruct AMainCharacter::GetEntityStruct()
 {
-	return PlayerStats;
+	return Players[0];
 }
 
 void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -176,9 +232,13 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 		if (GameInstance)
 		{
-			// set up player to respawn where they last were 
-			PlayerStats.Location = GetActorLocation();
-			GameInstance->SetPlayerLastLocation(PlayerStats.Location);
+			// set up player to respawn where they last were
+			for (FEntityStruct Player : Players)
+			{
+				Player.Location = GetActorLocation();
+			}
+			GameInstance->SetPlayerLastLocation(Players[0].Location);
+
 			// save all enemy positions in overworld so we know where to respawn them again 
 			TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
 			TArray<AActor*> SpawnedEnemies;
@@ -191,7 +251,7 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			// handle info for this specific enemy we've encountered
 			enemy->SetEntityStructLocation(enemy->GetActorLocation());
 			// set up battle manager
-			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
+			GameInstance->BattleManager()->PrepareForBattle(Players, enemy->GetEntityStruct());
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}
 	}

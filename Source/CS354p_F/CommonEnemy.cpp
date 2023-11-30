@@ -33,25 +33,39 @@ void ACommonEnemy::BeginPlay()
 	if (GameInstance)
 	{
 		// Set the common enemy's stats based on level
-		if (GameInstance->CommonBaseDataTable)
+		if (GameInstance->EnemyBaseDataTable)
 		{
-			FEnemyStruct* CommonBase = GameInstance->CommonBaseDataTable->FindRow<FEnemyStruct>(FName(TEXT("0")), FString(TEXT("Getting Stats")));
+			FEntityStruct* CommonBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("common")), FString(TEXT("Getting Common Stats")));
 
-			EnemyStats.MaxHealth = FMath::Floor((*CommonBase).MaxHealth * FMath::Pow(1.191, EnemyStats.Level));
-			EnemyStats.Health = EnemyStats.MaxHealth;
-			EnemyStats.Attack = FMath::Floor((*CommonBase).Attack * FMath::Pow(1.29, EnemyStats.Level));
-			EnemyStats.Defense = FMath::Floor((*CommonBase).Defense + (*CommonBase).Defense * (EnemyStats.Level/25));
-			EnemyStats.Accuracy = FMath::Floor((*CommonBase).Accuracy * FMath::Pow(1.0844, EnemyStats.Level) * 2);
-			EnemyStats.Evasion = FMath::Floor((*CommonBase).Evasion * FMath::Pow(1.0844, EnemyStats.Level) * 2);
-			EnemyStats.EXP = FMath::Floor((*CommonBase).EXP * FMath::Pow(1.2, EnemyStats.Level));
+			if (CommonBase)
+			{
+				if (EnemyStats.Level == 0)
+				{
+					EnemyStats.Level = 1;
+				}
+				EnemyStats.Name = (*CommonBase).Name;
+				EnemyStats.EntityType = (*CommonBase).EntityType;
+				EnemyStats.MaxHealth = FMath::Floor((*CommonBase).MaxHealth * FMath::Pow(1.191, EnemyStats.Level));
+				EnemyStats.Health = EnemyStats.MaxHealth;
+				EnemyStats.Attack = FMath::Floor((*CommonBase).Attack * FMath::Pow(1.29, EnemyStats.Level));
+				EnemyStats.MagicAttack = FMath::Floor((*CommonBase).MagicAttack * FMath::Pow(1.29, EnemyStats.Level));
+				EnemyStats.Defense = FMath::Floor((*CommonBase).Defense + (*CommonBase).Defense * (EnemyStats.Level / 25));
+				EnemyStats.MagicDefense = FMath::Floor((*CommonBase).MagicDefense + (*CommonBase).Defense * (EnemyStats.Level / 25));
+				EnemyStats.Accuracy = FMath::Floor((*CommonBase).Accuracy * 0.84  * FMath::Pow(1.0844, EnemyStats.Level) * 2);
+				EnemyStats.Evasion = FMath::Floor((*CommonBase).Evasion * 0.84  * FMath::Pow(1.0844, EnemyStats.Level) * 2);
+				EnemyStats.EXP = FMath::Floor((*CommonBase).EXP * FMath::Pow(1.2, EnemyStats.Level));
+				EnemyStats.ElementalResistances = (*CommonBase).ElementalResistances;
+				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common EXP: %f"), EnemyStats.EXP));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common Base EXP: %f"), (*CommonBase).EXP));*/
+			}	
 		}
 
 		// Set the common enemy's abilities
-		if (GameInstance->CommonDataTable)
+		if (GameInstance->EnemyAbilityDataTable)
 		{
 			// Get all of the common enemy's abilities from data and place them into the EnemyAbilities array.
 			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->CommonDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
+			GameInstance->EnemyAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
 			for (FAbilityStruct* Ability : AbilityData)
 			{
 				EnemyStats.Abilities.Add(*Ability);

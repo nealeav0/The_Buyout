@@ -131,6 +131,19 @@ void AMainPlayerController::BeginPlay()
 	if (BattleMode) {
 		OpenBattleUI();
 		// set up the click-only input behavior 
+		/* neal's conflicts
+		//FInputModeUIOnly InputMode;
+		FInputModeGameOnly InputMode;
+		InputMode.SetConsumeCaptureMouseDown(true);
+		//InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		if (BattleWidget)
+			//InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
+		SetInputMode(InputMode);
+
+		// let's also show the cursor
+		bShowMouseCursor = true;
+		bEnableClickEvents = true;
+		bEnableMouseOverEvents = true; */
 		UpdateInputMode(BattleWidget, true);
 
 	} else if (MainMenuMode) { // main/starting menu 
@@ -155,10 +168,15 @@ void AMainPlayerController::SetupInputComponent()
 	{
 		// in BattleMode we don't want to move
 		// so only bind these if we're in the overworld
-		if (!BattleMode && !MainMenuMode) { 
+		if (!(BattleMode || MainMenuMode)) { 
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
 			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnPausePressed);
+		} 
+		if (BattleMode)
+		{
+			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
+			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, & AMainPlayerController::OnConfirmPressed);
 		}
 	}
 } 
@@ -178,6 +196,40 @@ void AMainPlayerController::OnCameraMoved(const FInputActionValue& Value)
 	AMainCharacter* character = Cast<AMainCharacter>(this->GetCharacter());
 	if (character)
 		character->MoveCameraEvent(MovementVector);
+}
+
+void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
+{
+	float Navigation = Value.Get<float>();
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f navigate."), Navigation));
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		if (GameInstance->BattleManager()->bPlayerTurn)
+		{
+			if (GameInstance->BattleManager()->bSelectingPlayer)
+			{
+				GameInstance->BattleManager()->SelectPlayer(Navigation);
+			}
+			else if (GameInstance->BattleManager()->bSelectingAbility)
+			{
+				GameInstance->BattleManager()->SelectAbility(Navigation);
+			}
+			else if (GameInstance->BattleManager()->bSelectingTarget)
+			{
+				GameInstance->BattleManager()->SelectTarget(Navigation);
+			}
+		}
+	}
+}
+
+void AMainPlayerController::OnConfirmPressed()
+{
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		GameInstance->BattleManager()->ConfirmSelection();
+	}
 }
 
 void AMainPlayerController::OnPausePressed(const FInputActionValue& Value)

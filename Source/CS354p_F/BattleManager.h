@@ -27,7 +27,7 @@ public:
 
 	TArray<FEntityStruct> Enemies;
 
-	TArray<int32> PlayerActions = { 1 };
+	TArray<int32> PlayerActions;
 
 	//FTurnDelegate TurnDelegate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -41,37 +41,46 @@ public:
 
 	bool bBattleEnd = false;
 
-	FAbilityStruct LoadedAbility;
+	//FAbilityStruct LoadedAbility;
 
-	FEnemyStruct LoadedEnemyTarget;
+	/*FEnemyStruct LoadedEnemyTarget;*/
 
-	bool bAbilityChosen = false;
+	int PlayerIndex = 0; // Q and E to cycle through players. Spacebar to confirm.
 
-	bool bTargetChosen = false;
+	int AbilityIndex = 0; // Q and E to cycle through abilities. Spacebar to confirm.
 
-	int AbilityIndex = 0;
+	int TargetIndex = 0; // Q and E to cycle through enemies. Spacebar to confirm.
 
-	void StartTurn();
+	bool bSelectingPlayer;
 
-	/*void AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target);
+	void SelectPlayer(float Navigation);
 
-	void AttackHandler(FAbilityStruct Ability, FPlayerStruct &Target);*/
+	bool bSelectingAbility;
+
+	void SelectAbility(float Navigation);
+
+	bool bSelectingTarget;
+
+	void SelectTarget(float Navigation);
+
+	void ConfirmSelection();
 
 	void DefendHandler();
 
 	void EscapeHandler();
 
-	void EndTurn();
-
 	FTimerHandle TransitionTimer;
 
-	UFUNCTION() void LeaveBattle();
+	UFUNCTION() 
+	void LeaveBattle();
 
-	UFUNCTION() void LoadBattle();
+	UFUNCTION() 
+	void LoadBattle();
 
-	UFUNCTION() void StartBattle();
+	UFUNCTION() 
+	void StartBattle();
 
-	void PrepareForBattle(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
+	void PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityStruct EnemyStruct);
 
 	UFUNCTION(BlueprintCallable) 
 	FEntityStruct GetPlayer();
@@ -87,22 +96,6 @@ public:
 
 	void HandleEnemyInput(FAbilityStruct SelectedAbility);
 
-	/*void HandleStatus(EStatusTypeEnum Status, float StatusPower, FPlayerStruct &Target);
-
-	void HandleStatus(EStatusTypeEnum Status, float StatusPower, FEnemyStruct &Target);
-
-	void HandleMagic(FAbilityStruct Ability, FPlayerStruct& Target);
-
-	void HandleMagic(FAbilityStruct Ability, FEnemyStruct& Target);
-
-	void HandleHealing(FAbilityStruct Ability, FPlayerStruct &Target);
-
-	void HandleHealing(FAbilityStruct Ability, FEnemyStruct &Target);*/
-
-	/*void AdjustBuffs(FPlayerStruct &Target);
-
-	void AdjustBuffs(FEnemyStruct &Target);*/
-
 	void AdjustCooldowns();
 
 	void HandleAttack(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
@@ -110,6 +103,8 @@ public:
 	void HandleStatus(EStatusTypeEnum Status, float StatusChance, float StatusPower, FEntityStruct& Target);
 
 	void AdjustBuffs(FEntityStruct& Target);
+
+	void AdjustStatus(FEntityStruct& Target);
 
 	void HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
 
@@ -127,11 +122,18 @@ public:
 
 	void EnemyToPlayerTransition();
 
-	UPROPERTY()
-	float TotalEXP = 0.f;
+	void PlayerTurn();
+
+	void EnemyTurn();
+	
+	bool CheckPlayersIsDead();
+
+	bool CheckEnemiesIsDead();
+
+	void Die(FEntityStruct& Target);
 
 	UPROPERTY()
-	float EXPThreshold = 10.f;
+	float TotalEXP = 0.f;
 
 	void HandleEXP();
 

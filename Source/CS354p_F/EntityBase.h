@@ -39,6 +39,9 @@ public:
 	float EXP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EXPThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FAbilityStruct> Abilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -69,13 +72,7 @@ public:
 	float Evasion;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FireResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float IceResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ThunderResistance;
+	TArray<float> ElementalResistances;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackBuff;
@@ -117,17 +114,17 @@ public:
 		bIsDead = false;
 		MaxHealth = 0.f;
 		Health = MaxHealth;
-		Attack = 0.f;
-		Defense = 0.f;
-		MagicAttack = 0.f;
-		MagicDefense = 0.f;
+		Attack = 4;
+		Defense = 4;
+		MagicAttack = 4;
+		MagicDefense = 4;
+		Accuracy = 4;
+		Evasion = 4;
 		AttackBuff = 0.f;
 		DefenseBuff = 0.f;
 		AccuracyBuff = 0.f;
 		EvasionBuff = 0.f;
-		FireResistance = 0.f;
-		IceResistance = 0.f;
-		ThunderResistance = 0.f;
+		ElementalResistances = { 0, 0, 0 };
 		Location = FVector(0, 0, 0);
 		bIsDefending = false;
 		BurnStacks = 0;

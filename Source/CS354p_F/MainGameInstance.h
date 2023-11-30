@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "BattleManager.h"
+#include "AbilityManager.h"
 #include "MainGameInstance.generated.h"
 
 /**
@@ -19,21 +20,31 @@ public:
 	UPROPERTY(Transient)
 	UBattleManager* BattleManagerInstance;
 
+	UPROPERTY(Transient)
+	UAbilityManager* AbilityManagerInstance;
+
 	UPROPERTY()
-	UDataTable* PlayerDataTable;
+	UDataTable* PlayerAbilityDataTable;
+
+	UPROPERTY()
+	UDataTable* MageAbilityDataTable;
 
 	UPROPERTY()
 	UDataTable* PlayerBaseDataTable;
 
 	UPROPERTY()
-	UDataTable* CommonDataTable;
+	UDataTable* EnemyAbilityDataTable;
 
 	UPROPERTY()
-	UDataTable* CommonBaseDataTable;
+	UDataTable* EnemyBaseDataTable;
 
 	// /Script/Engine.DataTable'/Game/Data/Player_Abilities.Player_Abilities'
 	UPROPERTY()
-	FSoftObjectPath PlayerDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Abilities.Player_Abilities'"));
+	FSoftObjectPath PlayerAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Abilities.Player_Abilities'"));
+
+	// /Script/Engine.DataTable'/Game/Data/Mage_Abilities.Mage_Abilities'
+	UPROPERTY()
+	FSoftObjectPath MageAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Mage_Abilities.Mage_Abilities'"));
 
 	// /Script/Engine.DataTable'/Game/Data/Player_Base_Stats.Player_Base_Stats'
 	UPROPERTY()
@@ -41,11 +52,11 @@ public:
 
 	// /Script/Engine.DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'
 	UPROPERTY()
-	FSoftObjectPath CommonDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'"));
+	FSoftObjectPath EnemyAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'"));
 
-	// /Script/Engine.DataTable'/Game/Data/Common_Enemy_Base_Stats.Common_Enemy_Base_Stats'
+	// /Script/Engine.DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'
 	UPROPERTY()
-	FSoftObjectPath CommonBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Common_Enemy_Base_Stats.Common_Enemy_Base_Stats'"));
+	FSoftObjectPath EnemyBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
@@ -54,7 +65,11 @@ public:
 
 	virtual void Shutdown() override;
 
-	UFUNCTION(BlueprintCallable) UBattleManager* BattleManager();
+	UFUNCTION(BlueprintCallable) 
+	UBattleManager* BattleManager();
+
+	UFUNCTION(BlueprintCallable)
+	UAbilityManager* AbilityManager();
 
 	void UpdateBattleManager();
 
