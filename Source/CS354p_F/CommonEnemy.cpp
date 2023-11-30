@@ -18,11 +18,8 @@ TArray<FVector> Movements = {
 
 ACommonEnemy::ACommonEnemy()
 {
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
-	MeshComponent->SetupAttachment(RootComponent);
-	MeshComponent->SetMobility(EComponentMobility::Movable); // doesn't work here for some odd reason
     TriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("TriggerComponent"));
-	TriggerComponent->SetupAttachment(MeshComponent);
+	TriggerComponent->SetupAttachment(RootComponent);
 	TriggerComponent->InitSphereRadius(200.f);
 	TriggerComponent->SetMobility(EComponentMobility::Movable);
 
@@ -114,7 +111,7 @@ void ACommonEnemy::Die()
 	// maybe we can add some animation 
 	SpawnLocation = GetActorLocation();
 	SetActorLocation(SpawnLocation + FVector(0.f, 0.f, 25.f));
-	SetActorScale3D(FVector(0.5f, 0.5f, 0.5f));
+	SetActorScale3D(GetActorScale3D() * 0.5);
 	SpawnLocation -= FVector(0.f, 0.f, 25.f);
 	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &ACommonEnemy::ResetPosition, 0.1f, false);
 	// GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &ACommonEnemy::DeleteSelf, 0.5f, false);

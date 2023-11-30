@@ -62,8 +62,8 @@ void UMainGameInstance::Init()
 
 		}
 	}
-	
-	// some predetermined locations for enemies that we've placed just so we can spawn them in the first place
+
+	// some predetermined locations in the overworld for enemies that we've placed just so we can spawn them in the first place
 	EnemyLocations = {	FVector(-455.f, -1440.f, 50.f)	};
 }
 
@@ -98,28 +98,7 @@ void UMainGameInstance::SaveEnemyLocations(TArray<FVector> AllLocations)
 
 void UMainGameInstance::RemoveEnemyAtLocation(FVector Location)
 {
-	FString DebugString = "VectorArray: ";
-
-    for (const FVector& Vector : EnemyLocations)
-    {
-        // Append each FVector's components to the string
-        DebugString += FString::Printf(TEXT("(X: %.2f, Y: %.2f, Z: %.2f) "), Vector.X, Vector.Y, Vector.Z);
-    }
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, DebugString);
-
-	DebugString = FString::Printf(TEXT("(Location To Remove:: X: %.2f, Y: %.2f, Z: %.2f) "), Location.X, Location.Y, Location.Z);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, DebugString);
-
 	EnemyLocations.Remove(Location);
-
-	DebugString = "VectorArray: ";
-
-    for (const FVector& Vector : EnemyLocations)
-    {
-        // Append each FVector's components to the string
-        DebugString += FString::Printf(TEXT("(X: %.2f, Y: %.2f, Z: %.2f) "), Vector.X, Vector.Y, Vector.Z);
-    }
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, DebugString);
 }
 
 void UMainGameInstance::SpawnEnemies()
@@ -129,8 +108,15 @@ void UMainGameInstance::SpawnEnemies()
 	}
 }
 
-void UMainGameInstance::SpawnEnemyAtLocation(FVector Location)
+ACommonEnemy* UMainGameInstance::SpawnEnemyAtLocation(FVector Location)
 {
+	// can't put this in init; otherwise will crash, so we'll just load it in only the first time this is called 
+	if (!CommonEnemyBPClass) {
+		static ConstructorHelpers::FClassFinder<ACommonEnemy> EnemyBPClass(TEXT("/Game/Blueprints/BP_CommonEnemy"));
+		if (EnemyBPClass.Class)
+			CommonEnemyBPClass = EnemyBPClass.Class;
+	}
+
 	if (GetWorld())
     {
         FActorSpawnParameters SpawnParams;
@@ -138,6 +124,7 @@ void UMainGameInstance::SpawnEnemyAtLocation(FVector Location)
 
         FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
 
-        ACommonEnemy* NewActor = GetWorld()->SpawnActor<ACommonEnemy>(ACommonEnemy::StaticClass(), Location, SpawnRotation, SpawnParams);
+        return GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
     }
+	return nullptr;
 }

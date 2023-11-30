@@ -190,7 +190,6 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			GameInstance->SaveEnemyLocations(AllLocations);
 			// handle info for this specific enemy we've encountered
 			enemy->SetEntityStructLocation(enemy->GetActorLocation());
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("(Location of Enemy :: X: %.2f, Y: %.2f, Z: %.2f) "), enemy->GetEntityStruct().Location.X, enemy->GetEntityStruct().Location.Y, enemy->GetEntityStruct().Location.Z));
 			// set up battle manager
 			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);

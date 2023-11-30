@@ -19,6 +19,8 @@ UBattleManager::UBattleManager()
 
 	MainPlayerController = nullptr;
 	CommonEnemy = nullptr;
+
+	GameInstance = Cast<UMainGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void UBattleManager::StartTurn()
@@ -269,8 +271,8 @@ void UBattleManager::StartBattle()
 	}
 	MainPlayerController->InitUI(GetPlayer(), GetEnemy(), bPlayerTurn, GetPlayer().Abilities);
 	
-	// also let's set the reference to the enemy we've loaded in
-	CommonEnemy = Cast<ACommonEnemy>(UGameplayStatics::GetActorOfClass(GetWorld(), ACommonEnemy::StaticClass()));
+	// load in enemy and set the reference to this enemy we just loaded in
+	CommonEnemy = GameInstance->SpawnEnemyAtLocation(FVector(0.f, 300.f, 50.f));
 
 	Rounds++;
 }
@@ -712,7 +714,6 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		Target.bIsDead = true;
 		CommonEnemy->Die();
 		// somehow flag to delete in overworld
-		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 		if (GameInstance)
 			GameInstance->RemoveEnemyAtLocation(Target.Location);
 	}
