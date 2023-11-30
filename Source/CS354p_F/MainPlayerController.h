@@ -18,8 +18,29 @@ class CS354P_F_API AMainPlayerController : public APlayerController
 public:
 	AMainPlayerController();
 
+	/* --- MAIN MENU UI --- */
+
     UFUNCTION()
 	void OpenMainMenuUI();
+
+	UFUNCTION()
+	void CloseMainMenuUI();
+
+	/* --- PAUSE MENU UI --- */
+
+	UFUNCTION()
+	void OpenPauseMenuUI();
+
+    UFUNCTION()
+	void ClosePauseMenuUI();
+
+	// UFUNCTION()
+	// void PauseGame();
+
+	UFUNCTION()
+	void ResumeGame();
+
+	/* --- BATTLE UI --- */
 
     UFUNCTION()
 	void OpenBattleUI();
@@ -28,13 +49,14 @@ public:
 	void CloseBattleUI();
 
 	UFUNCTION()
+	void InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
+
+	UFUNCTION()
 	void UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
 
 	UFUNCTION()
 	void UpdateTurnUI(bool bIsPlayerTurn);
 
-	UFUNCTION()
-	void InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputMappingContext* DefaultMappingContext;
@@ -44,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* MoveCameraAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* PauseAction;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -52,8 +77,12 @@ protected:
 	// Events
 	void OnMovePressed(const FInputActionValue& Value);
 	void OnCameraMoved(const FInputActionValue& Value);
+    void OnPausePressed(const FInputActionValue &Value);
 
-	/* Battle HUD */
+	UFUNCTION()
+	void UpdateInputMode(UUserWidget* WidgetToFocus, bool bEnableCursor);
+
+    /* Battle HUD */
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UBattleWidget> BattleWidgetClass;
 
@@ -66,4 +95,11 @@ protected:
 
 	UPROPERTY()
 	class UMainMenuWidget* MainMenuWidget;
+
+	/* Pause Menu */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UPauseMenuWidget> PauseMenuWidgetClass;
+
+	UPROPERTY()
+	class UPauseMenuWidget* PauseMenuWidget;
 };
