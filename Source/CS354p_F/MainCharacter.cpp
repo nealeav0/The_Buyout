@@ -123,25 +123,32 @@ void AMainCharacter::BeginPlay()
 		}
 
 		// Set the player's abilities
-		if (GameInstance->PlayerAbilityDataTable)
+		if (Players[0].Abilities.IsEmpty())
 		{
-			// Get all of the player abilities from data and place them into the PlayerAbilities array.
-			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting warrior abilities"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
+			if (GameInstance->PlayerAbilityDataTable)
 			{
-				Players[0].Abilities.Add(*Ability);
+				// Get all of the player abilities from data and place them into the PlayerAbilities array.
+				TArray<FAbilityStruct*> AbilityData;
+				GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting warrior abilities"), AbilityData);
+				for (FAbilityStruct* Ability : AbilityData)
+				{
+					Players[0].Abilities.Add(*Ability);
+				}
 			}
 		}
 
 		// Set the mage's abilities
-		if (GameInstance->MageAbilityDataTable)
+		if (Players[1].Abilities.IsEmpty())
 		{
-			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->MageAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting mage abilities"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
+			if (GameInstance->MageAbilityDataTable)
 			{
-				Players[1].Abilities.Add(*Ability);
+				TArray<FAbilityStruct*> AbilityData;
+				GameInstance->MageAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting mage abilities"), AbilityData);
+				for (FAbilityStruct* Ability : AbilityData)
+				{
+					Players[1].Abilities.Add(*Ability);
+				}
+
 			}
 		}
 	}

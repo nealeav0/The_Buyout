@@ -73,20 +73,19 @@ void UBattleManager::SelectTarget(float Navigation)
 	if (Navigation < 0)
 	{
 		TargetIndex--;
-		if (TargetIndex < 0)
+		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
 		{
-			if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
-			{
+			if (TargetIndex < 0)
 				TargetIndex = Players.Num() - 1;
-				if (GEngine && Players.IsValidIndex(TargetIndex))
-					GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Player: %s"), TargetIndex, *(Players[TargetIndex].Name)));
-			}
-			else
-			{
-				TargetIndex = Enemies.Num() - 1;
-				if (GEngine && Enemies.IsValidIndex(TargetIndex))
-					GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Enemy: %s"), TargetIndex, *(Enemies[TargetIndex].Name)));
-			}
+			if (GEngine && Players.IsValidIndex(TargetIndex))
+				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Player: %s"), TargetIndex, *(Players[TargetIndex].Name)));
+		}
+		else
+		{
+			if (TargetIndex < 0)
+			TargetIndex = Enemies.Num() - 1;
+			if (GEngine && Enemies.IsValidIndex(TargetIndex))
+				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Enemy: %s"), TargetIndex, *(Enemies[TargetIndex].Name)));
 		}
 	}
 	else
@@ -233,6 +232,7 @@ void UBattleManager::LeaveBattle() {
 	MainPlayerController = nullptr;
 	CommonEnemy = nullptr;
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("OverworldMap")), true, "");
+	
 }
 
 void UBattleManager::LoadBattle()
@@ -346,7 +346,7 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 				break;
 			case ETargetTypeEnum::RANDOM:
 				TargetIndex = FMath::RandHelper(Enemies.Num());
-				HandleAttack(Ability, Players[0], Enemies[TargetIndex]);
+				HandleAttack(Ability, Players[PlayerIndex], Enemies[TargetIndex]);
 				break;
 			}
 			break;
@@ -371,7 +371,7 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 			case ETargetTypeEnum::ALL:
 				for (FEntityStruct&Enemy : Enemies)
 				{
-					HandleMagic(Ability, Players[0], Enemy);
+					HandleMagic(Ability, Players[PlayerIndex], Enemy);
 				}
 				break;
 			case ETargetTypeEnum::RANDOM:
@@ -521,6 +521,8 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		float Damage;
 		if (Ability.bIsPhysical)
 		{
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("%s attack buff: %f"), *(Source.Name), Source.AttackBuff));
 			Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
 		}
 		else
@@ -563,7 +565,7 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 	}
 	Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s: %f/%f"), *(Target.Name), Target.Health, Target.MaxHealth));
+		GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Cyan, FString::Printf(TEXT("%s: %f/%f"), *(Target.Name), Target.Health, Target.MaxHealth));
 	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
 	if (Target.Health <= 0)
 	{
@@ -574,18 +576,18 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		{
 			CommonEnemy->Die();
 			// If all the enemies are dead, we need to end the round
-			if (CheckEnemiesIsDead())
+			/*if (CheckEnemiesIsDead())
 			{
 				EndRound();
-			}
+			}*/
 		}
 		else
 		{
 			// If all the players are dead, we need to end the round.
-			if (CheckPlayersIsDead())
+			/*if (CheckPlayersIsDead())
 			{
 				EndRound();
-			}
+			}*/
 		}
 		// somehow flag to delete in overworld
 	}
@@ -611,6 +613,8 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 			NewBuff = Target.AttackBuff += StatusPower;
 			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
 			Target.AttackBuff = NewBuff;
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s got an attack boost of %f"), *(Target.Name), NewBuff));
 			break;
 		case EStatusTypeEnum::ATTACKDOWN:
 
@@ -682,6 +686,8 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 
 			Target.BurnStacks += StatusPower;
 			Target.BurnStacks = FMath::Clamp(Target.BurnStacks, 0, 9);
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Magenta, FString::Printf(TEXT("%s was burned with %d stacks."), *(Target.Name), Target.BurnStacks));
 			break;
 		case EStatusTypeEnum::CHILL:
 
@@ -786,6 +792,7 @@ void UBattleManager::AdjustBuffs(FEntityStruct& Target)
 void UBattleManager::HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
 {
 	HandleStatus(Ability.StatusType, Ability.StatusChance, Ability.StatusPower, Target);
+	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
 }
 
 /**
@@ -862,20 +869,7 @@ void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 				if (Target.EntityType == EEntityType::ENEMY)
 				{
 					CommonEnemy->Die();
-					if (CheckEnemiesIsDead())
-					{
-						// We don't have waves. The moment all the enemies die. End the round.
-						EndRound();
-					}
 				}
-				else
-				{
-					if (CheckPlayersIsDead())
-					{
-						EndRound();
-					}
-				}
-					
 			}
 		}
 	}
@@ -927,7 +921,7 @@ void UBattleManager::EndRound()
 	if (!bPlayersDead)
 	{
 		AdjustCooldowns();
-		for (FEntityStruct Player : Players)
+		for (FEntityStruct& Player : Players)
 		{
 			if (!Player.bIsDead)
 			{
@@ -938,7 +932,7 @@ void UBattleManager::EndRound()
 	}
 	if (!bEnemiesDead)
 	{
-		for (FEntityStruct Enemy : Enemies)
+		for (FEntityStruct& Enemy : Enemies)
 		{
 			if (!Enemy.bIsDead) 
 			{
@@ -972,7 +966,7 @@ void UBattleManager::EndRound()
 */
 void UBattleManager::PlayerToEnemyTransition()
 {
-	for (FEntityStruct Player : Players)
+	for (FEntityStruct& Player : Players)
 	{
 		HandleBurnDamage(Player);
 	}
@@ -984,7 +978,7 @@ void UBattleManager::PlayerToEnemyTransition()
 */
 void UBattleManager::EnemyToPlayerTransition()
 {
-	for (FEntityStruct Enemy : Enemies)
+	for (FEntityStruct& Enemy : Enemies)
 	{
 		HandleBurnDamage(Enemy);
 	}
@@ -999,14 +993,17 @@ void UBattleManager::EnemyToPlayerTransition()
 void UBattleManager::PlayerTurn()
 {
 	bPlayerTurn = false;
-	for (int32 Actions : PlayerActions)
+	if (!CheckEnemiesIsDead())
 	{
-		if (Actions > 0)
+		for (int32 Actions : PlayerActions)
 		{
-			bPlayerTurn = true;
+			if (Actions > 0)
+			{
+				bPlayerTurn = true;
+			}
 		}
 	}
-
+	
 	if (!bPlayerTurn)
 	{
 		GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);

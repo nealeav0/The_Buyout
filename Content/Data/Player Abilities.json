@@ -10,7 +10,7 @@
 		"bIsPhysical": true,
 		"ElementType": "NONELEMENTAL",
         "ElementalPercent": 0,
-		"TargetType": "RANDOM",
+		"TargetType": "SINGLE",
 		"Power": [40, 75, 150],
 		"APCosts": [0, 200, 2000],
 		"Accuracy": 1,
@@ -39,7 +39,7 @@
 		"Cooldown": 0,
 		"StatusChance": 0.5,
 		"StatusType": "BURN",
-		"StatusPower": 0
+		"StatusPower": 1
 	},
 	{
 		"Name": "2",
