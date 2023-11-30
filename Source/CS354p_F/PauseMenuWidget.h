@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainMenuWidget.generated.h"
+#include "PauseMenuWidget.generated.h"
 
 /**
  * 
  */
-UCLASS(Abstract)
-class CS354P_F_API UMainMenuWidget : public UUserWidget
+UCLASS()
+class CS354P_F_API UPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void InitializeStartUI();
+	void InitializePauseUI();
 
 	UFUNCTION(BlueprintCallable)
-	void OnStartClicked();
+	void OnResumeClicked();
 
 	UFUNCTION(BlueprintCallable)
 	void OnQuitClicked();
@@ -31,10 +31,10 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* StartButton;
+	class UButton* ResumeButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* StartLabel;
+	class UTextBlock* ResumeLabel;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* QuitButton;
