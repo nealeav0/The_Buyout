@@ -37,3 +37,7 @@ FEntityStruct AEnemyBase::GetEntityStruct()
 	return EnemyStats;
 }
 
+void AEnemyBase::SetEntityStructLocation(FVector Location)
+{
+	EnemyStats.Location = Location;
+}

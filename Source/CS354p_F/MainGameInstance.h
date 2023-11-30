@@ -47,6 +47,9 @@ public:
 	UPROPERTY()
 	FSoftObjectPath CommonBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Common_Enemy_Base_Stats.Common_Enemy_Base_Stats'"));
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
+
 	virtual void Init() override;
 
 	virtual void Shutdown() override;
@@ -59,6 +62,9 @@ public:
 	TArray<ACommonEnemy*> Enemies;
 
 	UPROPERTY()
+	TArray<FVector> EnemyLocations;
+
+	UPROPERTY()
 	FVector PlayerLastSavedLocation;
 
 	UFUNCTION()
@@ -67,5 +73,15 @@ public:
 	UFUNCTION()
 	FVector GetPlayerLastLocation();
 
-	// void DestroyCurrentEnemy();
+	UFUNCTION()
+	void SaveEnemyLocations(TArray<FVector> AllLocations);
+
+	UFUNCTION()
+	void RemoveEnemyAtLocation(FVector Location);
+
+	UFUNCTION()
+	void SpawnEnemies();
+
+	UFUNCTION()
+	ACommonEnemy* SpawnEnemyAtLocation(FVector Location);
 };
