@@ -529,17 +529,35 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		{
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("%s attack buff: %f"), *(Source.Name), Source.AttackBuff));
-			Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("Ability Power Array Size: %d"), Ability.Power.Num()));
+			if (Ability.Power.IsValidIndex(Ability.Level - 1))
+			{
+				Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
+			}
+			else
+			{
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("There is an error with physical Ability.Level - 1: %d"), Ability.Level));
+			}
 		}
 		else
 		{
-			Damage = (Ability.Power[Ability.Level - 1] * Source.MagicAttack * (1 + Source.MagicAttackBuff)) / (Target.MagicDefense * (1 + Target.MagicDefenseBuff));
+			if (Ability.Power.IsValidIndex(Ability.Level - 1))
+			{
+				Damage = (Ability.Power[Ability.Level - 1] * Source.MagicAttack * (1 + Source.MagicAttackBuff)) / (Target.MagicDefense * (1 + Target.MagicDefenseBuff));
+			}
+			else
+			{
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("There is an error with magic Ability.Level - 1: %d"), Ability.Level));
+			}
 		}
 
 		// Check for elements here
-		if (Ability.ElementType != EElementTypeEnum::NONELEMENTAL) 
+		if (Ability.ElementType != EElementTypeEnum::NONELEMENTAL)
 		{
-			float ElementalModifier = (1 - Ability.ElementalPercent) + (Ability.ElementalPercent * (1 - Target.ElementalResistances[(int32) Ability.ElementType]));
+			float ElementalModifier = (1 - Ability.ElementalPercent) + (Ability.ElementalPercent * (1 - Target.ElementalResistances[(int32)Ability.ElementType]));
 
 			// If a target is afflicted with CHILL, they take 50% more damage from ICE element attacks. Each time an attack is amplified, a stack is used. Fire damage removes CHILL
 			if (Target.ChillStacks > 0)
@@ -559,7 +577,7 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 			Damage *= ElementalModifier;
 		}
 		Target.Health -= Target.bIsDefending ? Damage / 2 : Damage;
-		
+
 		HandleStatus(Ability.StatusType, Ability.StatusChance, Ability.StatusPower, Target);
 	}
 	else
@@ -798,7 +816,7 @@ void UBattleManager::AdjustStatus(FEntityStruct& Target)
 	if (Target.bIsDefending)
 	{
 		Target.bIsDefending = false;
-	}	
+	}
 	if (Target.StunStacks > 1)
 	{
 		Target.StunStacks--;
@@ -824,7 +842,7 @@ void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source,
 		Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player healed %f health"), Ability.Power[Ability.Level - 1] * 2));
-	} 
+	}
 	else
 	{
 		// I will need to add some sort of HitToHP modifier. This is based on the percent max hp.
@@ -849,7 +867,7 @@ void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 			// Burns remove at least 7% of max health without accounting for resistance
 			float Damage = Target.MaxHealth * 0.07 * Target.BurnStacks;
 			// Check fire resistance
-			Damage *= (1 - Target.ElementalResistances[(int32) EElementTypeEnum::FIRE]);
+			Damage *= (1 - Target.ElementalResistances[(int32)EElementTypeEnum::FIRE]);
 			Target.Health -= Damage;
 			Target.BurnStacks--;
 
@@ -898,7 +916,7 @@ void UBattleManager::StartRound()
 	}
 	if (!bNotStunned)
 	{
-		
+
 	}*/
 	PlayerTurn();
 	PlayerIndex = 0;
@@ -929,7 +947,7 @@ void UBattleManager::EndRound()
 	{
 		for (FEntityStruct& Enemy : Enemies)
 		{
-			if (!Enemy.bIsDead) 
+			if (!Enemy.bIsDead)
 			{
 				AdjustBuffs(Enemy);
 				AdjustStatus(Enemy);
@@ -951,8 +969,8 @@ void UBattleManager::EndRound()
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("The enemies are dead")));
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("BATTLE ENDED! RETURNING TO THE OVERWORLD...")));
-			// let's add some buffer time for death animations to finish
-			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 1.0f, false);
+		// let's add some buffer time for death animations to finish
+		GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 1.0f, false);
 	}
 }
 
@@ -998,11 +1016,11 @@ void UBattleManager::PlayerTurn()
 			}
 		}
 	}
-	
+
 	if (!bPlayerTurn)
 	{
 		GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
-	}	
+	}
 	bSelectingPlayer = true;
 	bSelectingAbility = false;
 	bSelectingTarget = false;

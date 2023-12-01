@@ -233,7 +233,7 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		if (GameInstance)
 		{
 			// set up player to respawn where they last were
-			for (FEntityStruct Player : Players)
+			for (FEntityStruct& Player : Players)
 			{
 				Player.Location = GetActorLocation();
 			}
