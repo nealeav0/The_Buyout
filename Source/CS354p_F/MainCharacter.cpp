@@ -232,13 +232,14 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 		if (GameInstance)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("(Location of Player :: X: %.2f, Y: %.2f, Z: %.2f) "), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z));
 			// set up player to respawn where they last were
-			for (FEntityStruct Player : Players)
+			for (FEntityStruct& Player : Players)
 			{
 				Player.Location = GetActorLocation();
 			}
 			GameInstance->SetPlayerLastLocation(Players[0].Location);
-
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("(Location of Player :: X: %.2f, Y: %.2f, Z: %.2f) "), Players[0].Location.X, Players[0].Location.Y, Players[0].Location.Z));
 			// save all enemy positions in overworld so we know where to respawn them again 
 			TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
 			TArray<AActor*> SpawnedEnemies;
