@@ -80,7 +80,7 @@ void ACommonEnemy::BeginPlay()
 	if (GetWorld()->GetAuthGameMode() && !GetWorld()->GetAuthGameMode()->IsA(ABattleGameModeBase::StaticClass()))
     {
 		itercounter = 0;
-		CurrentDirection = Movements[2];
+		CurrentDirection = Movements[0];
         GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &ACommonEnemy::Roam, 0.05f, true);
     }
 }

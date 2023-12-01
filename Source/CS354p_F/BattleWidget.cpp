@@ -132,7 +132,10 @@ void UBattleWidget::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
                     if (AbilityLabel) {
                         if (PlayerAbilities.IsValidIndex(index))
                         {
-                            AbilityLabel->SetText(FText::FromString(PlayerAbilities[index].AbilityName));
+                            FFormatNamedArguments Args;
+                            Args.Add(TEXT("AbilityName"), FText::FromString(PlayerAbilities[index].AbilityName));
+                            Args.Add(TEXT("Level"), FText::AsNumber(PlayerAbilities[index].Level));
+                            AbilityLabel->SetText(FText::Format(LOCTEXT("AbilityLabel", "{AbilityName} (Lv.{Level})"), Args));
                             index++;
                         }
                         else
@@ -140,6 +143,7 @@ void UBattleWidget::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
                             if (GEngine)
                             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The abilities do not exist.")));
                         }
+                        
                     }
                 }
             }
