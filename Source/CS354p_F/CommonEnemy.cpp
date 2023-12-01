@@ -54,9 +54,12 @@ void ACommonEnemy::BeginPlay()
 				EnemyStats.Accuracy = FMath::Floor((*CommonBase).Accuracy * 0.84  * FMath::Pow(1.0844, EnemyStats.Level) * 2);
 				EnemyStats.Evasion = FMath::Floor((*CommonBase).Evasion * 0.84  * FMath::Pow(1.0844, EnemyStats.Level) * 2);
 				EnemyStats.EXP = FMath::Floor((*CommonBase).EXP * FMath::Pow(1.2, EnemyStats.Level));
+				EnemyStats.AbilityPoints = FMath::Floor((*CommonBase).AbilityPoints * FMath::Pow(1.25, EnemyStats.Level));
 				EnemyStats.ElementalResistances = (*CommonBase).ElementalResistances;
-				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common EXP: %f"), EnemyStats.EXP));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common Base EXP: %f"), (*CommonBase).EXP));*/
+				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common EXP: %d"), EnemyStats.EXP));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common Base EXP: %d"), (*CommonBase).EXP));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common AP: %d"), EnemyStats.AbilityPoints));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common Base AP: %d"), (*CommonBase).AbilityPoints));*/
 			}	
 		}
 

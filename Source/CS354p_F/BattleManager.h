@@ -133,7 +133,10 @@ public:
 	void Die(FEntityStruct& Target);
 
 	UPROPERTY()
-	float TotalEXP = 0.f;
+	int32 TotalEXP = 0;
+
+	UPROPERTY()
+	int32 TotalAP = 0;
 
 	void HandleEXP();
 

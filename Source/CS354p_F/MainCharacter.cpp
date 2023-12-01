@@ -95,6 +95,8 @@ void AMainCharacter::BeginPlay()
 				if (GameInstance->BattleManager()->Players.IsEmpty())
 				{
 					Players[0].Health = Players[0].MaxHealth;
+					Players[0].EXP = 0;
+					Players[0].AbilityPoints = 0;
 				}
 				Players[0].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[0].Level));
 				Players[0].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[0].Level));
@@ -121,6 +123,8 @@ void AMainCharacter::BeginPlay()
 				if (GameInstance->BattleManager()->Players.IsEmpty())
 				{
 					Players[1].Health = Players[1].MaxHealth;
+					Players[1].EXP = 0; // Strange EXP bug
+					Players[1].AbilityPoints = 0;
 				}
 				Players[1].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[1].Level));
 				Players[1].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[1].Level));
@@ -132,34 +136,30 @@ void AMainCharacter::BeginPlay()
 			}
 		}
 
+		GameInstance->AbilityManager()->InitializePlayerArray(Players);
 		// Set the player's abilities
 		if (Players[0].Abilities.IsEmpty())
 		{
-			if (GameInstance->PlayerAbilityDataTable)
+			GameInstance->AbilityManager()->InitializeAbilities(Players[0]);
+			if (Players.IsEmpty())
 			{
-				// Get all of the player abilities from data and place them into the PlayerAbilities array.
-				TArray<FAbilityStruct*> AbilityData;
-				GameInstance->PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting warrior abilities"), AbilityData);
-				for (FAbilityStruct* Ability : AbilityData)
-				{
-					Players[0].Abilities.Add(*Ability);
-				}
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Deleted")));
 			}
+			else
+			{
+				if (Players[0].Abilities.IsEmpty())
+				{
+					if (GEngine)
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Abilities were not learned")));
+				}
+			}		
 		}
 
 		// Set the mage's abilities
-		if (Players[1].Abilities.IsEmpty())
+		if (Players.IsValidIndex(1) && Players[1].Abilities.IsEmpty())
 		{
-			if (GameInstance->MageAbilityDataTable)
-			{
-				TArray<FAbilityStruct*> AbilityData;
-				GameInstance->MageAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting mage abilities"), AbilityData);
-				for (FAbilityStruct* Ability : AbilityData)
-				{
-					Players[1].Abilities.Add(*Ability);
-				}
-
-			}
+			GameInstance->AbilityManager()->InitializeAbilities(Players[1]);
 		}
 	}
 

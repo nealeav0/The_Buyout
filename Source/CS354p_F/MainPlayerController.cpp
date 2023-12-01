@@ -159,6 +159,8 @@ void AMainPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
 			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnPausePressed);
+			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
+			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
 		} 
 		if (BattleMode)
 		{
@@ -192,19 +194,33 @@ void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 	if (GameInstance)
 	{
-		if (GameInstance->BattleManager()->bPlayerTurn)
+		if (BattleMode)
 		{
-			if (GameInstance->BattleManager()->bSelectingPlayer)
+			if (GameInstance->BattleManager()->bPlayerTurn)
 			{
-				GameInstance->BattleManager()->SelectPlayer(Navigation);
+				if (GameInstance->BattleManager()->bSelectingPlayer)
+				{
+					GameInstance->BattleManager()->SelectPlayer(Navigation);
+				}
+				else if (GameInstance->BattleManager()->bSelectingAbility)
+				{
+					GameInstance->BattleManager()->SelectAbility(Navigation);
+				}
+				else if (GameInstance->BattleManager()->bSelectingTarget)
+				{
+					GameInstance->BattleManager()->SelectTarget(Navigation);
+				}
 			}
-			else if (GameInstance->BattleManager()->bSelectingAbility)
+		}
+		else
+		{
+			if (GameInstance->AbilityManager()->bSelectingPlayer)
 			{
-				GameInstance->BattleManager()->SelectAbility(Navigation);
+				GameInstance->AbilityManager()->SelectPlayer(Navigation);
 			}
-			else if (GameInstance->BattleManager()->bSelectingTarget)
+			else if (GameInstance->AbilityManager()->bSelectingAbility)
 			{
-				GameInstance->BattleManager()->SelectTarget(Navigation);
+				GameInstance->AbilityManager()->SelectAbility(Navigation);
 			}
 		}
 	}
@@ -215,7 +231,14 @@ void AMainPlayerController::OnConfirmPressed()
 	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 	if (GameInstance)
 	{
-		GameInstance->BattleManager()->ConfirmSelection();
+		if (BattleMode)
+		{
+			GameInstance->BattleManager()->ConfirmSelection();
+		}
+		else
+		{
+			GameInstance->AbilityManager()->ConfirmSelection();
+		}
 	}
 }
 

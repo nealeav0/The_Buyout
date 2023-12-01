@@ -23,8 +23,10 @@ void UMainGameInstance::Init()
 	UBattleManager* BManager = BattleManager();
 	UAbilityManager* AManager = AbilityManager();
 
+	AManager->InitializeAbilityDataTables();
+
 	// To Do: Intialize the manager for use
-	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerAbilityDataPath);
+	/*TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
@@ -44,9 +46,9 @@ void UMainGameInstance::Init()
 			MageAbilityDataTable = ReturnedTable;
 
 		}
-	}
+	}*/
 
-	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerBaseDataPath);
+	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerBaseDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
