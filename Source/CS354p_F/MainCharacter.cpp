@@ -236,6 +236,7 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			for (FEntityStruct& Player : Players)
 			{
 				Player.Location = GetActorLocation();
+				GameInstance->AbilityManager()->InitializeAbilities(Player);
 			}
 			GameInstance->SetPlayerLastLocation(Players[0].Location);
 			// save all enemy positions in overworld so we know where to respawn them again 

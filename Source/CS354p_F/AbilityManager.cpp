@@ -233,7 +233,6 @@ void UAbilityManager::LearnAbility(FEntityStruct& Player, FAbilityStruct& Abilit
 			Ability.Level = 1;
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s learned %s"), *(Player.Name), *(Ability.AbilityName)));
-			InitializeAbilities(Player);
 		}
 		else
 		{
@@ -269,7 +268,6 @@ void UAbilityManager::UpgradeAbility(FEntityStruct& Player, FAbilityStruct& Abil
 					Ability.Level++;
 					if (GEngine)
 						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Power %.0f -> %.0f"), Ability.Power[Ability.Level - 1], Ability.Power[Ability.Level]));
-					InitializeAbilities(Player);
 				}
 				else
 				{
