@@ -233,7 +233,7 @@ void UBattleManager::LeaveBattle() {
 	MainPlayerController->CloseBattleUI();
 	MainPlayerController = nullptr;
 	CommonEnemy = nullptr;
-	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("OverworldMap")), true, "");
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("AggieMap")), true, "");
 	
 }
 

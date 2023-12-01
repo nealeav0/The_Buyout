@@ -42,7 +42,7 @@ void UMainMenuWidget::InitializeStartUI()
 void UMainMenuWidget::OnStartClicked()
 {
     // open overworld level
-    UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("OverworldMap")), true, "");
+    UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("AggieMap")), true, "");
     // remove from parent
     PC->CloseMainMenuUI();
 }
