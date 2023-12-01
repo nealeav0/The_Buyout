@@ -106,6 +106,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 StunStacks;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PoisonStacks;
+
 	FEntityStruct()
 	{
 		Name = FString(TEXT("NPC"));
@@ -124,12 +127,13 @@ public:
 		DefenseBuff = 0.f;
 		AccuracyBuff = 0.f;
 		EvasionBuff = 0.f;
-		ElementalResistances = { 0, 0, 0 };
+		ElementalResistances = { 0, 0, 0, 0 };
 		Location = FVector(0, 0, 0);
 		bIsDefending = false;
 		BurnStacks = 0;
 		ChillStacks = 0;
 		StunStacks = 0;
+		PoisonStacks = 0;
 	}
 };
 

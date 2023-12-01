@@ -223,6 +223,7 @@ void UBattleManager::LeaveBattle() {
 		Player.BurnStacks = 0;
 		Player.ChillStacks = 0;
 		Player.StunStacks = 0;
+		Player.PoisonStacks = 0;
 
 		for (FAbilityStruct& Ability : Player.Abilities)
 		{
@@ -712,6 +713,13 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 			Target.StunStacks += StatusPower;
 			Target.StunStacks = FMath::Clamp(Target.StunStacks, 0, 9);
 			break;
+		case EStatusTypeEnum::POISON:
+
+			Target.PoisonStacks += StatusPower;
+			Target.PoisonStacks = FMath::Clamp(Target.PoisonStacks, 0, 9);
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Magenta, FString::Printf(TEXT("%s was poisoned with %d stacks."), *(Target.Name), Target.PoisonStacks));
+			break;
 		}
 	}
 }
@@ -829,6 +837,10 @@ void UBattleManager::AdjustStatus(FEntityStruct& Target)
 	{
 		Target.ChillStacks--;
 	}
+	if (Target.PoisonStacks > 1) 
+	{
+		Target.PoisonStacks--;
+	}
 }
 
 /**
@@ -874,6 +886,40 @@ void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s is on fire. %f damage taken"), *(Target.Name), Damage));
+			MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+			if (Target.Health <= 0)
+			{
+				TotalEXP += Target.EXP;
+				Die(Target);
+				if (Target.EntityType == EEntityType::ENEMY)
+				{
+					CommonEnemy->Die();
+				}
+			}
+		}
+	}
+}
+
+/**
+* Handle the damage that comes from being poisoned. Poison deals 100% poison damage at the end of a side's round turn. Poison damage is affected by poison resistance.
+*/
+void UBattleManager::HandlePoisonDamage(FEntityStruct& Target)
+{
+	// No point in modifying a dead target
+	if (!Target.bIsDead)
+	{
+		if (Target.PoisonStacks > 0)
+		{
+			// Poison removes at least 5% of max health without accounting for resistance
+			float Damage = Target.MaxHealth * 0.05 * Target.PoisonStacks;
+			// Check poison resistance
+			Damage *= (1 - Target.ElementalResistances[(int32)EElementTypeEnum::POISON]);
+			Target.Health -= Damage;
+			Target.PoisonStacks--;
+
+			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s is poisoned. %f damage taken"), *(Target.Name), Damage));
 			MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
 			if (Target.Health <= 0)
 			{
@@ -982,6 +1028,7 @@ void UBattleManager::PlayerToEnemyTransition()
 	for (FEntityStruct& Player : Players)
 	{
 		HandleBurnDamage(Player);
+		HandlePoisonDamage(Player);
 	}
 	EnemyTurn();
 }
@@ -994,6 +1041,7 @@ void UBattleManager::EnemyToPlayerTransition()
 	for (FEntityStruct& Enemy : Enemies)
 	{
 		HandleBurnDamage(Enemy);
+		HandlePoisonDamage(Enemy);
 	}
 	bPlayerTurn = true;
 	EndRound();
@@ -1116,6 +1164,7 @@ void UBattleManager::Die(FEntityStruct& Target)
 		Target.BurnStacks = 0;
 		Target.ChillStacks = 0;
 		Target.StunStacks = 0;
+		Target.PoisonStacks = 0;
 	}
 }
 
