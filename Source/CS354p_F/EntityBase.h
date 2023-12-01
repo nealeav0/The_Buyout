@@ -36,10 +36,13 @@ public:
 	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EXP;
+	int32 EXP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EXPThreshold;
+	int32 EXPThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AbilityPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FAbilityStruct> Abilities;
@@ -111,6 +114,8 @@ public:
 		Name = FString(TEXT("NPC"));
 		EntityType = EEntityType::NPC;
 		Level = 1;
+		EXP = 0;
+		EXPThreshold = 0;
 		bIsDead = false;
 		MaxHealth = 0.f;
 		Health = MaxHealth;
