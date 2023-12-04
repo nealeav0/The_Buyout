@@ -30,6 +30,7 @@ enum class EElementTypeEnum
 	FIRE,
 	ICE,
 	THUNDER,
+	POISON,
 	NONELEMENTAL,
 };
 
@@ -51,7 +52,8 @@ enum class EStatusTypeEnum
 	EVASIONDOWN,
 	BURN,
 	CHILL,
-	STUN
+	STUN,
+	POISON
 };
 
 USTRUCT(BlueprintType)
