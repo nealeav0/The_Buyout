@@ -47,6 +47,6 @@ public:
 UCLASS()
 class CS354P_F_API UDialogueStruct : public UUserDefinedStruct
 {
-	GENERATED_BODY()
+	GENERATED_BODY()  
 	
 };
