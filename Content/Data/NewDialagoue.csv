@@ -1,0 +1,43 @@
+Name,Row ID,Parent Row ID,Children IDs,Dialogue
+0,0,1,(-1),"In the realm of pigskin strife, a coach's fate unfolds - "
+1,1,2,(-1),"An SEC nightmare, its narrative untold."
+2,2,3,(-1),"Seventy-seven million, and six in decree,"
+3,3,4,(-1),A hefty sum to set him free.
+4,4,5,(-1),"From college fields to coffers vast, "
+5,5,6,(-1),Jimbo Fisher's legacy cast. 
+6,6,7,(-1),"In silvered ink, his future inscribed,"
+7,7,8,(-1),"A coach's journey, by millions bribed."
+8,8,-1,"(9,10,11)","(Rick Perry) To what do we owe the pleasure, General?"
+9,9,12,(-1),“...”
+10,10,12,(-1),“...howdy.”
+11,11,12,(-1),“Howdy!”
+12,12,13,(-1),"(Dan Campbell) IT’S AN HONOR TO MEET YOU, SIR. 
+DAN CAMPBELL, FIGHTIN’ TEXAS AGGIE CLASS OF 1998. AT YOUR SERVICE"
+13,13,-1,"(14,15,16)","(Johnny Manziel) Ayeee, looks like grandpa just joined the party. How’ve those “states rights” been looking lately, Colonel McRacist?"
+14,14,17,(-1),"“Better than your NFL career, that’s for sure.”"
+15,15,17,(-1),“About as good as TAMU’s playoff chances this year.”
+16,16,17,(-1),“(no reply)”
+17,17,18,(-1),"(Rick Perry) *nervous laughter* D-Don't mind him General, he's always like this.
+Anyways, I take it you're aware of our predicament, yes?"
+18,18,19,(-1),"(Rick Perry) I really thought he was turning things around in 2020, but in hindsight, that 9-1 COVID season seems like it might've been a fluke...Truth is, we need him gone. And fast."
+19,19,20,(-1),"(Dan Campbell) I COULDN’T AGREE MORE, RICK. THE WINNING TRADITION OF THE FIGHTING TEXAS AGGIE FOOTBALL PROGRAM WILL NOT BE HINDERED ANY LONGER."
+20,20,21,(-1),"(Johnny Manziel) Problem is, Perry here is saying we’re strapped for cash. So unless we act fast, Jimbo is gonna keep ruining our program for years to come."
+21,21,22,(-1),(Rick Perry) And that’s where you come in!  We’ve been through a lot together - and I know you’ve always been able to get A&M through its toughest times.
+22,22,-1,"(23,27,30)",(Rick Perry)Any thoughts on how we fix this mess?
+23,23,24,(-1),“It’s simple - Dogecoin and NFTs.”
+24,24,25,(-1),(Johnny Manziel) Hell yeah! I’ve been telling them for years man - all the FUD out there?? Just delaying the inevitable.
+25,25,26,(-1),(Dan Campbell) DOGE TO THE MOON!!!!
+26,26,22,(-1),"(Rick Perry) ...Given the situation we’re in, I’m not so sure we can rely on something as volatile as crypto to buy our way out of this."
+27,27,28,(-1),"""I hear bake sales are popular these days."""
+28,28,29,(-1),"(Dan Campbell) HEY, THAT MIGHT HAVE SOME POTENTIAL.  IF WE SELL BOTH CHOCOLATE CHIP AND SNICKERDOODLE COOKIES...UHHH...FOUR DOLLARS EACH...TWENTY SEVEN...THIRTY TWO...THIRTY NINE…"
+29,29,22,(-1),"(Rick Perry) General, we need to think bigger than cookies! We’ll never get to $77 million at that rate!"
+30,30,31,(-1),“The Aggie Network™.”
+31,31,32,(-1),(Rick Perry) ...Of course!! We can always fall back on our Aggie Network™ to dig us out of the massive holes we put ourselves in.
+32,32,33,(-1),(Dan Campbell) HELL YEAH BROTHER! THE AGGIE NETWORK™ HAS NEVER LET ME DOWN!! LOVE MY MF TEXAS AGGIES TO THE DEATH!!!!
+33,33,34,(-1),(Johnny Manziel) ... We really have no other options?
+34,34,35,(-1),(Rick Perry) ... Do you want to go 8-5 again next year?
+35,35,36,(-1),(Johnny Manziel) ... We really have no other options?
+36,36,37,(-1),(Rick Perry) Do you want to lose to Texas next year?
+37,37,38,(-1),(Johnny Manziel) That's fair.
+38,38,39,(-1),"(Rick Perry) Then it’s settled! General, with your civil-war battle expertise, and our fighting Texas Aggie spirit, we’ll be unstoppable in rounding up all the money we need by exploiting the Aggie Network™!"
+39,39,-1,(-1),(Dan Campbell) LET'S GOOOO!!! FIGHTING TEXAS AGGIES RISE AGAIN!!
