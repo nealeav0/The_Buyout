@@ -763,16 +763,17 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 				break;
 			case EStatusTypeEnum::STUN:
 
-			Target.StunStacks += StatusPower;
-			Target.StunStacks = FMath::Clamp(Target.StunStacks, 0, 9);
-			break;
-		case EStatusTypeEnum::POISON:
+				Target.StunStacks += StatusPower;
+				Target.StunStacks = FMath::Clamp(Target.StunStacks, 0, 9);
+				break;
+			case EStatusTypeEnum::POISON:
 
-			Target.PoisonStacks += StatusPower;
-			Target.PoisonStacks = FMath::Clamp(Target.PoisonStacks, 0, 9);
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Magenta, FString::Printf(TEXT("%s was poisoned with %d stacks."), *(Target.Name), Target.PoisonStacks));
-			break;
+				Target.PoisonStacks += StatusPower;
+				Target.PoisonStacks = FMath::Clamp(Target.PoisonStacks, 0, 9);
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Magenta, FString::Printf(TEXT("%s was poisoned with %d stacks."), *(Target.Name), Target.PoisonStacks));
+				break;
+			}
 		}
 	}
 }
