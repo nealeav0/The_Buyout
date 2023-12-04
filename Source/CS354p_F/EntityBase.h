@@ -116,6 +116,7 @@ public:
 		Level = 1;
 		EXP = 0;
 		EXPThreshold = 0;
+		AbilityPoints = 0;
 		bIsDead = false;
 		MaxHealth = 0.f;
 		Health = MaxHealth;
