@@ -218,6 +218,46 @@ void UAbilityManager::ConfirmSelection()
 }
 
 /**
+* Depending on the state of the Ability Manager, this cancels our Player, Ability, or Target choice.
+* If we are currently selecting a player, we set the current PlayerIndex to 0.
+* If we are currently selecting an ability, we set the current AbilityIndex to 0 and enable selecting a player.
+*/
+void UAbilityManager::CancelSelection()
+{
+	if (bSelectingPlayer)
+	{
+		PlayerIndex = 0;
+
+		if (!Players.IsValidIndex(PlayerIndex))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting player messed something up.")));
+		}
+	}
+	else if (bSelectingAbility)
+	{
+		AbilityIndex = 0;
+
+		if (PlayerIndex == 0)
+		{
+			if (!WarriorAbilities.IsValidIndex(AbilityIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting warrior ability messed something up.")));
+			}
+		}
+		else if (PlayerIndex == 1)
+		{
+			if (!MageAbilities.IsValidIndex(AbilityIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting mage ability messed something up.")));
+			}
+		}
+
+		bSelectingPlayer = true;
+		bSelectingAbility = false;
+	}
+}
+
+/**
 * Learn a new ability from the Ability Manager. If players are trying to learn a new ability, they need the required Ability Points to spend.
 */
 void UAbilityManager::LearnAbility(FEntityStruct& Player, FAbilityStruct& Ability)

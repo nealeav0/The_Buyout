@@ -88,10 +88,35 @@ void AMainCharacter::BeginPlay()
 		FEntityStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Warrior Stats")));
 		if (PlayerBase)
 		{
-			
-			if (Players[0].Level == 0)
+			FEntityStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Warrior Stats")));
+			check(PlayerBase != nullptr);
+			if (PlayerBase)
 			{
-				Players[0].Level = 1;
+				// Since the BattleManager does not empty its arrays until PrepareForBattle, we can use whatever is stored inside.
+				
+				if (Players[0].Level == 0)
+				{
+					Players[0].Level = 1;
+				}
+				Players[0].Name = (*PlayerBase).Name;
+				check(Players[0].Name.Equals("warrior"));
+				Players[0].EntityType = (*PlayerBase).EntityType;
+				Players[0].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[0].Level));
+				if (GameInstance->BattleManager()->Players.IsEmpty())
+				{
+					Players[0].Health = Players[0].MaxHealth;
+					Players[0].EXP = 0;
+					Players[0].AbilityPoints = 0;
+				}
+				Players[0].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[0].Level));
+				Players[0].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[0].Level));
+				Players[0].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[0].Level));
+				Players[0].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[0].Level));
+				Players[0].MagicDefense = FMath::Floor((*PlayerBase).MagicDefense * FMath::Pow(1.11, Players[0].Level));
+				Players[0].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[0].Level) * 2);
+				Players[0].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[0].Level) * 2);
+				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Max Health: %f"), Players[0].MaxHealth));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Health: %f"), Players[0].Health));*/
 			}
 			Players[0].Name = (*PlayerBase).Name;
 			Players[0].EntityType = (*PlayerBase).EntityType;
@@ -111,7 +136,26 @@ void AMainCharacter::BeginPlay()
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Health: %f"), Players[0].Health));*/
 		}
 
-		PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("mage")), FString(TEXT("Getting Mage Stats")));
+		GameInstance->AbilityManager()->InitializePlayerArray(Players);
+		// Set the player's abilities
+		if (Players[0].Abilities.IsEmpty())
+		{
+			check(!Players[0].Name.Equals("NPC"));
+			GameInstance->AbilityManager()->InitializeAbilities(Players[0]);
+			if (Players.IsEmpty())
+			{
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Deleted")));
+			}
+			else
+			{
+				if (Players[0].Abilities.IsEmpty())
+				{
+					if (GEngine)
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Abilities were not learned")));
+				}
+			}		
+		}
 
 		if (PlayerBase)
 		{
