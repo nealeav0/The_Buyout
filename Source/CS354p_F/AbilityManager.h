@@ -41,6 +41,12 @@ public:
 	UPROPERTY()
 	TArray<FAbilityStruct> MageAbilities;
 
+	UPROPERTY()
+	UDataTable* RangerAbilityDataTable = nullptr;
+	
+	UPROPERTY()
+	TArray<FAbilityStruct> RangerAbilities;
+
 	// /Script/Engine.DataTable'/Game/Data/Player_Abilities.Player_Abilities'
 	UPROPERTY()
 	FSoftObjectPath PlayerAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Abilities.Player_Abilities'"));
@@ -48,6 +54,10 @@ public:
 	// /Script/Engine.DataTable'/Game/Data/Mage_Abilities.Mage_Abilities'
 	UPROPERTY()
 	FSoftObjectPath MageAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Mage_Abilities.Mage_Abilities'"));
+
+	// /Script/Engine.DataTable'/Game/Data/Ranger_Abilities.Ranger_Abilities'
+	UPROPERTY()
+	FSoftObjectPath RangerAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Ranger_Abilities.Ranger_Abilities'"));
 
 	UFUNCTION()
 	void InitializeAbilityDataTables();

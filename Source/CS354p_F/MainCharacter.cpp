@@ -14,6 +14,7 @@
 ABattleCamera* BattleCam;
 AMainPlayerController* MainController;
 bool bBattleReady;
+const int32 PLAYERCOUNT = 3;
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -43,7 +44,7 @@ AMainCharacter::AMainCharacter()
 
 	bBattleReady = false;
 
-	Players.Init(FEntityStruct(), 2); // I wish I could place the number of players in some global variable
+	Players.Init(FEntityStruct(), PLAYERCOUNT);
 }
 
 // Called when the game starts or when spawned
@@ -112,7 +113,6 @@ void AMainCharacter::BeginPlay()
 		}
 
 		PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("mage")), FString(TEXT("Getting Mage Stats")));
-
 		if (PlayerBase)
 		{
 			if (Players[1].Level == 0)
@@ -133,6 +133,29 @@ void AMainCharacter::BeginPlay()
 			Players[1].MagicDefense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[1].Level));
 			Players[1].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[1].Level) * 2);
 			Players[1].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[1].Level) * 2);
+		}
+
+		PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("ranger")), FString(TEXT("Getting Ranger Stats")));
+		if (PlayerBase)
+		{
+			if (Players[2].Level == 0)
+			{
+				Players[2].Level = 1;
+			}
+			Players[2].Name = (*PlayerBase).Name;
+			Players[2].EntityType = (*PlayerBase).EntityType;
+			Players[2].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[2].Level));
+			if (GameInstance->BattleManager()->Players.IsEmpty())
+			{
+				Players[2].Health = Players[2].MaxHealth;
+			}
+			Players[2].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[2].Level));
+			Players[2].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[2].Level));
+			Players[2].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[2].Level));
+			Players[2].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[2].Level));
+			Players[2].MagicDefense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[2].Level));
+			Players[2].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[2].Level) * 2);
+			Players[2].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[2].Level) * 2);
 		}
 	}
 
@@ -208,6 +231,7 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 		if (GameInstance)
 		{
+			GameInstance->AbilityManager()->InitializePlayerArray(Players);
 			// set up player to respawn where they last were
 			for (FEntityStruct& Player : Players)
 			{

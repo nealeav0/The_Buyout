@@ -21,7 +21,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FEntityStruct EnemyStats = FEntityStruct();
-	TArray<FEntityStruct> Enemies;
+	TArray<FEntityStruct> Enemies = { EnemyStats };
 
 protected:
 	// Called when the game starts or when spawned
