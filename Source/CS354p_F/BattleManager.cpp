@@ -13,9 +13,6 @@ bool bEnemyDied;
 
 UBattleManager::UBattleManager()
 {
-	// /Script/Engine.DataTable'/Game/Data/Player_Abilities.Player_Abilities'
-	static ConstructorHelpers::FObjectFinder<UDataTable> PlayerBPAbilities(TEXT("/Game/Data/Player_Abilities"));
-	DataHandle.DataTable = PlayerBPAbilities.Object;
 
 	MainPlayerController = nullptr;
 	CommonEnemy = nullptr;
@@ -309,8 +306,6 @@ void UBattleManager::StartBattle()
 	
 	// load in enemy and set the reference to this enemy we just loaded in
 	CommonEnemy = GameInstance->SpawnEnemyAtLocation(FVector(0.f, 300.f, 50.f));
-
-	Rounds++;
 }
 
 /**

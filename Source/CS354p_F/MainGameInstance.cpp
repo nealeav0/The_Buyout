@@ -48,7 +48,7 @@ void UMainGameInstance::Init()
 		}
 	}*/
 
-	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerBaseDataPath);
+	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(PlayerBaseDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
@@ -59,7 +59,7 @@ void UMainGameInstance::Init()
 		}
 	}
 
-	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(EnemyAbilityDataPath);
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EnemyAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
@@ -70,7 +70,7 @@ void UMainGameInstance::Init()
 		}
 	}
 
-	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(EnemyBaseDataPath);
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EnemyBaseDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());

@@ -7,7 +7,7 @@
 void UAbilityManager::InitializeAbilityDataTables()
 {
 	// Store the all the possible warrior abilities into the Ability Manager
-	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(PlayerAbilityDataPath);
+	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(PlayerAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
@@ -27,7 +27,7 @@ void UAbilityManager::InitializeAbilityDataTables()
 	}
 
 	// Store the all the possible mage abilities into the Ability Manager
-	AssetHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(MageAbilityDataPath);
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(MageAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
@@ -73,8 +73,8 @@ TArray<FEntityStruct> UAbilityManager::GetPlayersArray()
 void UAbilityManager::InitializeAbilities(FEntityStruct& Player)
 {
 	Player.Abilities.Empty();
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s is here"), *(Player.Name)));
+	/*if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s is here"), *(Player.Name)));*/
 	if (Player.Name.Equals("warrior"))
 	{
 		for (FAbilityStruct Ability : WarriorAbilities)

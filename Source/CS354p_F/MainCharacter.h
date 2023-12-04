@@ -28,8 +28,7 @@ public:
 	AMainCharacter();
 
 	UPROPERTY(EditAnywhere)
-	FEntityStruct PlayerStats = FEntityStruct();
-	TArray<FEntityStruct> Players = { PlayerStats, FEntityStruct() };
+	TArray<FEntityStruct> Players;
 
 	virtual void Landed(const FHitResult& Hit);
 
