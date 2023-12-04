@@ -98,6 +98,7 @@ public:
 	void HandleHealing(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
 
 	void HandleBurnDamage(FEntityStruct& Target);
+	void HandlePoisonDamage(FEntityStruct& Target);
 
 	// Round scripting
 
