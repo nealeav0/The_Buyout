@@ -13,9 +13,6 @@ bool bEnemyDied;
 
 UBattleManager::UBattleManager()
 {
-	// /Script/Engine.DataTable'/Game/Data/Player_Abilities.Player_Abilities'
-	static ConstructorHelpers::FObjectFinder<UDataTable> PlayerBPAbilities(TEXT("/Game/Data/Player_Abilities"));
-	DataHandle.DataTable = PlayerBPAbilities.Object;
 
 	MainPlayerController = nullptr;
 	CommonEnemy = nullptr;
@@ -184,6 +181,59 @@ void UBattleManager::ConfirmSelection()
 	}
 }
 
+/**
+* Depending on the state of the Battle Manager, this cancels our Player, Ability, or Target choice.
+* If we are currently selecting a player, we set the current PlayerIndex to 0.
+* If we are currently selecting an ability, we set the current AbilityIndex to 0 and enable selecting a player.
+* If we are currently selecting a target, we set the current TargetIndex to 0 and enable selecting an ability.
+*/
+void UBattleManager::CancelSelection()
+{
+	if (bSelectingPlayer)
+	{
+		PlayerIndex = 0;
+
+		if (!Players.IsValidIndex(PlayerIndex))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting player messed something up.")));
+		}
+	}
+	else if (bSelectingAbility)
+	{
+		AbilityIndex = 0;
+
+		if (!Players[PlayerIndex].Abilities.IsValidIndex(AbilityIndex))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting ability messed something up.")));
+		}
+
+		bSelectingPlayer = true;
+		bSelectingAbility = false;
+	}
+	else if (bSelectingTarget)
+	{
+		TargetIndex = 0;
+
+		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
+		{
+			if (!Players.IsValidIndex(TargetIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting target player messed something up.")));
+			}
+		}
+		else
+		{
+			if (!Enemies.IsValidIndex(TargetIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting target enemy messed something up.")));
+			}
+		}
+
+		bSelectingAbility = true;
+		bSelectingTarget = false;
+	}
+}
+
 void UBattleManager::DefendHandler()
 {
 	if (GEngine)
@@ -257,8 +307,6 @@ void UBattleManager::StartBattle()
 	
 	// load in enemy and set the reference to this enemy we just loaded in
 	CommonEnemy = GameInstance->SpawnEnemyAtLocation(FVector(0.f, 300.f, 50.f));
-
-	Rounds++;
 }
 
 /**
@@ -272,6 +320,7 @@ void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityS
 	Players = NewPlayers;
 	Enemies.Add(Enemy);
 	TotalEXP = 0;
+	TotalAP = 0;
 	PlayerActions.Init(1, Players.Num());
 	/*if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Action array size: %d"), PlayerActions.Num()));*/
@@ -528,10 +577,10 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		float Damage;
 		if (Ability.bIsPhysical)
 		{
-			if (GEngine)
+			/*if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("%s attack buff: %f"), *(Source.Name), Source.AttackBuff));
 			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("Ability Power Array Size: %d"), Ability.Power.Num()));
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("Ability Power Array Size: %d"), Ability.Power.Num()));*/
 			if (Ability.Power.IsValidIndex(Ability.Level - 1))
 			{
 				Damage = (Ability.Power[Ability.Level - 1] * Source.Attack * (1 + Source.AttackBuff)) / (Target.Defense * (1 + Target.DefenseBuff));
@@ -595,6 +644,7 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 	if (Target.Health <= 0)
 	{
 		TotalEXP += Target.EXP;
+		TotalAP += Target.AbilityPoints;
 		Die(Target);
 		// animate enemy death
 		if (Target.EntityType == EEntityType::ENEMY)
@@ -618,97 +668,100 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 	// No point in modifying a dead target.
 	if (!Target.bIsDead)
 	{
-		float NewBuff;
 		// Remember to check the status chances.
-		switch (Status)
+		if (FMath::RandRange(0.f, 1.f) <= StatusChance)
 		{
-		case EStatusTypeEnum::ATTACKUP:
+			float NewBuff;
+			
+			switch (Status)
+			{
+			case EStatusTypeEnum::ATTACKUP:
 
-			NewBuff = Target.AttackBuff += StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.AttackBuff = NewBuff;
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s got an attack boost of %f"), *(Target.Name), NewBuff));
-			break;
-		case EStatusTypeEnum::ATTACKDOWN:
+				NewBuff = Target.AttackBuff += StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.AttackBuff = NewBuff;
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s got an attack boost of %f"), *(Target.Name), NewBuff));
+				break;
+			case EStatusTypeEnum::ATTACKDOWN:
 
-			NewBuff = Target.AttackBuff -= StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.AttackBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::MAGICATTACKUP:
+				NewBuff = Target.AttackBuff -= StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.AttackBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::MAGICATTACKUP:
 
-			NewBuff = Target.MagicAttackBuff += StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.MagicAttackBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::MAGICATTACKDOWN:
+				NewBuff = Target.MagicAttackBuff += StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.MagicAttackBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::MAGICATTACKDOWN:
 
-			NewBuff = Target.MagicAttackBuff -= StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.MagicAttackBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::DEFENSEUP:
+				NewBuff = Target.MagicAttackBuff -= StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.MagicAttackBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::DEFENSEUP:
 
-			NewBuff = Target.DefenseBuff += StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.DefenseBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::DEFENSEDOWN:
+				NewBuff = Target.DefenseBuff += StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.DefenseBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::DEFENSEDOWN:
 
-			NewBuff = Target.DefenseBuff -= StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.DefenseBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::MAGICDEFENSEUP:
+				NewBuff = Target.DefenseBuff -= StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.DefenseBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::MAGICDEFENSEUP:
 
-			NewBuff = Target.MagicDefenseBuff += StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.MagicDefenseBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::MAGICDEFENSEDOWN:
+				NewBuff = Target.MagicDefenseBuff += StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.MagicDefenseBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::MAGICDEFENSEDOWN:
 
-			NewBuff = Target.MagicDefenseBuff -= StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.MagicDefenseBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::ACCURACYUP:
+				NewBuff = Target.MagicDefenseBuff -= StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.MagicDefenseBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::ACCURACYUP:
 
-			NewBuff = Target.AccuracyBuff += StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.AccuracyBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::ACCURACYDOWN:
+				NewBuff = Target.AccuracyBuff += StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.AccuracyBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::ACCURACYDOWN:
 
-			NewBuff = Target.AccuracyBuff -= StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.AccuracyBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::EVASIONUP:
+				NewBuff = Target.AccuracyBuff -= StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.AccuracyBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::EVASIONUP:
 
-			NewBuff = Target.EvasionBuff += StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.EvasionBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::EVASIONDOWN:
+				NewBuff = Target.EvasionBuff += StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.EvasionBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::EVASIONDOWN:
 
-			NewBuff = Target.EvasionBuff -= StatusPower;
-			NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
-			Target.EvasionBuff = NewBuff;
-			break;
-		case EStatusTypeEnum::BURN:
+				NewBuff = Target.EvasionBuff -= StatusPower;
+				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
+				Target.EvasionBuff = NewBuff;
+				break;
+			case EStatusTypeEnum::BURN:
 
-			Target.BurnStacks += StatusPower;
-			Target.BurnStacks = FMath::Clamp(Target.BurnStacks, 0, 9);
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Magenta, FString::Printf(TEXT("%s was burned with %d stacks."), *(Target.Name), Target.BurnStacks));
-			break;
-		case EStatusTypeEnum::CHILL:
+				Target.BurnStacks += StatusPower;
+				Target.BurnStacks = FMath::Clamp(Target.BurnStacks, 0, 9);
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Magenta, FString::Printf(TEXT("%s was burned with %d stacks."), *(Target.Name), Target.BurnStacks));
+				break;
+			case EStatusTypeEnum::CHILL:
 
-			Target.ChillStacks += StatusPower;
-			Target.ChillStacks = FMath::Clamp(Target.ChillStacks, 0, 9);
-			break;
-		case EStatusTypeEnum::STUN:
+				Target.ChillStacks += StatusPower;
+				Target.ChillStacks = FMath::Clamp(Target.ChillStacks, 0, 9);
+				break;
+			case EStatusTypeEnum::STUN:
 
 			Target.StunStacks += StatusPower;
 			Target.StunStacks = FMath::Clamp(Target.StunStacks, 0, 9);
@@ -890,6 +943,7 @@ void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 			if (Target.Health <= 0)
 			{
 				TotalEXP += Target.EXP;
+				TotalAP += Target.AbilityPoints;
 				Die(Target);
 				if (Target.EntityType == EEntityType::ENEMY)
 				{
@@ -1169,7 +1223,7 @@ void UBattleManager::Die(FEntityStruct& Target)
 }
 
 /**
-* Handle the distribution of EXP. Players are given EXP based on the amount given from defeated enemies.
+* Handle the distribution of EXP and AP. Players are given EXP based on the amount given from defeated enemies.
 * Once players reach a threshold, they level up and the threshold increases.
 * All players will receive EXP regardless if they are alive during the end of the battle.
 */
@@ -1178,15 +1232,17 @@ void UBattleManager::HandleEXP()
 	for (FEntityStruct& Player : Players)
 	{
 		Player.EXP += TotalEXP;
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s has %f EXP"), *(Player.Name), Player.EXP));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("EXP Threshold is %f"), Player.EXPThreshold));
+		Player.AbilityPoints += TotalAP;
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("%s has %d EXP"), *(Player.Name), Player.EXP));
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("EXP Threshold is %d"), Player.EXPThreshold));
 		if (Player.EXP >= Player.EXPThreshold)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s has leveled up!"), *(Player.Name)));
 			Player.Level++;
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("New EXP threshold: %.0f."), 50 * FMath::Pow(1.39, Player.Level)));
-			Player.EXP = FMath::Fmod(Player.EXP, Player.EXPThreshold); // Handle overflow
+			Player.EXP = Player.EXP - Player.EXPThreshold; // Handle overflow
 		}
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("%s has %d ability points"), *(Player.Name), Player.AbilityPoints));
 	}
 }
 

@@ -10,11 +10,6 @@
 #include "UObject/NoExportTypes.h"
 #include "BattleManager.generated.h"
 
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnDelegate);
-/**
- * 
- */
 UCLASS()
 class CS354P_F_API UBattleManager : public UObject
 {
@@ -29,21 +24,11 @@ public:
 
 	TArray<int32> PlayerActions;
 
-	//FTurnDelegate TurnDelegate;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDataTableRowHandle DataHandle = FDataTableRowHandle();
-
 	class UMainGameInstance* GameInstance;
-
-	int Rounds = 0;
 
 	bool bPlayerTurn = true;
 
 	bool bBattleEnd = false;
-
-	//FAbilityStruct LoadedAbility;
-
-	/*FEnemyStruct LoadedEnemyTarget;*/
 
 	int PlayerIndex = 0; // Q and E to cycle through players. Spacebar to confirm.
 
@@ -64,6 +49,8 @@ public:
 	void SelectTarget(float Navigation);
 
 	void ConfirmSelection();
+
+	void CancelSelection();
 
 	void DefendHandler();
 
@@ -115,7 +102,7 @@ public:
 
 	// Round scripting
 
-	void StartRound(); //Perhaps we could have a counter in each array to represent the number of actions a player can take [1, 1, 1]
+	void StartRound();
 
 	void EndRound();
 
@@ -134,7 +121,10 @@ public:
 	void Die(FEntityStruct& Target);
 
 	UPROPERTY()
-	float TotalEXP = 0.f;
+	int32 TotalEXP = 0;
+
+	UPROPERTY()
+	int32 TotalAP = 0;
 
 	void HandleEXP();
 
