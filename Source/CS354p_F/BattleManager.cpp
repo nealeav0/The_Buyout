@@ -680,8 +680,8 @@ void UBattleManager::HandleStatus(EStatusTypeEnum Status, float StatusChance, fl
 				NewBuff = Target.AttackBuff += StatusPower;
 				NewBuff = FMath::Clamp(NewBuff, -0.8f, 1.0f);
 				Target.AttackBuff = NewBuff;
-				if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s got an attack boost of %f"), *(Target.Name), NewBuff));
+				/*if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s got an attack boost of %f"), *(Target.Name), NewBuff));*/
 				break;
 			case EStatusTypeEnum::ATTACKDOWN:
 

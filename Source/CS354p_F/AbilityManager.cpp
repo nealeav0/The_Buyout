@@ -6,7 +6,7 @@
 
 void UAbilityManager::InitializeAbilityDataTables()
 {
-	// Store the all the possible warrior abilities into the Ability Manager
+	// Store all of the possible warrior abilities into the Ability Manager
 	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(PlayerAbilityDataPath);
 	if (AssetHandle)
 	{
@@ -26,7 +26,7 @@ void UAbilityManager::InitializeAbilityDataTables()
 		}
 	}
 
-	// Store the all the possible mage abilities into the Ability Manager
+	// Store all of the possible mage abilities into the Ability Manager
 	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(MageAbilityDataPath);
 	if (AssetHandle)
 	{
@@ -42,7 +42,26 @@ void UAbilityManager::InitializeAbilityDataTables()
 				{
 					MageAbilities.Add(*Ability);
 				}
+			}
+		}
+	}
 
+	// Store all of the possible ranger abilities into the Ability Manager
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(RangerAbilityDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			RangerAbilityDataTable = ReturnedTable;
+			if (RangerAbilityDataTable)
+			{
+				TArray<FAbilityStruct*> RangerAbilityData;
+				RangerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting ranger abilities"), RangerAbilityData);
+				for (FAbilityStruct* Ability : RangerAbilityData)
+				{
+					RangerAbilities.Add(*Ability);
+				}
 			}
 		}
 	}
@@ -99,6 +118,16 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Player)
 			}
 		}
 	}
+	else if (Player.Name.Equals("ranger"))
+	{
+		for (FAbilityStruct Ability : RangerAbilities)
+		{
+			if (Ability.bIsLearned)
+			{
+				Player.Abilities.Add(Ability);
+			}
+		}
+	}
 }
 
 void UAbilityManager::SelectPlayer(float Navigation)
@@ -121,6 +150,7 @@ void UAbilityManager::SelectPlayer(float Navigation)
 
 void UAbilityManager::SelectAbility(float Navigation)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Index: %d."), PlayerIndex));
 	if (PlayerIndex == 0)
 	{
 		if (Navigation < 0)
@@ -155,7 +185,23 @@ void UAbilityManager::SelectAbility(float Navigation)
 		if (GEngine && MageAbilities.IsValidIndex(AbilityIndex))
 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Ability Index: %d. Ability: %s"), AbilityIndex, *(MageAbilities[AbilityIndex].AbilityName)));
 	}
-	
+	else if (PlayerIndex == 2)
+	{
+		if (Navigation < 0)
+		{
+			AbilityIndex--;
+			if (AbilityIndex < 0)
+				AbilityIndex = RangerAbilities.Num() - 1;
+		}
+		else
+		{
+			AbilityIndex++;
+			if (AbilityIndex >= RangerAbilities.Num())
+				AbilityIndex = 0;
+		}
+		if (GEngine && RangerAbilities.IsValidIndex(AbilityIndex))
+			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Ability Index: %d. Ability: %s"), AbilityIndex, *(RangerAbilities[AbilityIndex].AbilityName)));
+	}
 }
 
 void UAbilityManager::ConfirmSelection()
@@ -210,6 +256,24 @@ void UAbilityManager::ConfirmSelection()
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("We are out of bounds for mage ability.")));
 			}
 		}
+		else if (PlayerIndex == 2)
+		{
+			if (RangerAbilities.IsValidIndex(AbilityIndex))
+			{
+				if (!RangerAbilities[AbilityIndex].bIsLearned)
+				{
+					LearnAbility(Players[PlayerIndex], RangerAbilities[AbilityIndex]);
+				}
+				else
+				{
+					UpgradeAbility(Players[PlayerIndex], RangerAbilities[AbilityIndex]);
+				}
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("We are out of bounds for ranger ability.")));
+			}
+		}
 		PlayerIndex = 0;
 		AbilityIndex = 0;
 		bSelectingPlayer = true;
@@ -249,6 +313,13 @@ void UAbilityManager::CancelSelection()
 			if (!MageAbilities.IsValidIndex(AbilityIndex))
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting mage ability messed something up.")));
+			}
+		}
+		else if (PlayerIndex == 2)
+		{
+			if (!RangerAbilities.IsValidIndex(AbilityIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting ranger ability messed something up.")));
 			}
 		}
 
