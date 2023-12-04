@@ -70,6 +70,9 @@ public:
 	UFUNCTION()
 	void ConfirmSelection();
 
+	UFUNCTION()
+	void CancelSelection();
+
 	UFUNCTION(BlueprintCallable)
 	void LearnAbility(FEntityStruct& Player, FAbilityStruct& Ability);
 

@@ -73,6 +73,9 @@ public:
 	class UInputAction* ConfirmAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* CancelAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* PauseAction;
 	
 protected:
@@ -84,6 +87,7 @@ protected:
 	void OnCameraMoved(const FInputActionValue& Value);
 	void OnNavigatePressed(const FInputActionValue& Value);
 	void OnConfirmPressed();
+	void OnCancelPressed();
     void OnPausePressed(const FInputActionValue &Value);
 
 	UFUNCTION()

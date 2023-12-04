@@ -161,11 +161,13 @@ void AMainPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnPausePressed);
 			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
 			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
+			EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCancelPressed);
 		} 
 		if (BattleMode)
 		{
 			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
 			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, & AMainPlayerController::OnConfirmPressed);
+			EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCancelPressed);
 		}
 	}
 } 
@@ -238,6 +240,22 @@ void AMainPlayerController::OnConfirmPressed()
 		else
 		{
 			GameInstance->AbilityManager()->ConfirmSelection();
+		}
+	}
+}
+
+void AMainPlayerController::OnCancelPressed()
+{
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		if (BattleMode)
+		{
+			GameInstance->BattleManager()->CancelSelection();
+		}
+		else
+		{
+			GameInstance->AbilityManager()->CancelSelection();
 		}
 	}
 }

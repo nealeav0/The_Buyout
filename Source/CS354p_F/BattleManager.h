@@ -65,6 +65,8 @@ public:
 
 	void ConfirmSelection();
 
+	void CancelSelection();
+
 	void DefendHandler();
 
 	void EscapeHandler();
