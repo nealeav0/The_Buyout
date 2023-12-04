@@ -80,7 +80,7 @@ void AMainCharacter::BeginPlay()
 		if (GameInstance->PlayerBaseDataTable)
 		{
 			FEntityStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Warrior Stats")));
-
+			check(PlayerBase != nullptr);
 			if (PlayerBase)
 			{
 				// Since the BattleManager does not empty its arrays until PrepareForBattle, we can use whatever is stored inside.

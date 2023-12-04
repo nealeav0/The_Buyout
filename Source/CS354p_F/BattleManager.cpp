@@ -184,6 +184,59 @@ void UBattleManager::ConfirmSelection()
 	}
 }
 
+/**
+* Depending on the state of the Battle Manager, this cancels our Player, Ability, or Target choice.
+* If we are currently selecting a player, we set the current PlayerIndex to 0.
+* If we are currently selecting an ability, we set the current AbilityIndex to 0 and enable selecting a player.
+* If we are currently selecting a target, we set the current TargetIndex to 0 and enable selecting an ability.
+*/
+void UBattleManager::CancelSelection()
+{
+	if (bSelectingPlayer)
+	{
+		PlayerIndex = 0;
+
+		if (!Players.IsValidIndex(PlayerIndex))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting player messed something up.")));
+		}
+	}
+	else if (bSelectingAbility)
+	{
+		AbilityIndex = 0;
+
+		if (!Players[PlayerIndex].Abilities.IsValidIndex(AbilityIndex))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting ability messed something up.")));
+		}
+
+		bSelectingPlayer = true;
+		bSelectingAbility = false;
+	}
+	else if (bSelectingTarget)
+	{
+		TargetIndex = 0;
+
+		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
+		{
+			if (!Players.IsValidIndex(TargetIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting target player messed something up.")));
+			}
+		}
+		else
+		{
+			if (!Enemies.IsValidIndex(TargetIndex))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Canceling selecting target enemy messed something up.")));
+			}
+		}
+
+		bSelectingAbility = true;
+		bSelectingTarget = false;
+	}
+}
+
 void UBattleManager::DefendHandler()
 {
 	if (GEngine)
