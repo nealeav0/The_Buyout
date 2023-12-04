@@ -53,7 +53,7 @@ public:
 	void InitializeAbilityDataTables();
 
 	UFUNCTION()
-	void InitializePlayerArray(TArray<FEntityStruct>& NewPlayers);
+	void InitializePlayerArray(TArray<FEntityStruct> NewPlayers);
 
 	UFUNCTION()
 	TArray<FEntityStruct> GetPlayersArray();

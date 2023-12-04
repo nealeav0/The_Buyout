@@ -48,7 +48,7 @@ void UAbilityManager::InitializeAbilityDataTables()
 	}
 }
 
-void UAbilityManager::InitializePlayerArray(TArray<FEntityStruct>& NewPlayers)
+void UAbilityManager::InitializePlayerArray(TArray<FEntityStruct> NewPlayers)
 {
 	if (!NewPlayers.IsEmpty())
 	{
