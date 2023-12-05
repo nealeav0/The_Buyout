@@ -49,10 +49,10 @@ public:
 	void CloseBattleUI();
 
 	UFUNCTION()
-	void InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
+	void InitUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
 
 	UFUNCTION()
-	void UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
+	void UpdateBattleStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs);
 
 	UFUNCTION()
 	void UpdateTurnUI(bool bIsPlayerTurn);
@@ -95,10 +95,10 @@ protected:
 
     /* Battle HUD */
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UBattleWidget> BattleWidgetClass;
+	TSubclassOf<class UBattleHUD> BattleWidgetClass;
 
 	UPROPERTY()
-	class UBattleWidget* BattleWidget;
+	class UBattleHUD* BattleWidget;
 
 	/* Main Menu */
 	UPROPERTY(EditAnywhere)

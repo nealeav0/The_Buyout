@@ -303,7 +303,7 @@ void UBattleManager::StartBattle()
 	if (MainPlayerController == nullptr) {
 		MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	}
-	MainPlayerController->InitUI(GetPlayer(), GetEnemy(), bPlayerTurn, GetPlayer().Abilities);
+	MainPlayerController->InitUI(Players, Enemies, bPlayerTurn, GetPlayer().Abilities);
 	
 	// load in enemy and set the reference to this enemy we just loaded in
 	CommonEnemy = GameInstance->SpawnEnemyAtLocation(FVector(0.f, 300.f, 50.f));
@@ -640,7 +640,7 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 	Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Cyan, FString::Printf(TEXT("%s: %f/%f"), *(Target.Name), Target.Health, Target.MaxHealth));
-	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+	MainPlayerController->UpdateBattleStats(Players, Enemies);
 	if (Target.Health <= 0)
 	{
 		TotalEXP += Target.EXP;
@@ -867,7 +867,7 @@ void UBattleManager::AdjustBuffs(FEntityStruct& Target)
 void UBattleManager::HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
 {
 	HandleStatus(Ability.StatusType, Ability.StatusChance, Ability.StatusPower, Target);
-	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+	MainPlayerController->UpdateBattleStats(Players, Enemies);
 }
 
 /**
@@ -917,7 +917,7 @@ void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source,
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Enemy healed %f health"), Target.MaxHealth * 0.3));
 	}
-	MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+	MainPlayerController->UpdateBattleStats(Players, Enemies);
 }
 
 /**
@@ -940,7 +940,7 @@ void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s is on fire. %f damage taken"), *(Target.Name), Damage));
-			MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+			MainPlayerController->UpdateBattleStats(Players, Enemies);
 			if (Target.Health <= 0)
 			{
 				TotalEXP += Target.EXP;
@@ -975,7 +975,7 @@ void UBattleManager::HandlePoisonDamage(FEntityStruct& Target)
 			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("%s is poisoned. %f damage taken"), *(Target.Name), Damage));
-			MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+			MainPlayerController->UpdateBattleStats(Players, Enemies);
 			if (Target.Health <= 0)
 			{
 				TotalEXP += Target.EXP;
@@ -1058,7 +1058,7 @@ void UBattleManager::EndRound()
 	bBattleEnd = bPlayersDead || bEnemiesDead;
 	if (!bBattleEnd)
 	{
-		MainPlayerController->UpdateBattleStats(GetPlayer(), GetEnemy());
+		MainPlayerController->UpdateBattleStats(Players, Enemies);
 		MainPlayerController->UpdateTurnUI(bPlayerTurn);
 		StartRound();
 	}

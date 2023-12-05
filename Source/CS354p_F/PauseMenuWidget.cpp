@@ -19,6 +19,7 @@ void UPauseMenuWidget::NativeConstruct()
     Super::NativeConstruct();
     
     ResumeButton->OnClicked.AddUniqueDynamic(this, &UPauseMenuWidget::OnResumeClicked);
+    AudioButton->OnClicked.AddUniqueDynamic(this, &UPauseMenuWidget::OnAudioClicked);
     QuitButton->OnClicked.AddUniqueDynamic(this, &UPauseMenuWidget::OnQuitClicked);
 
     PC = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -28,6 +29,10 @@ void UPauseMenuWidget::InitializePauseUI()
 {
     if (ResumeLabel) {
         ResumeLabel->SetText(FText::FromString("RESUME GAME"));
+    }
+
+    if (AudioLabel) {
+        AudioLabel->SetText(FText::FromString("TOGGLE AUDIO")); // or use boolean to show audio on/off
     }
 
     if (QuitLabel) {
@@ -41,6 +46,11 @@ void UPauseMenuWidget::OnResumeClicked()
     PC->ResumeGame();
     // remove from parent
     PC->ClosePauseMenuUI();
+}
+
+void UPauseMenuWidget::OnAudioClicked()
+{
+    // toggle audio volume
 }
 
 void UPauseMenuWidget::OnQuitClicked()
