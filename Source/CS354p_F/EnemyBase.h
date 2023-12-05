@@ -21,6 +21,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FEntityStruct EnemyStats = FEntityStruct();
+
+	UPROPERTY(EditAnywhere)
 	TArray<FEntityStruct> Enemies = { EnemyStats };
 
 protected:

@@ -1,4 +1,0 @@
-Name,AbilityName,Level,Description,MoveType,TargetType,Power,Accuracy,MaxCooldown,Cooldown,StatusChance,StatusType,StatusPower
-0,"Peck",0,"Attacks single player",ATTACK,RANDOM,20,1.0,0,0,0,0,0
-1,"Barrage",0,"Attacks a player with a stronger hit",ATTACK,RANDOM,40,0.9,0,0,0,0,0
-2,"Sand Attack",0,"Attacks a player while lowering accuracy",ATTACK,RANDOM,10,1.0,0,0,1.0,ACCURACYDOWN,0.3

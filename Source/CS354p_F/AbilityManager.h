@@ -47,6 +47,15 @@ public:
 	UPROPERTY()
 	TArray<FAbilityStruct> RangerAbilities;
 
+	UPROPERTY()
+	UDataTable* CommonAbilityDataTable;
+
+	UPROPERTY()
+	UDataTable* EvasiveAbilityDataTable;
+
+	UPROPERTY()
+	UDataTable* DefensiveAbilityDataTable;
+
 	// /Script/Engine.DataTable'/Game/Data/Player_Abilities.Player_Abilities'
 	UPROPERTY()
 	FSoftObjectPath PlayerAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Abilities.Player_Abilities'"));
@@ -59,6 +68,18 @@ public:
 	UPROPERTY()
 	FSoftObjectPath RangerAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Ranger_Abilities.Ranger_Abilities'"));
 
+	// /Script/Engine.DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'
+	UPROPERTY()
+	FSoftObjectPath CommonAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'"));
+
+	// /Script/Engine.DataTable'/Game/Data/Evasive_Enemy_Abilities.Evasive_Enemy_Abilities'
+	UPROPERTY()
+	FSoftObjectPath EvasiveAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Evasive_Enemy_Abilities.Evasive_Enemy_Abilities'"));
+
+	// /Script/Engine.DataTable'/Game/Data/Defensive_Enemy_Abilities.Defensive_Enemy_Abilities'
+	UPROPERTY()
+	FSoftObjectPath DefensiveAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Defensive_Enemy_Abilities.Defensive_Enemy_Abilities'"));
+
 	UFUNCTION()
 	void InitializeAbilityDataTables();
 
@@ -69,7 +90,7 @@ public:
 	TArray<FEntityStruct> GetPlayersArray();
 
 	UFUNCTION(BlueprintCallable)
-	void InitializeAbilities(FEntityStruct& Player);
+	void InitializeAbilities(FEntityStruct& Entity);
 
 	UFUNCTION()
 	void SelectPlayer(float Navigation);

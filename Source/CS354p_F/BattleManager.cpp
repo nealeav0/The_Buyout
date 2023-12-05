@@ -136,7 +136,7 @@ void UBattleManager::ConfirmSelection()
 	else if (bSelectingAbility)
 	{
 		// In case the player chooses an ability on cooldown
-		float Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].Cooldown;
+		int32 Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].Cooldown;
 		if (Cooldown > 0)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Turns left on Cooldown: %d"), Cooldown + 1));
@@ -288,6 +288,89 @@ void UBattleManager::LeaveBattle() {
 	
 }
 
+void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
+{
+	if (GameInstance->EnemyBaseDataTable)
+	{
+		FEntityStruct* EnemyBase;
+		if (Enemy.Name.Equals("common"))
+		{
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("common")), FString(TEXT("Getting Common Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+		}
+		else if (Enemy.Name.Equals("evasive"))
+		{
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("evasive")), FString(TEXT("Getting evasive Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+		}
+		else if (Enemy.Name.Equals("defensive"))
+		{
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("defensive")), FString(TEXT("Getting defensive Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+		}
+	}
+}
+
 void UBattleManager::LoadBattle()
 {
 	bBattleEnd = false;
@@ -312,13 +395,13 @@ void UBattleManager::StartBattle()
 /**
 * Prepares to segue to battle mode. It adds the players and enemies to the Battle Manager, and it initializes the Player Actions.
 */
-void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityStruct Enemy)
+void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<FEntityStruct> NewEnemies)
 {
 	Players.Empty();
 	Enemies.Empty();
 	PlayerActions.Empty();
 	Players = NewPlayers;
-	Enemies.Add(Enemy);
+	Enemies = NewEnemies;
 	TotalEXP = 0;
 	TotalAP = 0;
 	PlayerActions.Init(1, Players.Num());
@@ -470,6 +553,7 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 {
 	FAbilityStruct Ability = SelectedAbility;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Used %s"), *(Ability.AbilityName)));
 	switch (Ability.MoveType)
 	{
 	case EMoveTypeEnum::ATTACK:

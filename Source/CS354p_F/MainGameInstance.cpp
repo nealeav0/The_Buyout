@@ -20,10 +20,10 @@ void UMainGameInstance::Init()
 {
 	Super::Init();
 
-	UBattleManager* BManager = BattleManager();
-	UAbilityManager* AManager = AbilityManager();
+	BattleManagerInstance = BattleManager();
+	AbilityManagerInstance = AbilityManager();
 
-	AManager->InitializeAbilityDataTables();
+	AbilityManagerInstance->InitializeAbilityDataTables();
 
 	TSharedPtr<FStreamableHandle> AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(PlayerBaseDataPath);
 	if (AssetHandle)
