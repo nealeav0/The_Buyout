@@ -236,11 +236,21 @@ void UBattleManager::CancelSelection()
 
 void UBattleManager::DefendHandler()
 {
+	if (PlayerActions[PlayerIndex] == 0)
+	{
+		for (int i = PlayerActions.Num() - 1; i >= 0; i--)
+		{
+			if (PlayerActions[i] > 0)
+			{
+				PlayerIndex = i;
+			}
+		}
+	}
 	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("The warrior is defending.")));
+		GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("%s is defending."), *(Players[PlayerIndex].Name)));
 	Players[PlayerIndex].bIsDefending = true;
 	PlayerActions[PlayerIndex]--;
-	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerToEnemyTransition, 0.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::PlayerTurn, 0.5f, false);
 }
 
 void UBattleManager::EscapeHandler()

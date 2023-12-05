@@ -1,0 +1,282 @@
+[
+    {
+        "Name": 0,
+        "RowID": 0,
+        "ParentRowID": 1,
+        "ChildrenIDs": [-1],
+        "Dialogue": "In the realm of pigskin strife, a coach's fate unfolds - "
+    },
+    {
+        "Name": 1,
+        "RowID": 1,
+        "ParentRowID": 2,
+        "ChildrenIDs": [-1],
+        "Dialogue": "An SEC nightmare, its narrative untold."
+    },
+    {
+        "Name": 2,
+        "RowID": 2,
+        "ParentRowID": 3,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Seventy-seven million, and six in decree,"
+    },
+    {
+        "Name": 3,
+        "RowID": 3,
+        "ParentRowID": 4,
+        "ChildrenIDs": [-1],
+        "Dialogue": "A hefty sum to set him free."
+    },
+    {
+        "Name": 4,
+        "RowID": 4,
+        "ParentRowID": 5,
+        "ChildrenIDs": [-1],
+        "Dialogue": "From college fields to coffers vast,"
+    },
+    {
+        "Name": 5,
+        "RowID": 5,
+        "ParentRowID": 6,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Jimbo Fisher's legacy cast."
+    },
+    {
+        "Name": 6,
+        "RowID": 6,
+        "ParentRowID": 7,
+        "ChildrenIDs": [-1],
+        "Dialogue": "In silvered ink, his future inscribed,"
+    },
+    {
+        "Name": 7,
+        "RowID": 7,
+        "ParentRowID": 8,
+        "ChildrenIDs": [-1],
+        "Dialogue": "A coach's journey, by millions bribed."
+    },
+    {
+        "Name": 8,
+        "RowID": 8,
+        "ParentRowID": -1,
+        "ChildrenIDs": [9, 10, 11],
+        "Dialogue": "(Rick Perry): \"To what do we owe the pleasure, General?\""
+    },
+    {
+        "Name": 9,
+        "RowID": 9,
+        "ParentRowID": 12,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"...\""
+    },
+    {
+        "Name": 10,
+        "RowID": 10,
+        "ParentRowID": 12,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"...Howdy.\""
+    },
+    {
+        "Name": 11,
+        "RowID": 11,
+        "ParentRowID": 12,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"Howdy!\""
+    },
+    {
+        "Name": 12,
+        "RowID": 12,
+        "ParentRowID": 13,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell): \"IT'S AN HONOR TO MEET YOU, SIR! DAN CAMPBELL, FIGHTIN' TEXAS AGGIE CLASS OF 1998, AT YOUR SERVICE!\""
+    },
+    {
+        "Name": 13,
+        "RowID": 13,
+        "ParentRowID": -1,
+        "ChildrenIDs": [14, 15, 16],
+        "Dialogue": "(Johnny Manziel): \"Ayeee, looks like grandpa just joined the party. How've those 'states rights' been looking lately, Colonel McRacist?\""
+    },
+    {
+        "Name": 14,
+        "RowID": 14,
+        "ParentRowID": 17,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"Better than your NFL career, that's for sure.\""
+    },
+    {
+        "Name": 15,
+        "RowID": 15,
+        "ParentRowID": 17,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"About as good as TAMU's playoff chances this year.\""
+    },
+    {
+        "Name": 16,
+        "RowID": 16,
+        "ParentRowID": 17,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Don't reply)"
+    },
+    {
+        "Name": 17,
+        "RowID": 17,
+        "ParentRowID": 18,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Rick Perry laughs nervously. \"D-don't mind him General. He's always like this. Anyways, I take it you're aware of our predicament, yes?\""
+    },
+    {
+        "Name": 18,
+        "RowID": 18,
+        "ParentRowID": 19,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"I really thought he was turning things around in 2020, but in hindsight, that 9-1 COVID season seems like it might've been a fluke... Truth is, we need him gone - and fast.\""
+    },
+    {
+        "Name": 19,
+        "RowID": 19,
+        "ParentRowID": 20,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell): \"I COULDN'T AGREE MORE, RICK. THE WINNING TRADITION OF THE FIGHTING TEXAS AGGIE FOOTBALL PROGRAM WILL NOT BE HINDERED ANY LONGER!\""
+    },
+    {
+        "Name": 20,
+        "RowID": 20,
+        "ParentRowID": 21,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel): \"Problem is, Perry here is saying we're strapped for cash. So unless we act fast, Jimbo is gonna keep ruining our program for years to come.\""
+    },
+    {
+        "Name": 21,
+        "RowID": 21,
+        "ParentRowID": 22,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): \"And that's where you come in! We've been through a lot together, and I know you've always been able to get A&M through its toughest times.\""
+    },
+    {
+        "Name": 22,
+        "RowID": 22,
+        "ParentRowID": -1,
+        "ChildrenIDs": [23, 27, 30],
+        "Dialogue": "\"Any thoughts on how we fix this mess?\""
+    },
+    {
+        "Name": 23,
+        "RowID": 23,
+        "ParentRowID": 24,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"It's simple: Dogecoin and NFTs.\""
+    },
+    {
+        "Name": 24,
+        "RowID": 24,
+        "ParentRowID": 25,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel): \"Hell yeah! I've been telling them for years, man. All the FUD out there? Just delaying the inevitable.\""
+    },
+    {
+        "Name": 25,
+        "RowID": 25,
+        "ParentRowID": 26,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell): \"DOGE TO THE MOON!!!\""
+    },
+    {
+        "Name": 26,
+        "RowID": 26,
+        "ParentRowID": 22,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): ...Given the situation we're in, I'm not so sure we can rely on something as volatile as crypto to buy our way out of this.\""
+    },
+    {
+        "Name": 27,
+        "RowID": 27,
+        "ParentRowID": 28,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"I hear bake sales are popular these days.\""
+    },
+    {
+        "Name": 28,
+        "RowID": 28,
+        "ParentRowID": 29,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell): \"HEY, THAT MIGHT HAVE SOME POTENTIAL! IF WE SELL BOTH CHOCOLATE CHIP AND SNICKERDOODLE COOKIES...UHHH...FOUR DOLLARS EACH...TWENTY SEVEN...THIRTY TWO...THIRTY NINE...\""
+    },
+    {
+        "Name": 29,
+        "RowID": 29,
+        "ParentRowID": 22,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): \"General, we need to think bigger than cookies! We'll never get to $77 million at that rate!\""
+    },
+    {
+        "Name": 30,
+        "RowID": 30,
+        "ParentRowID": 31,
+        "ChildrenIDs": [-1],
+        "Dialogue": "\"The Aggie Network\u2122\""
+    },
+    {
+        "Name": 31,
+        "RowID": 31,
+        "ParentRowID": 32,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): \"...Of course! We can always fall back on our Aggie Network\u2122 to dig us out of the massive holes we put ourselves in.\""
+    },
+    {
+        "Name": 32,
+        "RowID": 32,
+        "ParentRowID": 33,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell): \" HELL YEAH BROTHER! THE AGGIE NETWORK\u2122 HAS NEVER LET ME DOWN! LOVE MY MF TEXAS AGGIES TO THE DEATH!!!\""
+    },
+    {
+        "Name": 33,
+        "RowID": 33,
+        "ParentRowID": 34,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel): \"...We really have no other options?\""
+    },
+    {
+        "Name": 34,
+        "RowID": 34,
+        "ParentRowID": 35,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): \"... Do you want to go 8-5 again next year?\""
+    },
+    {
+        "Name": 35,
+        "RowID": 35,
+        "ParentRowID": 36,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel): \"...We really have no other options?\""
+    },
+    {
+        "Name": 36,
+        "RowID": 36,
+        "ParentRowID": 37,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): \"Do you want to lose to Texas next year?\""
+    },
+    {
+        "Name": 37,
+        "RowID": 37,
+        "ParentRowID": 38,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel): \"That's fair.\""
+    },
+    {
+        "Name": 38,
+        "RowID": 38,
+        "ParentRowID": 39,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry): \"Then it's settled! General, with your Civil War battle expertise, and our fighting Texas Aggie spirit, we'll be unstoppable in rounding up all the money we need by exploiting the Aggie Network\u2122!\""
+    },
+    {
+        "Name": 39,
+        "RowID": 39,
+        "ParentRowID": 7,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell): \"LET'S GOOOO!!! FIGHTING TEXAS AGGIES RISE AGAIN!!!\""
+    }
+]

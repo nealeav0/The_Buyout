@@ -5,20 +5,17 @@
 #include "CoreMinimal.h"
 #include "Engine/UserDefinedStruct.h"
 #include "Engine/DataTable.h"
-#include "DialogueStruct.generated.h"
-
-
+#include "Dialogue.generated.h"
 
 USTRUCT(BlueprintType)
-struct FDialogueStructure : public FTableRowBase
+struct FDialogueStruct : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
 public:
 
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 RowID;  
+	int32 RowID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ParentRowID;
@@ -30,14 +27,13 @@ public:
 	FString Dialogue;
 
 
-	FDialogueStructure()
+	FDialogueStruct()
 	{
 		RowID = 0;
 		ParentRowID = -1;
 		ChildrenIDs.Add(1);
 		ChildrenIDs.Add(3);
 		Dialogue = FString(TEXT("This is dialogue one."));
-		
 	}
 };
 
@@ -45,8 +41,8 @@ public:
  * 
  */
 UCLASS()
-class CS354P_F_API UDialogueStruct : public UUserDefinedStruct
+class CS354P_F_API UDialogue : public UUserDefinedStruct
 {
-	GENERATED_BODY()  
+	GENERATED_BODY()
 	
 };
