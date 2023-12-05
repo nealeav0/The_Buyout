@@ -22,6 +22,9 @@ public:
 	void OnResumeClicked();
 
 	UFUNCTION(BlueprintCallable)
+	void OnAudioClicked();
+
+	UFUNCTION(BlueprintCallable)
 	void OnQuitClicked();
 
 protected:
@@ -35,6 +38,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UTextBlock* ResumeLabel;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* AudioButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* AudioLabel;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* QuitButton;

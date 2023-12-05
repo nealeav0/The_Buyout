@@ -5,7 +5,7 @@
 #include "MainCharacter.h"
 #include "MainGameInstance.h"
 #include "BattleGameModeBase.h"
-#include "BattleWidget.h"
+#include "BattleHUD.h"
 #include "MainMenuGameModeBase.h"
 #include "MainMenuWidget.h"
 #include "PauseMenuWidget.h"
@@ -80,7 +80,7 @@ void AMainPlayerController::ResumeGame()
 void AMainPlayerController::OpenBattleUI()
 {
 	if (BattleWidgetClass) {
-		BattleWidget = CreateWidget<UBattleWidget>(this, BattleWidgetClass);
+		BattleWidget = CreateWidget<UBattleHUD>(this, BattleWidgetClass);
 		BattleWidget->AddToPlayerScreen();
 
 		// let battlemanager know everything's loaded in !!
@@ -98,16 +98,16 @@ void AMainPlayerController::CloseBattleUI()
 	}
 }
 
-void AMainPlayerController::InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
+void AMainPlayerController::InitUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
 {
 	if (BattleWidget)
-		BattleWidget->InitializeUI(PlayerStruct, EnemyStruct, bIsPlayerTurn, PlayerAbilities);
+		BattleWidget->InitializeUI(PlayerStructs, EnemyStructs, bIsPlayerTurn, PlayerAbilities);
 }
 
-void AMainPlayerController::UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct)
+void AMainPlayerController::UpdateBattleStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
 {
 	if (BattleWidget)
-		BattleWidget->UpdateStats(PlayerStruct, EnemyStruct);
+		BattleWidget->UpdateStats(PlayerStructs, EnemyStructs);
 }
 
 void AMainPlayerController::UpdateTurnUI(bool bIsPlayerTurn)
