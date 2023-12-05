@@ -28,10 +28,19 @@ public:
 	void UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities);
 
 	UFUNCTION(BlueprintCallable)
-	void OnAbilitiesClicked();
+	void OnSelectClicked();
 
 	UFUNCTION(BlueprintCallable)
-	void OnDefendClicked();
+	void OnWarriorClicked();
+
+	UFUNCTION(BlueprintCallable)
+	void OnMageClicked();
+
+	UFUNCTION(BlueprintCallable)
+	void OnRangerClicked();
+
+	// UFUNCTION(BlueprintCallable)
+	// void OnDefendClicked();
 
 	UFUNCTION(BlueprintCallable)
 	void OnEscapeClicked();
@@ -51,10 +60,13 @@ protected:
 	class UEntityStatsWidget* EnemyStats;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* AbilitiesButton;
+	class UButton* SelectButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* DefendButton;
+	class UPartySelectWidget* PartySelect;
+
+	// UPROPERTY(EditAnywhere, meta = (BindWidget))
+	// class UButton* DefendButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* EscapeButton;

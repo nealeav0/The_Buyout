@@ -38,15 +38,15 @@ public:
 
 	bool bSelectingPlayer;
 
-	void SelectPlayer(float Navigation);
+	void SelectPlayer(int32 index);
 
 	bool bSelectingAbility;
 
-	void SelectAbility(float Navigation);
+	void SelectAbility(int32 index);
 
 	bool bSelectingTarget;
 
-	void SelectTarget(float Navigation);
+	void SelectTarget(int32 index);
 
 	void ConfirmSelection();
 

@@ -23,21 +23,23 @@ UBattleManager::UBattleManager()
 /**
 * Using the keyboard, you can navigate a carousel to choose a party member.
 */
-void UBattleManager::SelectPlayer(float Navigation)
+void UBattleManager::SelectPlayer(int32 index)
 {
-	if (Navigation < 0)
-	{
-		PlayerIndex--;
-		if (PlayerIndex < 0)
-			PlayerIndex = Players.Num() - 1;
-		// TODO: Make the PlayerIndex the next valid player if the current PlayerIndex has no actions left
-	}
-	else
-	{
-		PlayerIndex++;
-		if (PlayerIndex > Players.Num() - 1)
-			PlayerIndex = 0;
-	}
+	// if (Navigation < 0)
+	// {
+	// 	PlayerIndex--;
+	// 	if (PlayerIndex < 0)
+	// 		PlayerIndex = Players.Num() - 1;
+	// 	// TODO: Make the PlayerIndex the next valid player if the current PlayerIndex has no actions left
+	// }
+	// else
+	// {
+	// 	PlayerIndex++;
+	// 	if (PlayerIndex > Players.Num() - 1)
+	// 		PlayerIndex = 0;
+	// }
+	PlayerIndex = index;
+
 	if (GEngine && Players.IsValidIndex(PlayerIndex))
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Index: %d. Player: %s"), PlayerIndex, *(Players[PlayerIndex].Name)));
 }
@@ -45,20 +47,21 @@ void UBattleManager::SelectPlayer(float Navigation)
 /**
 * Using the keyboard, you can navigate a carousel to choose a ability.
 */
-void UBattleManager::SelectAbility(float Navigation)
+void UBattleManager::SelectAbility(int32 index)
 {
-	if (Navigation < 0)
-	{
-		AbilityIndex--;
-		if (AbilityIndex < 0)
-			AbilityIndex = Players[PlayerIndex].Abilities.Num() - 1;
-	}
-	else
-	{
-		AbilityIndex++;
-		if (AbilityIndex >= Players[PlayerIndex].Abilities.Num())
-			AbilityIndex = 0;
-	}
+	// if (Navigation < 0)
+	// {
+	// 	AbilityIndex--;
+	// 	if (AbilityIndex < 0)
+	// 		AbilityIndex = Players[PlayerIndex].Abilities.Num() - 1;
+	// }
+	// else
+	// {
+	// 	AbilityIndex++;
+	// 	if (AbilityIndex >= Players[PlayerIndex].Abilities.Num())
+	// 		AbilityIndex = 0;
+	// }
+	AbilityIndex = index;
 	// Remember to dereference FStrings to get the wchar_t inside.
 	if (GEngine && Players[PlayerIndex].Abilities.IsValidIndex(AbilityIndex))
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Ability Index: %d. Ability: %s"), AbilityIndex, *(Players[PlayerIndex].Abilities[AbilityIndex].AbilityName)));
@@ -67,48 +70,49 @@ void UBattleManager::SelectAbility(float Navigation)
 /**
 * Using the keyboard, you can navigate a carousel to choose a target. If the ability targets an ally, then you must choose one or all of the party members 
 */
-void UBattleManager::SelectTarget(float Navigation)
+void UBattleManager::SelectTarget(int32 index)
 {
-	if (Navigation < 0)
-	{
-		TargetIndex--;
-		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
-		{
-			if (TargetIndex < 0)
-				TargetIndex = Players.Num() - 1;
-			if (GEngine && Players.IsValidIndex(TargetIndex))
-				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Player: %s"), TargetIndex, *(Players[TargetIndex].Name)));
-		}
-		else
-		{
-			if (TargetIndex < 0)
-			TargetIndex = Enemies.Num() - 1;
-			if (GEngine && Enemies.IsValidIndex(TargetIndex))
-				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Enemy: %s"), TargetIndex, *(Enemies[TargetIndex].Name)));
-		}
-	}
-	else
-	{
-		TargetIndex++;
-		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
-		{
-			if (TargetIndex >= Players.Num())
-			{
-				TargetIndex = 0;
-			}
-			if (GEngine && Players.IsValidIndex(TargetIndex))
-				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Player: %s"), TargetIndex, *(Players[TargetIndex].Name)));
-		} 
-		else
-		{
-			if (TargetIndex >= Enemies.Num())
-			{
-				TargetIndex = 0;
-			}
-			if (GEngine && Enemies.IsValidIndex(TargetIndex))
-				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Enemy: %s"), TargetIndex, *(Enemies[TargetIndex].Name)));
-		}			
-	}
+	// if (Navigation < 0)
+	// {
+	// 	TargetIndex--;
+	// 	if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
+	// 	{
+	// 		if (TargetIndex < 0)
+	// 			TargetIndex = Players.Num() - 1;
+	// 		if (GEngine && Players.IsValidIndex(TargetIndex))
+	// 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Player: %s"), TargetIndex, *(Players[TargetIndex].Name)));
+	// 	}
+	// 	else
+	// 	{
+	// 		if (TargetIndex < 0)
+	// 		TargetIndex = Enemies.Num() - 1;
+	// 		if (GEngine && Enemies.IsValidIndex(TargetIndex))
+	// 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Enemy: %s"), TargetIndex, *(Enemies[TargetIndex].Name)));
+	// 	}
+	// }
+	// else
+	// {
+	// 	TargetIndex++;
+	// 	if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
+	// 	{
+	// 		if (TargetIndex >= Players.Num())
+	// 		{
+	// 			TargetIndex = 0;
+	// 		}
+	// 		if (GEngine && Players.IsValidIndex(TargetIndex))
+	// 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Player: %s"), TargetIndex, *(Players[TargetIndex].Name)));
+	// 	} 
+	// 	else
+	// 	{
+	// 		if (TargetIndex >= Enemies.Num())
+	// 		{
+	// 			TargetIndex = 0;
+	// 		}
+	// 		if (GEngine && Enemies.IsValidIndex(TargetIndex))
+	// 			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Target Index: %d. Enemy: %s"), TargetIndex, *(Enemies[TargetIndex].Name)));
+	// 	}			
+	// }
+	TargetIndex = index;
 	
 }
 
