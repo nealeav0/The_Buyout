@@ -36,17 +36,6 @@ void UMainGameInstance::Init()
 		}
 	}
 
-	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EnemyAbilityDataPath);
-	if (AssetHandle)
-	{
-		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
-		if (ReturnedTable)
-		{
-			EnemyAbilityDataTable = ReturnedTable;
-
-		}
-	}
-
 	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EnemyBaseDataPath);
 	if (AssetHandle)
 	{
@@ -54,6 +43,17 @@ void UMainGameInstance::Init()
 		if (ReturnedTable)
 		{
 			EnemyBaseDataTable = ReturnedTable;
+
+		}
+	}
+
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(DialogueDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			DialogueDataTable = ReturnedTable;
 
 		}
 	}
@@ -79,6 +79,11 @@ void UMainGameInstance::Shutdown()
 void UMainGameInstance::UpdateBattleManager()
 {
 	UBattleManager* manager = BattleManager();
+}
+
+UDataTable* UMainGameInstance::GetDialogueDataTable()
+{
+	return DialogueDataTable;
 }
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)

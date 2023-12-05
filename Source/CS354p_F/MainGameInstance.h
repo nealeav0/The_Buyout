@@ -27,22 +27,22 @@ public:
 	UDataTable* PlayerBaseDataTable;
 
 	UPROPERTY()
-	UDataTable* EnemyAbilityDataTable;
-
-	UPROPERTY()
 	UDataTable* EnemyBaseDataTable;
+
+	UPROPERTY(EditAnywhere)
+	UDataTable* DialogueDataTable;
 
 	// /Script/Engine.DataTable'/Game/Data/Player_Base_Stats.Player_Base_Stats'
 	UPROPERTY()
 	FSoftObjectPath PlayerBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Base_Stats.Player_Base_Stats'"));
 
-	// /Script/Engine.DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'
-	UPROPERTY()
-	FSoftObjectPath EnemyAbilityDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Common_Enemy_Abilities.Common_Enemy_Abilities'"));
-
 	// /Script/Engine.DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'
 	UPROPERTY()
 	FSoftObjectPath EnemyBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'"));
+
+	// /Script/Engine.DataTable'/Game/Data/Dialogue.Dialogue'
+	UPROPERTY(VisibleAnywhere)
+	FSoftObjectPath DialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Dialogue.Dialogue'"));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
@@ -58,6 +58,9 @@ public:
 	UAbilityManager* AbilityManager();
 
 	void UpdateBattleManager();
+
+	UFUNCTION(BlueprintCallable)
+	UDataTable* GetDialogueDataTable();
 
 	UPROPERTY()
 	TArray<ACommonEnemy*> Enemies;

@@ -32,6 +32,10 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void AEnemyBase::Die()
+{
+}
+
 FEntityStruct AEnemyBase::GetEntityStruct()
 {
 	return EnemyStats;
