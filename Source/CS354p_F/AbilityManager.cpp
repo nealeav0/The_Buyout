@@ -474,7 +474,7 @@ void UAbilityManager::UpgradeAbility(FEntityStruct& Player, FAbilityStruct& Abil
 					Player.AbilityPoints -= Ability.APCosts[Ability.Level];
 					Ability.Level++;
 					if (GEngine)
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Power %.0f -> %.0f"), Ability.Power[Ability.Level - 1], Ability.Power[Ability.Level]));
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Power %.0f -> %.0f"), Ability.Power[Ability.Level - 2], Ability.Power[Ability.Level - 1]));
 				}
 				else
 				{
