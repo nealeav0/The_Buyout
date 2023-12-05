@@ -94,7 +94,7 @@
 		"bIsPhysical": false,
         "ElementType": "NONELEMENTAL",
         "ElementalPercent": 1,
-		"TargetType": "Single",
+		"TargetType": "ALLY",
 		"Power": [20, 30, 40],
 		"APCosts": [0, 30, 60],
 		"Accuracy": 1,

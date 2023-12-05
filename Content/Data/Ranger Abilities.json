@@ -77,7 +77,7 @@
 		"Power": [0],
 		"APCosts": [0],
 		"Accuracy": 1,
-		"MaxCooldown": 0,
+		"MaxCooldown": 3,
 		"Cooldown": 0,
 		"StatusChance": 1,
 		"StatusType": "EVASIONUP",

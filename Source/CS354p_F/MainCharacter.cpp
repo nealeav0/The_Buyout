@@ -231,14 +231,24 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 		if (GameInstance)
 		{
+
 			GameInstance->AbilityManager()->InitializePlayerArray(Players);
+
 			// set up player to respawn where they last were
 			for (FEntityStruct& Player : Players)
 			{
 				Player.Location = GetActorLocation();
 				GameInstance->AbilityManager()->InitializeAbilities(Player);
 			}
+			for (FEntityStruct& Enemy : enemy->Enemies)
+			{
+				Enemy.Location = enemy->GetActorLocation();
+				GameInstance->AbilityManager()->InitializeAbilities(Enemy);
+				GameInstance->BattleManager()->InitializeEnemyStats(Enemy);
+			}
+
 			GameInstance->SetPlayerLastLocation(Players[0].Location);
+
 			// save all enemy positions in overworld so we know where to respawn them again 
 			TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
 			TArray<AActor*> SpawnedEnemies;
@@ -251,7 +261,7 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			// handle info for this specific enemy we've encountered
 			enemy->SetEntityStructLocation(enemy->GetActorLocation());
 			// set up battle manager
-			GameInstance->BattleManager()->PrepareForBattle(Players, enemy->GetEntityStruct());
+			GameInstance->BattleManager()->PrepareForBattle(Players, enemy->Enemies);
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}
 	}
