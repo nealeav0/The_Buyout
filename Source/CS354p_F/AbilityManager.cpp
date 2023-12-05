@@ -25,6 +25,11 @@ void UAbilityManager::InitializeAbilityDataTables()
 			}
 		}
 	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Warrior abilities data table was not loaded in.")));
+	}
 
 	// Store all of the possible mage abilities into the Ability Manager
 	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(MageAbilityDataPath);
@@ -44,6 +49,11 @@ void UAbilityManager::InitializeAbilityDataTables()
 				}
 			}
 		}
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Mage abilities data table was not loaded in.")));
 	}
 
 	// Store all of the possible ranger abilities into the Ability Manager
@@ -65,6 +75,56 @@ void UAbilityManager::InitializeAbilityDataTables()
 			}
 		}
 	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Ranger abilities data table was not loaded in.")));
+	}
+	
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(CommonAbilityDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			CommonAbilityDataTable = ReturnedTable;
+		}
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Common enemy abilities data table was not loaded in.")));
+	}
+
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EvasiveAbilityDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			EvasiveAbilityDataTable = ReturnedTable;
+		}
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Evasive enemy abilities data table was not loaded in.")));
+	}
+
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(DefensiveAbilityDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			DefensiveAbilityDataTable = ReturnedTable;
+		}
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defensive enemy abilities data table was not loaded in.")));
+	}
 }
 
 void UAbilityManager::InitializePlayerArray(TArray<FEntityStruct> NewPlayers)
@@ -77,7 +137,7 @@ void UAbilityManager::InitializePlayerArray(TArray<FEntityStruct> NewPlayers)
 	else
 	{
 		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The array is not empty")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("The array is empty")));
 	}
 }
 
@@ -89,42 +149,78 @@ TArray<FEntityStruct> UAbilityManager::GetPlayersArray()
 	return Players;
 }
 
-void UAbilityManager::InitializeAbilities(FEntityStruct& Player)
+void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 {
-	Player.Abilities.Empty();
-	/*if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s is here"), *(Player.Name)));*/
-	if (Player.Name.Equals("warrior"))
+	Entity.Abilities.Empty();
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s is here"), *(Entity.Name)));
+	if (Entity.Name.Equals("warrior"))
 	{
 		for (FAbilityStruct Ability : WarriorAbilities)
 		{
 			if (Ability.bIsLearned) 
 			{
-				Player.Abilities.Add(Ability);
+				Entity.Abilities.Add(Ability);
 				/*if (GEngine)
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s learned %s"), *(Player.Name), *(Ability.AbilityName)));*/
 			}
 		}
 	}
-	else if (Player.Name.Equals("mage"))
+	else if (Entity.Name.Equals("mage"))
 	{
 		for (FAbilityStruct Ability : MageAbilities)
 		{
 			if (Ability.bIsLearned)
 			{
-				Player.Abilities.Add(Ability);
+				Entity.Abilities.Add(Ability);
 				/*if (GEngine)
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s learned %s"), *(Player.Name), *(Ability.AbilityName)));*/
 			}
 		}
 	}
-	else if (Player.Name.Equals("ranger"))
+	else if (Entity.Name.Equals("ranger"))
 	{
 		for (FAbilityStruct Ability : RangerAbilities)
 		{
 			if (Ability.bIsLearned)
 			{
-				Player.Abilities.Add(Ability);
+				Entity.Abilities.Add(Ability);
+			}
+		}
+	}
+	else if (Entity.Name.Equals("common"))
+	{
+		if (CommonAbilityDataTable)
+		{
+			TArray<FAbilityStruct*> AbilityData;
+			CommonAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting common abilities"), AbilityData);
+			for (FAbilityStruct* Ability : AbilityData)
+			{
+				Entity.Abilities.Add(*Ability);
+			}
+		}
+	}
+	else if (Entity.Name.Equals("evasive"))
+	{
+		if (EvasiveAbilityDataTable)
+		{
+			TArray<FAbilityStruct*> AbilityData;
+			EvasiveAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting evasive abilities"), AbilityData);
+			for (FAbilityStruct* Ability : AbilityData)
+			{
+				Entity.Abilities.Add(*Ability);
+			}
+		}
+	}
+	else if (Entity.Name.Equals("defensive"))
+	{
+		if (DefensiveAbilityDataTable)
+		{
+			TArray<FAbilityStruct*> AbilityData;
+			DefensiveAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting defensive abilities"), AbilityData);
+			for (FAbilityStruct* Ability : AbilityData)
+			{
+				Entity.Abilities.Add(*Ability);
 			}
 		}
 	}
@@ -378,7 +474,7 @@ void UAbilityManager::UpgradeAbility(FEntityStruct& Player, FAbilityStruct& Abil
 					Player.AbilityPoints -= Ability.APCosts[Ability.Level];
 					Ability.Level++;
 					if (GEngine)
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Power %.0f -> %.0f"), Ability.Power[Ability.Level - 1], Ability.Power[Ability.Level]));
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Power %.0f -> %.0f"), Ability.Power[Ability.Level - 2], Ability.Power[Ability.Level - 1]));
 				}
 				else
 				{

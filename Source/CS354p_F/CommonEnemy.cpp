@@ -62,18 +62,6 @@ void ACommonEnemy::BeginPlay()
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Common Base AP: %d"), (*CommonBase).AbilityPoints));*/
 			}	
 		}
-
-		// Set the common enemy's abilities
-		if (GameInstance->EnemyAbilityDataTable)
-		{
-			// Get all of the common enemy's abilities from data and place them into the EnemyAbilities array.
-			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->EnemyAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
-			{
-				EnemyStats.Abilities.Add(*Ability);
-			}
-		}
 	}
 	
 	// if we're in the overworld, let's loop some roaming behaviors

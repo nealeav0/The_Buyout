@@ -67,7 +67,9 @@ public:
 	UFUNCTION() 
 	void StartBattle();
 
-	void PrepareForBattle(TArray<FEntityStruct> NewPlayers, FEntityStruct EnemyStruct);
+	void PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<FEntityStruct> NewEnemies);
+
+	void InitializeEnemyStats(FEntityStruct& Enemy);
 
 	UFUNCTION(BlueprintCallable) 
 	FEntityStruct GetPlayer();
