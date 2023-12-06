@@ -1,6 +1,7 @@
 [
 	{
 		"Name": "common",
+		"EntityName": "Student",
 		"EntityType": "ENEMY",
 		"EnemyType": "COMMON",
 		"Location":
@@ -36,6 +37,7 @@
 	},
 	{
 		"Name": "evasive",
+		"EntityName": "Professor",
 		"EntityType": "ENEMY",
 		"EnemyType": "EVASIVE",
 		"Location":
@@ -71,6 +73,7 @@
 	},
 	{
 		"Name": "defensive",
+		"EntityName": "Donor",
 		"EntityType": "ENEMY",
 		"EnemyType": "DEFENSIVE",
 		"Location":

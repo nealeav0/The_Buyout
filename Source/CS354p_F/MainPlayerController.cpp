@@ -15,6 +15,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "BattleManager.h"
 #include "MainGameInstance.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABattleGameModeBase* BattleMode;
 AMainMenuGameModeBase* MainMenuMode;
@@ -127,18 +129,27 @@ void AMainPlayerController::BeginPlay()
 
 	BattleMode = Cast<ABattleGameModeBase>(GetWorld()->GetAuthGameMode());
 	MainMenuMode = Cast<AMainMenuGameModeBase>(GetWorld()->GetAuthGameMode());
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 
 	if (BattleMode) {
+		GameInstance->BGMusic->SetPaused(true);
+		GameInstance->PlayBattleAudio();
+
 		OpenBattleUI();
 		// set up the click-only input behavior 
-		UpdateInputMode(BattleWidget, false); // needs to be udated to true later
+		UpdateInputMode(BattleWidget, true); // needs to be udated to true later
 
-	} else if (MainMenuMode) { // main/starting menu 
+	} else if (MainMenuMode) { // main/starting menu
+		GameInstance->PlayBGAudio();
+			
 		OpenMainMenuUI();
 		// set up the click-only input behavior 
 		UpdateInputMode(MainMenuWidget, true);
 
 	} else { // we're in the overworld
+		if (GameInstance->BGMusic->bIsPaused)
+			GameInstance->BGMusic->SetPaused(false);
+		
 		// set up no click behavior
 		UpdateInputMode(nullptr, false);
 	}
@@ -191,7 +202,7 @@ void AMainPlayerController::OnCameraMoved(const FInputActionValue& Value)
 
 void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 {
-	float Navigation = Value.Get<float>();
+	// float Navigation = Value.Get<float>();
 	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f navigate."), Navigation));
 	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 	if (GameInstance)
@@ -202,15 +213,15 @@ void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 			{
 				if (GameInstance->BattleManager()->bSelectingPlayer)
 				{
-					GameInstance->BattleManager()->SelectPlayer(Navigation);
+					// GameInstance->BattleManager()->SelectPlayer(Navigation);
 				}
 				else if (GameInstance->BattleManager()->bSelectingAbility)
 				{
-					GameInstance->BattleManager()->SelectAbility(Navigation);
+					// GameInstance->BattleManager()->SelectAbility(Navigation);
 				}
 				else if (GameInstance->BattleManager()->bSelectingTarget)
 				{
-					GameInstance->BattleManager()->SelectTarget(Navigation);
+					// GameInstance->BattleManager()->SelectTarget(Navigation);
 				}
 			}
 		}
@@ -218,11 +229,11 @@ void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 		{
 			if (GameInstance->AbilityManager()->bSelectingPlayer)
 			{
-				GameInstance->AbilityManager()->SelectPlayer(Navigation);
+				// GameInstance->AbilityManager()->SelectPlayer(Navigation);
 			}
 			else if (GameInstance->AbilityManager()->bSelectingAbility)
 			{
-				GameInstance->AbilityManager()->SelectAbility(Navigation);
+				// GameInstance->AbilityManager()->SelectAbility(Navigation);
 			}
 		}
 	}

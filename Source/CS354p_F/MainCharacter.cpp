@@ -37,7 +37,7 @@ AMainCharacter::AMainCharacter()
 	Hitbox->SetupAttachment(RootComponent);
 	Hitbox->InitCapsuleSize(55.f, 100.f);
 	
-	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -87.f));
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
 	SpawnLocation = GetActorLocation();
@@ -95,6 +95,7 @@ void AMainCharacter::BeginPlay()
 				Players[0].Level = 1;
 			}
 			Players[0].Name = (*PlayerBase).Name;
+			Players[0].EntityName = (*PlayerBase).EntityName;
 			Players[0].EntityType = (*PlayerBase).EntityType;
 			Players[0].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[0].Level));
 			if (GameInstance->BattleManager()->Players.IsEmpty())
@@ -120,6 +121,7 @@ void AMainCharacter::BeginPlay()
 				Players[1].Level = 1;
 			}
 			Players[1].Name = (*PlayerBase).Name;
+			Players[1].EntityName = (*PlayerBase).EntityName;
 			Players[1].EntityType = (*PlayerBase).EntityType;
 			Players[1].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[1].Level));
 			if (GameInstance->BattleManager()->Players.IsEmpty())
@@ -143,6 +145,7 @@ void AMainCharacter::BeginPlay()
 				Players[2].Level = 1;
 			}
 			Players[2].Name = (*PlayerBase).Name;
+			Players[2].EntityName = (*PlayerBase).EntityName;
 			Players[2].EntityType = (*PlayerBase).EntityType;
 			Players[2].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[2].Level));
 			if (GameInstance->BattleManager()->Players.IsEmpty())

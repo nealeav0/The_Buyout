@@ -25,12 +25,27 @@ public:
 	void UpdateTurn(bool bIsPlayerTurn);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions);
+
+	UFUNCTION(BlueprintCallable)
 	void UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities);
 
-	UFUNCTION(BlueprintCallable)
-	void OnAbilitiesClicked();
+    UFUNCTION(BlueprintCallable)
+	void UpdateTargets(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, ETargetTypeEnum TargetType);
+
+    UFUNCTION(BlueprintCallable)
+	void OnSelectClicked();
 
 	UFUNCTION(BlueprintCallable)
+	void OnPlayerSelected(int32 index);
+
+    UFUNCTION(BlueprintCallable)
+	void OnAbilitySelected(int32 index);
+
+	UFUNCTION(BlueprintCallable)
+	void OnTargetSelected(int32 index);
+
+    UFUNCTION(BlueprintCallable)
 	void OnDefendClicked();
 
 	UFUNCTION(BlueprintCallable)
@@ -51,10 +66,16 @@ protected:
 	class UEntityStatsWidget* EnemyStats;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* AbilitiesButton;
+	class UButton* SelectButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* DefendButton;
+	class UPartySelectWidget* PartySelect;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UActionsSelectWidget* ActionsSelect;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTargetsSelectWidget* TargetsSelect;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* EscapeButton;

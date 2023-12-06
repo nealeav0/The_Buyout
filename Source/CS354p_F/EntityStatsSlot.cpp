@@ -17,14 +17,14 @@ void UEntityStatsSlot::InitializeStats(FEntityStruct EntityStruct)
 {
     if (NameLabel) {
         FFormatNamedArguments Args;
-        Args.Add(TEXT("Name"), FText::FromString(EntityStruct.Name));
+        Args.Add(TEXT("Name"), FText::FromString(EntityStruct.EntityName));
         NameLabel->SetText(FText::Format(LOCTEXT("NameLabel", "{Name}"), Args));
     }
 
     if (LevelLabel) {
         FFormatNamedArguments Args;
         Args.Add(TEXT("Level"), FText::AsNumber(EntityStruct.Level));
-        LevelLabel->SetText(FText::Format(LOCTEXT("PlayerLabel", "(Lv. {Level})"), Args));
+        LevelLabel->SetText(FText::Format(LOCTEXT("LevelLabel", "(Lv. {Level})"), Args));
     }
 
     UpdateHealth(EntityStruct);

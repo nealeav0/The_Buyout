@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	UDataTable* DialogueDataTable;
 
+	UPROPERTY(EditAnywhere)
+	UDataTable* EndingSceneDialogue;
+
 	// /Script/Engine.DataTable'/Game/Data/Player_Base_Stats.Player_Base_Stats'
 	UPROPERTY()
 	FSoftObjectPath PlayerBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Player_Base_Stats.Player_Base_Stats'"));
@@ -44,6 +47,13 @@ public:
 	// /Script/Engine.DataTable'/Game/Data/Dialogue.Dialogue'
 	UPROPERTY(VisibleAnywhere)
 	FSoftObjectPath DialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Dialogue.Dialogue'"));
+
+	// /Script/Engine.DataTable'/Game/Data/EndingSceneDialogue.EndingSceneDialogue'
+	UPROPERTY(VisibleAnywhere)
+	FSoftObjectPath EndingSceneDialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/EndingSceneDialogue.EndingSceneDialogue'"));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
 
 	virtual void Init() override;
 
@@ -59,6 +69,27 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UDataTable* GetDialogueDataTable();
+
+	UFUNCTION(BlueprintCallable)
+	UDataTable* GetEndingSceneDialogue();
+
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+    UAudioComponent* PlayBGAudio();
+
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+    UAudioComponent* PlayBattleAudio();
+
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+    void ToggleMute();
+
+	UPROPERTY()
+	class UAudioComponent* BGMusic;
+
+	UPROPERTY()
+	class UAudioComponent* BattleMusic;
+
+	UPROPERTY()
+	float Volume;
 
 	UPROPERTY()
 	TArray<ACommonEnemy*> Enemies;

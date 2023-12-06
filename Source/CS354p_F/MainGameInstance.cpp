@@ -4,7 +4,10 @@
 #include "MainGameInstance.h"
 #include "MainCharacter.h"
 #include "CommonEnemy.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 #include "Engine/AssetManager.h"
+#include "Kismet/GameplayStatics.h"
 
 UBattleManager* UMainGameInstance::BattleManager()
 {
@@ -58,6 +61,17 @@ void UMainGameInstance::Init()
 		}
 	}
 
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EndingSceneDialogueDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			EndingSceneDialogue = ReturnedTable;
+
+		}
+	}
+
 	// some predetermined locations in the overworld for enemies that we've placed just so we can spawn them in the first place
 	// EnemyLocations = {	FVector(-455.f, -1440.f, 50.f)	}; // old overworld
 	EnemyLocations = {
@@ -65,6 +79,8 @@ void UMainGameInstance::Init()
 		FVector(600.f, 1160.f, 56.f),
 		FVector(500.f, -1190.f, 56.f)
 	};
+
+	Volume = 0.75f;
 }
 
 void UMainGameInstance::Shutdown()
@@ -84,6 +100,42 @@ void UMainGameInstance::UpdateBattleManager()
 UDataTable* UMainGameInstance::GetDialogueDataTable()
 {
 	return DialogueDataTable;
+}
+
+UDataTable* UMainGameInstance::GetEndingSceneDialogue()
+{
+	return EndingSceneDialogue;
+}
+
+UAudioComponent* UMainGameInstance::PlayBGAudio()
+{
+	USoundBase* SoundCue = Cast<USoundBase>(StaticLoadObject(USoundBase::StaticClass(), nullptr, TEXT("/Game/Assets/BGMusicCue")));
+
+	// const UObject * WorldContextObject, USoundBase * Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundConcurrency * ConcurrencySettings, bool bPersistAcrossLevelTransition, bool bAutoDestroy
+	BGMusic = UGameplayStatics::CreateSound2D(GetWorld(), SoundCue, Volume, 1.0f, 0.0f, nullptr, true, true);
+	BGMusic->Play();
+	return BGMusic;
+}
+
+UAudioComponent *UMainGameInstance::PlayBattleAudio()
+{
+	USoundBase* SoundCue = Cast<USoundBase>(StaticLoadObject(USoundBase::StaticClass(), nullptr, TEXT("/Game/Assets/BattleMusicCue")));
+
+	BattleMusic = UGameplayStatics::CreateSound2D(GetWorld(), SoundCue, Volume, 1.0f, 0.0f, nullptr, false, true);
+	BattleMusic->Play();
+	return BattleMusic;
+}
+
+void UMainGameInstance::ToggleMute()
+{
+	Volume = (Volume == 0.0f) ? 0.75f : 0.0f;
+
+	if (BGMusic)
+		BGMusic->SetVolumeMultiplier(Volume);
+
+	if (BattleMusic)
+		BattleMusic->SetVolumeMultiplier(Volume);
+
 }
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)
