@@ -240,11 +240,13 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(FEntityStruct Enemy, FVector
 		{
 			Result = GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			Result->Enemies[0].Level = Enemy.Level;
+			Result->Enemies[0].Location = Enemy.Location;
 		}
 		else if (Enemy.EnemyType == EEnemyType::EVASIVE)
 		{
 			Result = GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			Result->Enemies[0].Level = Enemy.Level;
+			Result->Enemies[0].Location = Enemy.Location;
 		}
 
 		if (!Enemy.Allies.IsEmpty())
