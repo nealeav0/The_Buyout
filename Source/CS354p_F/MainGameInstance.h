@@ -128,4 +128,10 @@ public:
 
 	UFUNCTION()
 	AEnemyBase* SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location);
+
+	UPROPERTY(BlueprintReadWrite)
+	bool begDialogueDone = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool endDialogueDone = false;
 };
