@@ -153,7 +153,7 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 {
 	Entity.Abilities.Empty();
 	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s is here"), *(Entity.Name)));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s is here"), *(Entity.EntityName)));
 	if (Entity.Name.Equals("warrior"))
 	{
 		for (FAbilityStruct Ability : WarriorAbilities)

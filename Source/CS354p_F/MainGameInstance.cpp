@@ -64,6 +64,17 @@ void UMainGameInstance::Init()
 		}
 	}
 
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(MapEnemiesDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			MapEnemiesDataTable = ReturnedTable;
+
+		}
+	}
+
 	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(DialogueDataPath);
 	if (AssetHandle)
 	{
@@ -88,17 +99,37 @@ void UMainGameInstance::Init()
 
 	// some predetermined locations in the overworld for enemies that we've placed just so we can spawn them in the first place
 	// EnemyLocations = {	FVector(-455.f, -1440.f, 50.f)	}; // old overworld
-	EnemyLocations = {
+
+	if (MapEnemiesDataTable) 
+	{
+		/*if (PlayerAbilityDataTable)
+		{
+			TArray<FAbilityStruct*> WarriorAbilityData;
+			PlayerAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting warrior abilities"), WarriorAbilityData);
+			for (FAbilityStruct* Ability : WarriorAbilityData)
+			{
+				WarriorAbilities.Add(*Ability);
+			}
+		}*/
+		Enemies.Empty();
+		TArray<FEntityStruct*> MapEnemiesData;
+		MapEnemiesDataTable->GetAllRows<FEntityStruct>(TEXT("Getting Map Enemies"), MapEnemiesData);
+		for (FEntityStruct* MapEnemy : MapEnemiesData)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Magenta, FString::Printf(TEXT("%s is here. Lv. %d"), *(MapEnemy->EntityName), MapEnemy->Level));
+			}
+			Enemies.Add(*MapEnemy);
+			EnemyLocations.Add(MapEnemy->Location);
+		}
+	}
+
+	/*EnemyLocations = {
 		FVector(1500.f, 20.f, 0.f),
 		FVector(1000.f, 1160.f, 0.f),
 		FVector(900.f, -1150.f, 0.f)
-	};
-
-	EnemyTypes = {
-		EEnemyType::COMMON,
-		EEnemyType::EVASIVE,
-		EEnemyType::COMMON
-	};
+	};*/
 
 	Volume = 0.75f;
 }
@@ -182,18 +213,22 @@ void UMainGameInstance::RemoveEnemy(FEntityStruct Enemy)
 {
 	int32 index = EnemyLocations.Find(Enemy.Location);
 	EnemyLocations.RemoveAt(index);
-	EnemyTypes.RemoveAt(index);
+	Enemies.RemoveAt(index);
 }
 
 void UMainGameInstance::SpawnEnemies()
 {
 	for (int i = 0; i < EnemyLocations.Num(); i++) {
-		SpawnEnemyAtLocation(EnemyTypes[i], EnemyLocations[i]);
+		SpawnEnemyAtLocation(Enemies[i], EnemyLocations[i]);
 	}
 }
 
-AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location)
+/**
+* Check what allies this enemy may have an add it to the Enemies array of the reference
+*/
+AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(FEntityStruct Enemy, FVector Location)
 {
+	AEnemyBase* Result = nullptr;
 	if (GetWorld())
     {
         FActorSpawnParameters SpawnParams;
@@ -201,13 +236,29 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVecto
 
         FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
 		
-		if (EnemyType == EEnemyType::COMMON)
-			return GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
+		if (Enemy.EnemyType == EEnemyType::COMMON)
+		{
+			Result = GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
+			Result->Enemies[0].Level = Enemy.Level;
+			Result->Enemies[0].Location = Enemy.Location;
+		}
+		else if (Enemy.EnemyType == EEnemyType::EVASIVE)
+		{
+			Result = GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
+			Result->Enemies[0].Level = Enemy.Level;
+			Result->Enemies[0].Location = Enemy.Location;
+		}
 
-		else if (EnemyType == EEnemyType::EVASIVE)
-			return GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
+		if (!Enemy.Allies.IsEmpty())
+		{
+			for (FEntityAllyStruct Ally : Enemy.Allies)
+			{
+				Result->Enemies.Add(FEntityStruct(Ally.EntityName, Ally.EnemyType, Ally.Level));
+			}
+		}
+		return Result;
     }
 
-	return nullptr;
+	return Result;
 
 }
