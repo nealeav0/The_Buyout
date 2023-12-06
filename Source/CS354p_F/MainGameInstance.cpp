@@ -61,6 +61,17 @@ void UMainGameInstance::Init()
 		}
 	}
 
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EndingSceneDialogueDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			EndingSceneDialogue = ReturnedTable;
+
+		}
+	}
+
 	// some predetermined locations in the overworld for enemies that we've placed just so we can spawn them in the first place
 	// EnemyLocations = {	FVector(-455.f, -1440.f, 50.f)	}; // old overworld
 	EnemyLocations = {
@@ -91,6 +102,11 @@ UDataTable* UMainGameInstance::GetDialogueDataTable()
 	return DialogueDataTable;
 }
 
+UDataTable* UMainGameInstance::GetEndingSceneDialogue()
+{
+	return EndingSceneDialogue;
+}
+
 UAudioComponent* UMainGameInstance::PlayBGAudio()
 {
 	USoundBase* SoundCue = Cast<USoundBase>(StaticLoadObject(USoundBase::StaticClass(), nullptr, TEXT("/Game/Assets/BGMusicCue")));
@@ -119,7 +135,6 @@ void UMainGameInstance::ToggleMute()
 
 	if (BattleMusic)
 		BattleMusic->SetVolumeMultiplier(Volume);
-}
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)
 {
