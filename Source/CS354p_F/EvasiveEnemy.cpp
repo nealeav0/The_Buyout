@@ -22,8 +22,6 @@ void AEvasiveEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	Enemies[0].EnemyType = EEnemyType::EVASIVE;
-	Enemies[1].EnemyType = EEnemyType::COMMON;
-	Enemies[2].EnemyType = EEnemyType::EVASIVE;
 }
 
 void AEvasiveEnemy::Tick(float DeltaTime)

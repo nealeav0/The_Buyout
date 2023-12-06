@@ -1,0 +1,77 @@
+[
+    {
+        "Name": 0,
+        "EntityName": "This Guy",
+        "Level": 1,
+        "EnemyType": "COMMON",
+        "Location":
+        {
+            "X": 1500,
+            "Y": 20,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Professor",
+                "EnemyType": "EVASIVE",
+                "Level": 3
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 1
+            }
+        ]
+    },
+    {
+        "Name": 1,
+        "EntityName": "Professor",
+        "Level": 3,
+        "EnemyType": "Evasive",
+        "Location":
+        {
+            "X": 1000,
+            "Y": 1160,
+            "Z": 0
+        },
+        "Allies":
+        [
+            {
+                "EntityName": "Professor",
+                "EnemyType": "EVASIVE",
+                "Level": 3
+            },
+            {
+                "EntityName": "Professor",
+                "EnemyType": "EVASIVE",
+                "Level": 3
+            }
+        ]
+    },
+    {
+        "Name": 2,
+        "EntityName": "Student",
+        "Level": 2,
+        "EnemyType": "COMMON",
+        "Location":
+        {
+            "X": 900,
+            "Y": -1150,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 3
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 3
+            }
+        ]
+    }
+]

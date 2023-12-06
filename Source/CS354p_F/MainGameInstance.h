@@ -32,6 +32,9 @@ public:
 	UPROPERTY()
 	UDataTable* EnemyBaseDataTable;
 
+	UPROPERTY()
+	UDataTable* MapEnemiesDataTable;
+
 	UPROPERTY(EditAnywhere)
 	UDataTable* DialogueDataTable;
 
@@ -45,6 +48,10 @@ public:
 	// /Script/Engine.DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'
 	UPROPERTY()
 	FSoftObjectPath EnemyBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'"));
+
+	// /Script/Engine.DataTable'/Game/Data/MapEnemies.MapEnemies'
+	UPROPERTY()
+	FSoftObjectPath MapEnemiesDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/MapEnemies.MapEnemies'"));
 
 	// /Script/Engine.DataTable'/Game/Data/Dialogue.Dialogue'
 	UPROPERTY(VisibleAnywhere)
@@ -97,7 +104,7 @@ public:
 	float Volume;
 
 	UPROPERTY()
-	TArray<AEnemyBase*> Enemies;
+	TArray<FEntityStruct> Enemies;
 
 	UPROPERTY()
 	TArray<EEnemyType> EnemyTypes;
@@ -127,5 +134,5 @@ public:
 	void SpawnEnemies();
 
 	UFUNCTION()
-	AEnemyBase* SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location);
+	AEnemyBase* SpawnEnemyAtLocation(FEntityStruct Enemy, FVector Location);
 };

@@ -26,6 +26,30 @@ enum class EEnemyType
 };
 
 USTRUCT(BlueprintType)
+struct FEntityAllyStruct
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EntityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EEnemyType EnemyType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Level;
+
+	FEntityAllyStruct()
+	{
+		EntityName = FString(TEXT("Unkown"));
+		EnemyType = EEnemyType::NONE;
+		Level = 0;
+	}
+};
+
+USTRUCT(BlueprintType)
 struct FEntityStruct : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
@@ -61,6 +85,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FAbilityStruct> Abilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEntityAllyStruct> Allies;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDead;
