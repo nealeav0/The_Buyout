@@ -116,6 +116,12 @@ void AMainPlayerController::UpdateTurnUI(bool bIsPlayerTurn)
 		BattleWidget->UpdateTurn(bIsPlayerTurn);
 }
 
+void AMainPlayerController::UpdatePlayerAbilities(TArray<FAbilityStruct> AbilityStructs)
+{
+	if (BattleWidget)
+		BattleWidget->UpdateAbilities(AbilityStructs);
+}
+
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

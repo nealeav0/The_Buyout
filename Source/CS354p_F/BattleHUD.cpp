@@ -5,6 +5,7 @@
 #include "EntityBase.h"
 #include "EntityStatsWidget.h"
 #include "PartySelectWidget.h"
+#include "ActionsSelectWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
@@ -20,9 +21,9 @@ void UBattleHUD::NativeConstruct()
         BattleManager = GameInstance->BattleManager();
 
     PartySelect->SetVisibility(ESlateVisibility::Collapsed);
+    ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
 
     SelectButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnSelectClicked);
-    // DefendButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnDefendClicked);
     EscapeButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnEscapeClicked);
 }
 
@@ -31,7 +32,7 @@ void UBattleHUD::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntit
     UpdateStats(PlayerStructs, EnemyStructs);
     UpdateTurn(bIsPlayerTurn);
     PartySelect->InitializeUI(PlayerStructs, this);
-    UpdateAbilities(PlayerAbilities);
+    ActionsSelect->InitializeUI(this);
 }
 
 void UBattleHUD::UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
@@ -58,7 +59,7 @@ void UBattleHUD::UpdateTurn(bool bIsPlayerTurn)
 
 void UBattleHUD::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
 {
-    // deprecated probably
+    ActionsSelect->UpdateAbilities(PlayerAbilities);
 }
 
 void UBattleHUD::OnSelectClicked()
@@ -73,24 +74,34 @@ void UBattleHUD::OnWarriorClicked()
 {
     BattleManager->SelectPlayer(0);
     BattleManager->ConfirmSelection();
+    ActionsSelect->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UBattleHUD::OnMageClicked()
 {
     BattleManager->SelectPlayer(1);
     BattleManager->ConfirmSelection();
+    ActionsSelect->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UBattleHUD::OnRangerClicked()
 {
     BattleManager->SelectPlayer(2);
     BattleManager->ConfirmSelection();
+    ActionsSelect->SetVisibility(ESlateVisibility::Visible);
 }
 
-// void UBattleHUD::OnDefendClicked()
-// {
-//     BattleManager->DefendHandler();
-// }
+void UBattleHUD::OnAbilityClicked(int32 index)
+{
+    BattleManager->SelectAbility(index);
+    BattleManager->ConfirmSelection();
+}
+
+void UBattleHUD::OnDefendClicked()
+{
+    // need to adjust for multiplayer maybe?
+    BattleManager->DefendHandler();
+}
 
 void UBattleHUD::OnEscapeClicked()
 {

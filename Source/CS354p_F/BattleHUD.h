@@ -39,8 +39,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnRangerClicked();
 
-	// UFUNCTION(BlueprintCallable)
-	// void OnDefendClicked();
+    UFUNCTION(BlueprintCallable)
+	void OnAbilityClicked(int32 index);
+
+    UFUNCTION(BlueprintCallable)
+	void OnDefendClicked();
 
 	UFUNCTION(BlueprintCallable)
 	void OnEscapeClicked();
@@ -65,8 +68,8 @@ protected:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UPartySelectWidget* PartySelect;
 
-	// UPROPERTY(EditAnywhere, meta = (BindWidget))
-	// class UButton* DefendButton;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UActionsSelectWidget* ActionsSelect;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* EscapeButton;

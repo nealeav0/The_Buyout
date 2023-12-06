@@ -135,6 +135,7 @@ void UBattleManager::ConfirmSelection()
 		{
 			bSelectingPlayer = false;
 			bSelectingAbility = true;
+			MainPlayerController->UpdatePlayerAbilities(Players[PlayerIndex].Abilities);
 		}
 	}
 	else if (bSelectingAbility)
