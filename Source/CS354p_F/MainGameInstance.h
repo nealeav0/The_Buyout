@@ -44,9 +44,9 @@ public:
 	UPROPERTY()
 	FSoftObjectPath EnemyBaseDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Enemy_Base_Stats.Enemy_Base_Stats'"));
 
-	// /Script/Engine.DataTable'/Game/Data/Dialogue.Dialogue'
+	// /Script/Engine.DataTable'/Game/Data/NewDialogue.NewDialogue'
 	UPROPERTY(VisibleAnywhere)
-	FSoftObjectPath DialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Dialogue.Dialogue'"));
+	FSoftObjectPath DialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/NewDialogue.NewDialogue'"));
 
 	// /Script/Engine.DataTable'/Game/Data/EndingSceneDialogue.EndingSceneDialogue'
 	UPROPERTY(VisibleAnywhere)
