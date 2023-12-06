@@ -4,10 +4,24 @@
 #include "MainGameInstance.h"
 #include "MainCharacter.h"
 #include "CommonEnemy.h"
+#include "EntityBase.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Containers/Array.h"
+
+UMainGameInstance::UMainGameInstance() {
+	static ConstructorHelpers::FClassFinder<ACommonEnemy> CommonBPClass(TEXT("/Game/Blueprints/BP_CommonEnemy"));
+	if (CommonBPClass.Class) {
+		CommonEnemyBPClass = CommonBPClass.Class; 
+	}
+
+	static ConstructorHelpers::FClassFinder<AEvasiveEnemy> EvasiveBPClass(TEXT("/Game/Blueprints/BP_EvasiveEnemy"));
+	if (EvasiveBPClass.Class) {
+		EvasiveEnemyBPClass = EvasiveBPClass.Class;
+	}
+}
 
 UBattleManager* UMainGameInstance::BattleManager()
 {
@@ -75,9 +89,15 @@ void UMainGameInstance::Init()
 	// some predetermined locations in the overworld for enemies that we've placed just so we can spawn them in the first place
 	// EnemyLocations = {	FVector(-455.f, -1440.f, 50.f)	}; // old overworld
 	EnemyLocations = {
-		FVector(930.f, 20.f, 56.f),
-		FVector(600.f, 1160.f, 56.f),
-		FVector(500.f, -1190.f, 56.f)
+		FVector(1500.f, 20.f, 0.f),
+		FVector(1000.f, 1160.f, 0.f),
+		FVector(900.f, -1150.f, 0.f)
+	};
+
+	EnemyTypes = {
+		EEnemyType::COMMON,
+		EEnemyType::EVASIVE,
+		EEnemyType::COMMON
 	};
 
 	Volume = 0.75f;
@@ -138,6 +158,11 @@ void UMainGameInstance::ToggleMute()
 
 }
 
+void UMainGameInstance::SaveEnemyTypes(TArray<EEnemyType> AllEnemyTypes)
+{
+	EnemyTypes = AllEnemyTypes;
+}
+
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)
 {
 	PlayerLastSavedLocation = Location;
@@ -153,20 +178,36 @@ void UMainGameInstance::SaveEnemyLocations(TArray<FVector> AllLocations)
 	EnemyLocations = AllLocations;
 }
 
-void UMainGameInstance::RemoveEnemyAtLocation(FVector Location)
+void UMainGameInstance::RemoveEnemy(FEntityStruct Enemy)
 {
-	EnemyLocations.Remove(Location);
+	int32 index = EnemyLocations.Find(Enemy.Location);
+	EnemyLocations.RemoveAt(index);
+	EnemyTypes.RemoveAt(index);
 }
 
 void UMainGameInstance::SpawnEnemies()
 {
-	/*for (FVector Location : EnemyLocations) {
-		SpawnEnemyAtLocation(Location);
-	}*/
+	for (int i = 0; i < EnemyLocations.Num(); i++) {
+		SpawnEnemyAtLocation(EnemyTypes[i], EnemyLocations[i]);
+	}
 }
 
 AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location)
 {
-	AEnemyBase* Enemy = nullptr;
-	return Enemy;
+	if (GetWorld())
+    {
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+        FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
+		
+		if (EnemyType == EEnemyType::COMMON)
+			return GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
+
+		else if (EnemyType == EEnemyType::EVASIVE)
+			return GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
+    }
+
+	return nullptr;
+
 }

@@ -18,6 +18,8 @@ class CS354P_F_API UMainGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	UMainGameInstance();
+
 	UPROPERTY(Transient)
 	UBattleManager* BattleManagerInstance;
 
@@ -54,6 +56,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AEvasiveEnemy> EvasiveEnemyBPClass;
 
 	virtual void Init() override;
 
@@ -92,7 +97,13 @@ public:
 	float Volume;
 
 	UPROPERTY()
-	TArray<ACommonEnemy*> Enemies;
+	TArray<AEnemyBase*> Enemies;
+
+	UPROPERTY()
+	TArray<EEnemyType> EnemyTypes;
+
+	UFUNCTION()
+	void SaveEnemyTypes(TArray<EEnemyType> AllEnemyTypes);
 
 	UPROPERTY()
 	TArray<FVector> EnemyLocations;
@@ -110,9 +121,9 @@ public:
 	void SaveEnemyLocations(TArray<FVector> AllLocations);
 
 	UFUNCTION()
-	void RemoveEnemyAtLocation(FVector Location);
+	void RemoveEnemy(FEntityStruct Enemy);
 
-	UFUNCTION()
+    UFUNCTION()
 	void SpawnEnemies();
 
 	UFUNCTION()
