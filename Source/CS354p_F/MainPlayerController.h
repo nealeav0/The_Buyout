@@ -40,6 +40,14 @@ public:
 	UFUNCTION()
 	void ResumeGame();
 
+	/* --- ABILITY MENU UI --- */
+
+	UFUNCTION()
+	void OpenAbilityUpgradeUI();
+	
+	UFUNCTION()
+	void CloseAbilityUpgradeUI();
+
 	/* --- BATTLE UI --- */
 
     UFUNCTION()
@@ -99,6 +107,13 @@ protected:
 
 	UPROPERTY()
 	class UBattleHUD* BattleWidget;
+
+	/* Ability Upgrade Menu */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UAbilityUpgradeWidget> AbilityUpgradeWidgetClass;
+
+	UPROPERTY()
+	class UAbilityUpgradeWidget* AbilityUpgradeWidget;
 
 	/* Main Menu */
 	UPROPERTY(EditAnywhere)
