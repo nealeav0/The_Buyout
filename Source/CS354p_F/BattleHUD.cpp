@@ -35,7 +35,7 @@ void UBattleHUD::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntit
     UpdateTurn(bIsPlayerTurn);
     PartySelect->InitializeUI(PlayerStructs, this);
     ActionsSelect->InitializeUI(this);
-    TargetsSelect->InitializeUI(EnemyStructs, this);
+    TargetsSelect->InitializeUI(PlayerStructs, EnemyStructs, this);
 }
 
 void UBattleHUD::UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
@@ -65,6 +65,11 @@ void UBattleHUD::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
     ActionsSelect->UpdateAbilities(PlayerAbilities);
 }
 
+void UBattleHUD::UpdateTargets(ETargetTypeEnum TargetType)
+{
+    TargetsSelect->UpdateTargets(TargetType);
+}
+
 void UBattleHUD::OnSelectClicked()
 {
     if (PartySelect->Visibility == ESlateVisibility::Visible) {
@@ -79,7 +84,7 @@ void UBattleHUD::OnSelectClicked()
 void UBattleHUD::OnPlayerSelected(int32 index)
 {
     BattleManager->SelectPlayer(index);
-    UpdateAbilities(BattleManager->Players[index].Abilities);
+    UpdateAbilities(BattleManager->GetPlayer().Abilities);
     ActionsSelect->SetVisibility(ESlateVisibility::Visible);
     TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
 }
@@ -87,8 +92,13 @@ void UBattleHUD::OnPlayerSelected(int32 index)
 void UBattleHUD::OnAbilitySelected(int32 index)
 {
     BattleManager->SelectAbility(index);
-    BattleManager->ConfirmSelection();
-    TargetsSelect->SetVisibility(ESlateVisibility::Visible);
+    ETargetTypeEnum ETargetType = BattleManager->GetPlayer().Abilities[index].TargetType;
+    if (ETargetType == ETargetTypeEnum::ALLY || ETargetType == ETargetTypeEnum::SINGLE ) {
+        UpdateTargets(ETargetType);
+        TargetsSelect->SetVisibility(ESlateVisibility::Visible);
+    } else {
+        OnTargetSelected(0);
+    }
 }
 
 void UBattleHUD::OnTargetSelected(int32 index)

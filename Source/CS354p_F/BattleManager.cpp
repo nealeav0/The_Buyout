@@ -419,7 +419,7 @@ void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<F
 
 FEntityStruct UBattleManager::GetPlayer()
 {
-	return Players[0];
+	return Players[PlayerIndex];
 }
 
 FEntityStruct UBattleManager::GetEnemy()

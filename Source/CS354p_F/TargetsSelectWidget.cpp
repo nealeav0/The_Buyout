@@ -2,46 +2,63 @@
 
 
 #include "TargetsSelectWidget.h"
+#include "Ability.h"
 #include "EntityBase.h"
 #include "BattleHUD.h"
+#include "TargetButton.h"
 #include "Components/TextBlock.h"
-#include "Components/Button.h"
+#include "Components/VerticalBox.h"
+
+UTargetsSelectWidget::UTargetsSelectWidget(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
+{
+    static ConstructorHelpers::FClassFinder<UTargetButton> TargetButtonBPClass(TEXT("/Game/GUI/BP_TargetButton"));
+    if (TargetButtonBPClass.Class)
+        TargetButtonClass = TargetButtonBPClass.Class;
+}
 
 void UTargetsSelectWidget::NativeConstruct()
 {
     Super::NativeConstruct();
-    
-    Enemy1Button->OnClicked.AddUniqueDynamic(this, &UTargetsSelectWidget::OnEnemy1Clicked);
-    Enemy2Button->OnClicked.AddUniqueDynamic(this, &UTargetsSelectWidget::OnEnemy2Clicked);
-    Enemy3Button->OnClicked.AddUniqueDynamic(this, &UTargetsSelectWidget::OnEnemy3Clicked);
 }
 
-void UTargetsSelectWidget::InitializeUI(TArray<FEntityStruct> EnemyStructs, UBattleHUD *BattleHUD)
+void UTargetsSelectWidget::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, UBattleHUD *BattleHUD)
 {
+    Players = PlayerStructs;
+    Enemies = EnemyStructs;
     ParentHUD = BattleHUD;
-
-    if (Enemy1Label)
-        Enemy1Label->SetText(FText::FromString(EnemyStructs[0].Name));
-    
-    if (Enemy2Label)
-        Enemy2Label->SetText(FText::FromString(EnemyStructs[1].Name));
-
-    if (Enemy3Label)
-        Enemy3Label->SetText(FText::FromString(EnemyStructs[2].Name));
 }
 
-void UTargetsSelectWidget::OnEnemy1Clicked()
+void UTargetsSelectWidget::UpdateTargets(ETargetTypeEnum TargetType)
 {
-    ParentHUD->OnTargetSelected(0);
+    if (TargetsContainer) {
+        // make sure any previous targets were wiped first
+        if (TargetsContainer->GetAllChildren().Num() > 0) {
+            TargetsContainer->ClearChildren();
+        }
+        // now add targets
+        switch (TargetType)
+        {
+            case ETargetTypeEnum::ALLY:
+                // we need to have 3 buttons for the party members
+                for (int i = 0; i < Players.Num(); i++) {
+                    UTargetButton* TargetButton = CreateWidget<UTargetButton>(this, TargetButtonClass);
+                    TargetButton->InitializeUI(ParentHUD);
+                    TargetButton->UpdateTarget(Players[i].Name, i);
+                    TargetsContainer->AddChild(TargetButton);
+                }
+                break;
+            case ETargetTypeEnum::SINGLE:
+                // we need to have 3 buttons for the enemies
+                for (int i = 0; i < Enemies.Num(); i++) {
+                    UTargetButton* TargetButton = CreateWidget<UTargetButton>(this, TargetButtonClass);
+                    TargetButton->InitializeUI(ParentHUD);
+                    TargetButton->UpdateTarget(Enemies[i].Name, i);
+                    TargetsContainer->AddChild(TargetButton);
+                }
+                break;
+            default:
+                // we don't need buttons for the other types (they shouldn't even make it to this stage)
+                break;
+        }
+    }
 }
-
-void UTargetsSelectWidget::OnEnemy2Clicked()
-{
-    ParentHUD->OnTargetSelected(1);
-}
-
-void UTargetsSelectWidget::OnEnemy3Clicked()
-{
-    ParentHUD->OnTargetSelected(2);
-}
-

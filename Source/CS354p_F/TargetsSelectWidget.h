@@ -15,39 +15,29 @@ class CS354P_F_API UTargetsSelectWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void InitializeUI(TArray<FEntityStruct> EnemyStructs, UBattleHUD* BattleHUD);
+	UTargetsSelectWidget(const FObjectInitializer &ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
-	void OnEnemy1Clicked();
+	void InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, UBattleHUD* BattleHUD);
 
 	UFUNCTION(BlueprintCallable)
-	void OnEnemy2Clicked();
-
-	UFUNCTION(BlueprintCallable)
-	void OnEnemy3Clicked();
+	void UpdateTargets(ETargetTypeEnum TargetType);
 
 protected:
 	virtual void NativeConstruct() override;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UVerticalBox* TargetsContainer;
+
 	UPROPERTY()
 	class UBattleHUD* ParentHUD;
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* Enemy1Button;
+	UPROPERTY()
+	TArray<FEntityStruct> Players;
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* Enemy1Label;
+	UPROPERTY()
+	TArray<FEntityStruct> Enemies;
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* Enemy2Button;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* Enemy2Label;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* Enemy3Button;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* Enemy3Label;
+	UPROPERTY()
+	TSubclassOf<class UTargetButton> TargetButtonClass;
 };

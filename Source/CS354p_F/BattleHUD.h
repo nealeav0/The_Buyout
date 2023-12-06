@@ -27,7 +27,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities);
 
-	UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable)
+	void UpdateTargets(ETargetTypeEnum TargetType);
+
+    UFUNCTION(BlueprintCallable)
 	void OnSelectClicked();
 
 	UFUNCTION(BlueprintCallable)
