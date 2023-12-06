@@ -85,6 +85,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* UpgradeAction;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -97,6 +100,7 @@ protected:
 	void OnConfirmPressed();
 	void OnCancelPressed();
     void OnPausePressed(const FInputActionValue &Value);
+	void OnUpgradePressed();
 
 	UFUNCTION()
 	void UpdateInputMode(UUserWidget* WidgetToFocus, bool bEnableCursor);

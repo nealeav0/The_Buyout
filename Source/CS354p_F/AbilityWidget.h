@@ -15,13 +15,16 @@ class CS354P_F_API UAbilityWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	UFUNCTION()
-	void InitializeUI(FAbilityStruct Ability);
+	void InitializeUI(FAbilityStruct Ability, int AIndex, class UAbilityUpgradeWidget* HUDParent);
 
 	UFUNCTION()
 	void EnableButton();
 
 	UFUNCTION()
 	void DisableButton();
+
+	UFUNCTION()
+	void OnAbilityClicked();
 	
 protected:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -32,4 +35,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* ActionButton;
+
+	int AbilityIndex;
+	class UAbilityUpgradeWidget* ParentHUD;
 };

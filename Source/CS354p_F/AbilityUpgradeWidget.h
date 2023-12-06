@@ -33,6 +33,24 @@ public:
 	UFUNCTION()
 	void SelectAbility(float NavInput);
 
+	UFUNCTION()
+	void OnWarriorClicked();
+	
+	UFUNCTION()
+	void OnMageClicked();
+
+	UFUNCTION()
+	void OnRangerClicked();
+
+	UFUNCTION()
+	void OnUpgradeClicked();
+
+	UFUNCTION()
+	void OnExitClicked();
+
+	UFUNCTION()
+	void OnAbilitySelect(int AbilityIndex);
+
 protected:
 	UFUNCTION()
 	void SetupAbilityUI(TArray<FAbilityStruct> PlayerAbilities);
@@ -66,7 +84,13 @@ protected:
 	class UTextBlock* AbilityPointLabel;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* AbilityPointButton;
+	class UBackgroundBlur* ConfirmUpgradeMenu;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* UpgradeButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* ExitButton;
 
 	UAbilityManager* AbilityManager;
 
@@ -76,4 +100,6 @@ protected:
 	TArray<class UAbilityWidget*> AbilityWidgets;
 
 	int PlayerIndex;
+
+	int SelectedAbility;
 };

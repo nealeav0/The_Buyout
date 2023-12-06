@@ -190,6 +190,7 @@ void AMainPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
 			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnPausePressed);
+			EnhancedInputComponent->BindAction(UpgradeAction, ETriggerEvent::Started, this, &AMainPlayerController::OnUpgradePressed);
 			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
 			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
 			EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCancelPressed);
@@ -202,6 +203,13 @@ void AMainPlayerController::SetupInputComponent()
 		}
 	}
 } 
+
+void AMainPlayerController::OnUpgradePressed() {
+	OpenAbilityUpgradeUI();
+	this->SetPause(true);
+	if (AbilityUpgradeWidget)
+		UpdateInputMode(AbilityUpgradeWidget, true);
+}
 
 void AMainPlayerController::OnMovePressed(const FInputActionValue& Value)
 {
@@ -247,18 +255,18 @@ void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 		}
 		else
 		{
-			if (AbilityUpgradeWidget) {
-				if (GameInstance->AbilityManager()->bSelectingPlayer)
-				{
-					AbilityUpgradeWidget->SelectPlayer(Navigation);
-					// GameInstance->AbilityManager()->SelectPlayer(Navigation);
-				}
-				else if (GameInstance->AbilityManager()->bSelectingAbility)
-				{
-					AbilityUpgradeWidget->SelectAbility(Navigation);
-					// GameInstance->AbilityManager()->SelectAbility(Navigation);
-				}
-			}
+			//if (AbilityUpgradeWidget) {
+			//	if (GameInstance->AbilityManager()->bSelectingPlayer)
+			//	{
+			//		AbilityUpgradeWidget->SelectPlayer(Navigation);
+			//		// GameInstance->AbilityManager()->SelectPlayer(Navigation);
+			//	}
+			//	else if (GameInstance->AbilityManager()->bSelectingAbility)
+			//	{
+			//		AbilityUpgradeWidget->SelectAbility(Navigation);
+			//		// GameInstance->AbilityManager()->SelectAbility(Navigation);
+			//	}
+			//}
 		}
 	}
 }
@@ -274,7 +282,7 @@ void AMainPlayerController::OnConfirmPressed()
 		}
 		else
 		{
-			if(AbilityUpgradeWidget)
+			/*if(AbilityUpgradeWidget)
 			{
 				if (GameInstance->AbilityManager()->bSelectingPlayer) {
 					AbilityUpgradeWidget->ConfirmPlayer();
@@ -286,7 +294,7 @@ void AMainPlayerController::OnConfirmPressed()
 			}
 			else {
 				OpenAbilityUpgradeUI();
-			}
+			}*/
 		}
 	}
 }
@@ -302,12 +310,12 @@ void AMainPlayerController::OnCancelPressed()
 		}
 		else
 		{
-			if (GameInstance->AbilityManager()->bSelectingPlayer) {
+			/*if (GameInstance->AbilityManager()->bSelectingPlayer) {
 				CloseAbilityUpgradeUI();
 			}
 			else {
 				AbilityUpgradeWidget->CancelSelection();
-			}
+			}*/
 		}
 	}
 }
