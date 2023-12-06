@@ -30,15 +30,15 @@ void UActionsSelectWidget::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilitie
     // loop through player abilities and create each button
     if (AbilitiesContainer) {
         // make sure previous abilities were wiped first
-        if (AbilitiesContainer->GetAllChildren().Num() > 0)
+        if (AbilitiesContainer->GetAllChildren().Num() > 0) {
             AbilitiesContainer->ClearChildren();
-        else {
-            for (int i = 0; i < PlayerAbilities.Num(); i++) {
-                UActionButton* ActionButton = CreateWidget<UActionButton>(this, ActionButtonClass);
-                ActionButton->InitializeUI(ParentHUD);
-                ActionButton->UpdateAbility(PlayerAbilities[i], i);
-                AbilitiesContainer->AddChild(ActionButton);
-            }
+        }
+        // now add abilities
+        for (int i = 0; i < PlayerAbilities.Num(); i++) {
+            UActionButton* ActionButton = CreateWidget<UActionButton>(this, ActionButtonClass);
+            ActionButton->InitializeUI(ParentHUD);
+            ActionButton->UpdateAbility(PlayerAbilities[i], i);
+            AbilitiesContainer->AddChild(ActionButton);
         }
     }
 }
