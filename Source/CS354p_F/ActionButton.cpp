@@ -30,6 +30,8 @@ void UActionButton::UpdateAbility(FAbilityStruct Ability, int32 index)
         LevelLabel->SetText(FText::Format(LOCTEXT("LevelLabel", "(Lv. {Level})"), Args));
     }
 
+    ActionButton->SetIsEnabled(!(Ability.Cooldown > 0));
+
     AbilityIndex = index;
 }
 

@@ -25,10 +25,13 @@ public:
 	void UpdateTurn(bool bIsPlayerTurn);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions);
+
+	UFUNCTION(BlueprintCallable)
 	void UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities);
 
     UFUNCTION(BlueprintCallable)
-	void UpdateTargets(ETargetTypeEnum TargetType);
+	void UpdateTargets(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, ETargetTypeEnum TargetType);
 
     UFUNCTION(BlueprintCallable)
 	void OnSelectClicked();

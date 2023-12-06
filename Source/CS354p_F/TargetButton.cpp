@@ -2,6 +2,7 @@
 
 
 #include "TargetButton.h"
+#include "EntityBase.h"
 #include "BattleHUD.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -16,11 +17,13 @@ void UTargetButton::InitializeUI(UBattleHUD* BattleHUD)
     ParentHUD = BattleHUD;
 }
 
-void UTargetButton::UpdateTarget(FString Name, int32 index)
+void UTargetButton::UpdateTarget(FEntityStruct TargetStruct, int32 index)
 {
     if (TargetLabel) {
-        TargetLabel->SetText(FText::FromString(Name));
+        TargetLabel->SetText(FText::FromString(TargetStruct.Name));
     }
+
+    TargetButton->SetIsEnabled(!TargetStruct.bIsDead);
 
     TargetIndex = index;
 }

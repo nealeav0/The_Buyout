@@ -57,9 +57,6 @@ public:
 	UFUNCTION()
 	void UpdateTurnUI(bool bIsPlayerTurn);
 
-    UFUNCTION()
-	void UpdatePlayerAbilities(TArray<FAbilityStruct> AbilityStructs);
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputMappingContext* DefaultMappingContext;
 

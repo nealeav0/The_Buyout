@@ -19,7 +19,7 @@ public:
 	void InitializeUI(UBattleHUD *BattleHUD);
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateTarget(FString Name, int32 index);
+	void UpdateTarget(FEntityStruct TargetStruct, int32 index);
 
 	UFUNCTION(BlueprintCallable)
 	void OnButtonClicked();

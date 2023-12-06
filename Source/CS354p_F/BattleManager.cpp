@@ -124,66 +124,65 @@ void UBattleManager::SelectTarget(int32 index)
 */
 void UBattleManager::ConfirmSelection()
 {
-	if (bSelectingPlayer)
-	{
-		// In case the player chooses a dead or stunned character
-		if (Players[PlayerIndex].bIsDead || PlayerActions[PlayerIndex] == 0)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player %d is unavailable."), PlayerIndex));
-		}
-		else
-		{
-			bSelectingPlayer = false;
-			bSelectingAbility = true;
-			MainPlayerController->UpdatePlayerAbilities(Players[PlayerIndex].Abilities);
-		}
-	}
-	else if (bSelectingAbility)
-	{
-		// In case the player chooses an ability on cooldown
-		int32 Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].Cooldown;
-		if (Cooldown > 0)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Turns left on Cooldown: %d"), Cooldown + 1));
-		}
-		else
-		{
-			bSelectingAbility = false;
-			bSelectingTarget = true;
-		}
-	}
-	else if (bSelectingTarget)
-	{
-		if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
-		{
-			if (Players[TargetIndex].bIsDead)
-			{
-				if (GEngine && Players.IsValidIndex(TargetIndex))
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%s is already dead."), *(Players[TargetIndex].Name)));
-				}
+	// if (bSelectingPlayer)
+	// {
+	// 	// In case the player chooses a dead or stunned character
+	// 	if (Players[PlayerIndex].bIsDead || PlayerActions[PlayerIndex] == 0)
+	// 	{
+	// 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player %d is unavailable."), PlayerIndex));
+	// 	}
+	// 	else
+	// 	{
+	// 		bSelectingPlayer = false;
+	// 		bSelectingAbility = true;
+	// 	}
+	// }
+	// else if (bSelectingAbility)
+	// {
+	// 	// In case the player chooses an ability on cooldown
+	// 	int32 Cooldown = Players[PlayerIndex].Abilities[AbilityIndex].Cooldown;
+	// 	if (Cooldown > 0)
+	// 	{
+	// 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Turns left on Cooldown: %d"), Cooldown + 1));
+	// 	}
+	// 	else
+	// 	{
+	// 		bSelectingAbility = false;
+	// 		bSelectingTarget = true;
+	// 	}
+	// }
+	// else if (bSelectingTarget)
+	// {
+	// 	if (Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLY || Players[PlayerIndex].Abilities[AbilityIndex].TargetType == ETargetTypeEnum::ALLIES)
+	// 	{
+	// 		if (Players[TargetIndex].bIsDead)
+	// 		{
+	// 			if (GEngine && Players.IsValidIndex(TargetIndex))
+	// 			{
+	// 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%s is already dead."), *(Players[TargetIndex].Name)));
+	// 			}
 					
-			}
-			else
-			{
-				bSelectingTarget = false;
+	// 		}
+	// 		else
+	// 		{
+	// 			bSelectingTarget = false;
 				HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
-			}
-		}
-		else
-		{
-			// In case the player chooses to pick a dead enemy.
-			if (Enemies[TargetIndex].bIsDead)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Enemy %d is already dead."), TargetIndex));
-			}
-			else
-			{
-				bSelectingTarget = false;
-				HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
-			}
-		}
-	}
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		// In case the player chooses to pick a dead enemy.
+	// 		if (Enemies[TargetIndex].bIsDead)
+	// 		{
+	// 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Enemy %d is already dead."), TargetIndex));
+	// 		}
+	// 		else
+	// 		{
+	// 			bSelectingTarget = false;
+	// 			HandlePlayerInput(Players[PlayerIndex].Abilities[AbilityIndex]);
+	// 		}
+	// 	}
+	// }
 }
 
 /**
@@ -1147,9 +1146,9 @@ void UBattleManager::EndRound()
 	bBattleEnd = bPlayersDead || bEnemiesDead;
 	if (!bBattleEnd)
 	{
+		StartRound();
 		MainPlayerController->UpdateBattleStats(Players, Enemies);
 		MainPlayerController->UpdateTurnUI(bPlayerTurn);
-		StartRound();
 	}
 	else
 	{

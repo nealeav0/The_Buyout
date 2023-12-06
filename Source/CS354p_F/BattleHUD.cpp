@@ -35,7 +35,7 @@ void UBattleHUD::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntit
     UpdateTurn(bIsPlayerTurn);
     PartySelect->InitializeUI(PlayerStructs, this);
     ActionsSelect->InitializeUI(this);
-    TargetsSelect->InitializeUI(PlayerStructs, EnemyStructs, this);
+    TargetsSelect->InitializeUI(this);
 }
 
 void UBattleHUD::UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
@@ -58,6 +58,13 @@ void UBattleHUD::UpdateTurn(bool bIsPlayerTurn)
             TurnLabel->SetText(FText::FromString("ENEMY'S TURN"));
         }
     }
+    // update players menu every time round ends would be good
+    UpdatePlayers(BattleManager->Players, BattleManager->PlayerActions);
+}
+
+void UBattleHUD::UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions)
+{
+    PartySelect->UpdatePlayers(PlayerStructs, PlayerActions);
 }
 
 void UBattleHUD::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
@@ -65,9 +72,9 @@ void UBattleHUD::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
     ActionsSelect->UpdateAbilities(PlayerAbilities);
 }
 
-void UBattleHUD::UpdateTargets(ETargetTypeEnum TargetType)
+void UBattleHUD::UpdateTargets(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, ETargetTypeEnum TargetType)
 {
-    TargetsSelect->UpdateTargets(TargetType);
+    TargetsSelect->UpdateTargets(PlayerStructs, EnemyStructs, TargetType);
 }
 
 void UBattleHUD::OnSelectClicked()
@@ -94,7 +101,7 @@ void UBattleHUD::OnAbilitySelected(int32 index)
     BattleManager->SelectAbility(index);
     ETargetTypeEnum ETargetType = BattleManager->GetPlayer().Abilities[index].TargetType;
     if (ETargetType == ETargetTypeEnum::ALLY || ETargetType == ETargetTypeEnum::SINGLE ) {
-        UpdateTargets(ETargetType);
+        UpdateTargets(BattleManager->Players, BattleManager->Enemies, ETargetType);
         TargetsSelect->SetVisibility(ESlateVisibility::Visible);
     } else {
         OnTargetSelected(0);
@@ -107,6 +114,7 @@ void UBattleHUD::OnTargetSelected(int32 index)
     BattleManager->ConfirmSelection();
     ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
     TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    UpdatePlayers(BattleManager->Players, BattleManager->PlayerActions);
 }
 
 void UBattleHUD::OnDefendClicked()

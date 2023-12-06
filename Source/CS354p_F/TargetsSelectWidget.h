@@ -18,10 +18,10 @@ public:
 	UTargetsSelectWidget(const FObjectInitializer &ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
-	void InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, UBattleHUD* BattleHUD);
+	void InitializeUI(UBattleHUD* BattleHUD);
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateTargets(ETargetTypeEnum TargetType);
+	void UpdateTargets(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, ETargetTypeEnum TargetType);
 
 protected:
 	virtual void NativeConstruct() override;
@@ -31,12 +31,6 @@ protected:
 
 	UPROPERTY()
 	class UBattleHUD* ParentHUD;
-
-	UPROPERTY()
-	TArray<FEntityStruct> Players;
-
-	UPROPERTY()
-	TArray<FEntityStruct> Enemies;
 
 	UPROPERTY()
 	TSubclassOf<class UTargetButton> TargetButtonClass;

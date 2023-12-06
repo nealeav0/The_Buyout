@@ -19,6 +19,9 @@ public:
 	void InitializeUI(TArray<FEntityStruct> PlayerStructs, UBattleHUD* BattleHUD);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions);
+
+	UFUNCTION(BlueprintCallable)
 	void OnWarriorClicked();
 
 	// UFUNCTION(BlueprintCallable)

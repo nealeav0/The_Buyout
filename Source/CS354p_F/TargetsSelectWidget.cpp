@@ -21,14 +21,12 @@ void UTargetsSelectWidget::NativeConstruct()
     Super::NativeConstruct();
 }
 
-void UTargetsSelectWidget::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, UBattleHUD *BattleHUD)
+void UTargetsSelectWidget::InitializeUI(UBattleHUD *BattleHUD)
 {
-    Players = PlayerStructs;
-    Enemies = EnemyStructs;
     ParentHUD = BattleHUD;
 }
 
-void UTargetsSelectWidget::UpdateTargets(ETargetTypeEnum TargetType)
+void UTargetsSelectWidget::UpdateTargets(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, ETargetTypeEnum TargetType)
 {
     if (TargetsContainer) {
         // make sure any previous targets were wiped first
@@ -40,19 +38,19 @@ void UTargetsSelectWidget::UpdateTargets(ETargetTypeEnum TargetType)
         {
             case ETargetTypeEnum::ALLY:
                 // we need to have 3 buttons for the party members
-                for (int i = 0; i < Players.Num(); i++) {
+                for (int i = 0; i < PlayerStructs.Num(); i++) {
                     UTargetButton* TargetButton = CreateWidget<UTargetButton>(this, TargetButtonClass);
                     TargetButton->InitializeUI(ParentHUD);
-                    TargetButton->UpdateTarget(Players[i].Name, i);
+                    TargetButton->UpdateTarget(PlayerStructs[i], i);
                     TargetsContainer->AddChild(TargetButton);
                 }
                 break;
             case ETargetTypeEnum::SINGLE:
                 // we need to have 3 buttons for the enemies
-                for (int i = 0; i < Enemies.Num(); i++) {
+                for (int i = 0; i < EnemyStructs.Num(); i++) {
                     UTargetButton* TargetButton = CreateWidget<UTargetButton>(this, TargetButtonClass);
                     TargetButton->InitializeUI(ParentHUD);
-                    TargetButton->UpdateTarget(Enemies[i].Name, i);
+                    TargetButton->UpdateTarget(EnemyStructs[i], i);
                     TargetsContainer->AddChild(TargetButton);
                 }
                 break;

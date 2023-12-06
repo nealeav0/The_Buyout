@@ -32,6 +32,13 @@ void UPartySelectWidget::InitializeUI(TArray<FEntityStruct> PlayerStructs, UBatt
         RangerLabel->SetText(FText::FromString(PlayerStructs[2].Name));
 }
 
+void UPartySelectWidget::UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions)
+{
+    WarriorButton->SetIsEnabled(!(PlayerStructs[0].bIsDead || PlayerActions[0] == 0));
+    MageButton->SetIsEnabled(!(PlayerStructs[1].bIsDead || PlayerActions[1] == 0));
+    RangerButton->SetIsEnabled(!(PlayerStructs[2].bIsDead || PlayerActions[2] == 0));
+}
+
 void UPartySelectWidget::OnWarriorClicked()
 {
     ParentHUD->OnPlayerSelected(0);
