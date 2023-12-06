@@ -159,10 +159,34 @@ public:
 		PoisonStacks = 0;
 	}
 
-	FEntityStruct(FString NewName, EEnemyType NewEnemyType)
+	FEntityStruct(FString NewName, EEnemyType NewEnemyType, int32 NewLevel)
 	{
 		EntityName = NewName;
 		EnemyType = NewEnemyType;
+		Level = NewLevel;
+		EXP = 0;
+		EXPThreshold = 0;
+		AbilityPoints = 0;
+		bIsDead = false;
+		MaxHealth = 0.f;
+		Health = MaxHealth;
+		Attack = 4;
+		Defense = 4;
+		MagicAttack = 4;
+		MagicDefense = 4;
+		Accuracy = 4;
+		Evasion = 4;
+		AttackBuff = 0.f;
+		DefenseBuff = 0.f;
+		AccuracyBuff = 0.f;
+		EvasionBuff = 0.f;
+		ElementalResistances = { 0, 0, 0, 0 };
+		Location = FVector(0, 0, 0);
+		bIsDefending = false;
+		BurnStacks = 0;
+		ChillStacks = 0;
+		StunStacks = 0;
+		PoisonStacks = 0;
 	}
 };
 
