@@ -16,6 +16,15 @@ enum class EEntityType
 	NPC
 };
 
+UENUM()
+enum class EEnemyType
+{
+	NONE,
+	COMMON,
+	EVASIVE,
+	DEFENSIVE
+};
+
 USTRUCT(BlueprintType)
 struct FEntityStruct : public FTableRowBase
 {
@@ -31,6 +40,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEntityType EntityType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EEnemyType EnemyType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Location;
@@ -120,6 +132,7 @@ public:
 		Name = FString(TEXT("NPC"));
 		EntityName = FString(TEXT("Unknown"));
 		EntityType = EEntityType::NPC;
+		EnemyType = EEnemyType::NONE;
 		Level = 1;
 		EXP = 0;
 		EXPThreshold = 0;

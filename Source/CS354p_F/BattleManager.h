@@ -6,6 +6,7 @@
 #include "MainCharacter.h"
 #include "EnemyBase.h"
 #include "CommonEnemy.h"
+#include "EvasiveEnemy.h"
 #include "EntityBase.h"
 #include "UObject/NoExportTypes.h"
 #include "BattleManager.generated.h"
@@ -20,7 +21,19 @@ public:
 
 	TArray<FEntityStruct> Players;
 
+	TArray<FVector> PlayerPositions = { FVector(-1590, 1560, 110), FVector(-1590, 1380, 110), FVector(-1590, 1200, 110) };
+
+	UPROPERTY()
+	TSubclassOf<ACommonEnemy> CommonEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<AEvasiveEnemy> EvasiveEnemyBP;
+
 	TArray<FEntityStruct> Enemies;
+
+	TArray<AEnemyBase*> EnemyReferences;
+
+	TArray<FVector> EnemyPositions = { FVector(-900, 980, 0), FVector(-870, 1120, 0), FVector(-900, 1260, 0), FVector(-810, 1400, 0), FVector(-900, 1540, 0) };
 
 	TArray<int32> PlayerActions;
 
@@ -36,15 +49,15 @@ public:
 
 	int TargetIndex = 0; // Q and E to cycle through enemies. Spacebar to confirm.
 
-	bool bSelectingPlayer;
+	bool bSelectingPlayer = true;
 
 	void SelectPlayer(int32 index);
 
-	bool bSelectingAbility;
+	bool bSelectingAbility = false;
 
 	void SelectAbility(int32 index);
 
-	bool bSelectingTarget;
+	bool bSelectingTarget = false;
 
 	void SelectTarget(int32 index);
 
@@ -70,6 +83,8 @@ public:
 	void PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<FEntityStruct> NewEnemies);
 
 	void InitializeEnemyStats(FEntityStruct& Enemy);
+
+	void SpawnEnemies();
 
 	UFUNCTION(BlueprintCallable) 
 	FEntityStruct GetPlayer();

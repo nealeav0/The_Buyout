@@ -3,6 +3,7 @@
 		"Name": "common",
 		"EntityName": "Student",
 		"EntityType": "ENEMY",
+		"EnemyType": "COMMON",
 		"Location":
 		{
 			"X": 0,
@@ -38,6 +39,7 @@
 		"Name": "evasive",
 		"EntityName": "Professor",
 		"EntityType": "ENEMY",
+		"EnemyType": "EVASIVE",
 		"Location":
 		{
 			"X": 0,
@@ -73,6 +75,7 @@
 		"Name": "defensive",
 		"EntityName": "Donor",
 		"EntityType": "ENEMY",
+		"EnemyType": "DEFENSIVE",
 		"Location":
 		{
 			"X": 0,

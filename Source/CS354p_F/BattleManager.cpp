@@ -8,16 +8,24 @@
 #include "MainGameInstance.h"
 
 AMainPlayerController* MainPlayerController;
-ACommonEnemy* CommonEnemy;
 bool bEnemyDied;
 
 UBattleManager::UBattleManager()
 {
 
 	MainPlayerController = nullptr;
-	CommonEnemy = nullptr;
 
 	GameInstance = Cast<UMainGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_CommonEnemy.BP_CommonEnemy'
+	static ConstructorHelpers::FClassFinder<ACommonEnemy> CommonBPClass(TEXT("/Game/Blueprints/BP_CommonEnemy"));
+	if (CommonBPClass.Class)
+		CommonEnemyBP = CommonBPClass.Class;
+
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_EvasiveEnemy.BP_EvasiveEnemy'
+	static ConstructorHelpers::FClassFinder<AEvasiveEnemy> EvasiveBPClass(TEXT("/Game/Blueprints/BP_EvasiveEnemy"));
+	if (EvasiveBPClass.Class)
+		EvasiveEnemyBP = EvasiveBPClass.Class;
 }
 
 /**
@@ -297,7 +305,6 @@ void UBattleManager::LeaveBattle() {
 
 	MainPlayerController->CloseBattleUI();
 	MainPlayerController = nullptr;
-	CommonEnemy = nullptr;
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("AggieMap")), true, "");
 	
 }
@@ -307,8 +314,9 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 	if (GameInstance->EnemyBaseDataTable)
 	{
 		FEntityStruct* EnemyBase;
-		if (Enemy.Name.Equals("common"))
+		switch (Enemy.EnemyType)
 		{
+		case EEnemyType::COMMON:
 			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("common")), FString(TEXT("Getting Common Stats")));
 
 			if (EnemyBase)
@@ -332,9 +340,8 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
 				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
 			}
-		}
-		else if (Enemy.Name.Equals("evasive"))
-		{
+			break;
+		case EEnemyType::EVASIVE:
 			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("evasive")), FString(TEXT("Getting evasive Stats")));
 
 			if (EnemyBase)
@@ -358,9 +365,8 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
 				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
 			}
-		}
-		else if (Enemy.Name.Equals("defensive"))
-		{
+			break;
+		case EEnemyType::DEFENSIVE:
 			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("defensive")), FString(TEXT("Getting defensive Stats")));
 
 			if (EnemyBase)
@@ -384,7 +390,40 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
 				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
 			}
+			break;
 		}
+	}
+}
+
+void UBattleManager::SpawnEnemies()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	for (int i = 0; i < Enemies.Num(); i++)
+	{
+		AEnemyBase* Enemy = nullptr;
+		switch (Enemies[i].EnemyType)
+		{
+		case EEnemyType::COMMON:
+			Enemy = GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		case EEnemyType::EVASIVE:
+			if (!EvasiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("EvasiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		}
+		if (Enemy)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("We got a thing.")));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("We got nothing.")));
+		}
+		EnemyReferences.Add(Enemy);
 	}
 }
 
@@ -404,9 +443,7 @@ void UBattleManager::StartBattle()
 		MainPlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	}
 	MainPlayerController->InitUI(Players, Enemies, bPlayerTurn, GetPlayer().Abilities);
-	
-	// load in enemy and set the reference to this enemy we just loaded in
-	CommonEnemy = GameInstance->SpawnEnemyAtLocation(FVector(0.f, 300.f, 50.f));
+	SpawnEnemies();
 }
 
 /**
@@ -417,6 +454,7 @@ void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<F
 	Players.Empty();
 	Enemies.Empty();
 	PlayerActions.Empty();
+	EnemyReferences.Empty();
 	Players = NewPlayers;
 	Enemies = NewEnemies;
 	TotalEXP = 0;
@@ -574,7 +612,10 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 	switch (Ability.MoveType)
 	{
 	case EMoveTypeEnum::ATTACK:
-		CommonEnemy->Attack();
+		if (EnemyReferences.IsValidIndex(TargetIndex))
+		{
+			EnemyReferences[TargetIndex]->Attack();
+		}
 		switch (Ability.TargetType)
 		{
 		case ETargetTypeEnum::SINGLE:
@@ -594,7 +635,10 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		}
 		break;
 	case EMoveTypeEnum::MAGIC:
-		CommonEnemy->Attack();
+		if (EnemyReferences.IsValidIndex(TargetIndex))
+		{
+			EnemyReferences[TargetIndex]->Attack();
+		}
 		switch (Ability.TargetType)
 		{
 		case ETargetTypeEnum::ALLY:
@@ -675,7 +719,7 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 	} 
 	if (HitsTarget)
 	{
-		float Damage;
+		float Damage = 0;
 		if (Ability.bIsPhysical)
 		{
 			/*if (GEngine)
@@ -750,7 +794,8 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 		// animate enemy death
 		if (Target.EntityType == EEntityType::ENEMY)
 		{
-			CommonEnemy->Die();
+			if (EnemyReferences.IsValidIndex(TargetIndex))
+				EnemyReferences[TargetIndex]->Die();
 		}
 		// somehow flag to delete in overworld
 		if (GameInstance)
@@ -1049,7 +1094,10 @@ void UBattleManager::HandleBurnDamage(FEntityStruct& Target)
 				Die(Target);
 				if (Target.EntityType == EEntityType::ENEMY)
 				{
-					CommonEnemy->Die();
+					if (EnemyReferences.IsValidIndex(TargetIndex))
+					{
+						EnemyReferences[TargetIndex]->Die();
+					}
 				}
 			}
 		}
@@ -1081,9 +1129,9 @@ void UBattleManager::HandlePoisonDamage(FEntityStruct& Target)
 			{
 				TotalEXP += Target.EXP;
 				Die(Target);
-				if (Target.EntityType == EEntityType::ENEMY)
+				if (EnemyReferences.IsValidIndex(TargetIndex))
 				{
-					CommonEnemy->Die();
+					EnemyReferences[TargetIndex]->Die();
 				}
 			}
 		}
@@ -1120,10 +1168,10 @@ void UBattleManager::StartRound()
 	{
 
 	}*/
-	PlayerTurn();
 	PlayerIndex = 0;
 	AbilityIndex = 0;
 	TargetIndex = 0;
+	PlayerTurn(); // This should handle it as everyone has no actions.
 }
 
 /**

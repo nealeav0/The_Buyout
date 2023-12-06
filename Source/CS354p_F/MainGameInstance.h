@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "BattleManager.h"
 #include "AbilityManager.h"
+#include "EnemyBase.h"
 #include "MainGameInstance.generated.h"
 
 /**
@@ -115,5 +116,5 @@ public:
 	void SpawnEnemies();
 
 	UFUNCTION()
-	ACommonEnemy* SpawnEnemyAtLocation(FVector Location);
+	AEnemyBase* SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location);
 };

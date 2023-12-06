@@ -160,28 +160,13 @@ void UMainGameInstance::RemoveEnemyAtLocation(FVector Location)
 
 void UMainGameInstance::SpawnEnemies()
 {
-	for (FVector Location : EnemyLocations) {
+	/*for (FVector Location : EnemyLocations) {
 		SpawnEnemyAtLocation(Location);
-	}
+	}*/
 }
 
-ACommonEnemy* UMainGameInstance::SpawnEnemyAtLocation(FVector Location)
+AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location)
 {
-	// can't put this in init; otherwise will crash, so we'll just load it in only the first time this is called 
-	if (!CommonEnemyBPClass) {
-		static ConstructorHelpers::FClassFinder<ACommonEnemy> EnemyBPClass(TEXT("/Game/Blueprints/BP_CommonEnemy"));
-		if (EnemyBPClass.Class)
-			CommonEnemyBPClass = EnemyBPClass.Class;
-	}
-
-	if (GetWorld())
-    {
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-        FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
-
-        return GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
-    }
-	return nullptr;
+	AEnemyBase* Enemy = nullptr;
+	return Enemy;
 }

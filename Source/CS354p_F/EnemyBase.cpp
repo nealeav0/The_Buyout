@@ -32,8 +32,13 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void AEnemyBase::Attack()
+{
+}
+
 void AEnemyBase::Die()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("EnemyBase Died.")));
 }
 
 FEntityStruct AEnemyBase::GetEntityStruct()

@@ -113,6 +113,7 @@ void ACommonEnemy::Attack()
 
 void ACommonEnemy::Die()
 {	
+	GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("Common Died.")));
 	// maybe we can add some animation 
 	SpawnLocation = GetActorLocation();
 	SetActorLocation(SpawnLocation + FVector(0.f, 0.f, 25.f));

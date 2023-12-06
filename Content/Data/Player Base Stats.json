@@ -3,6 +3,7 @@
 		"Name": "warrior",
 		"EntityName": "D. Campbell",
 		"EntityType": "Player",
+		"EnemyType": "NONE",
 		"Location":
 		{
 			"X": 0,
@@ -39,6 +40,7 @@
 		"Name": "mage",
 		"EntityName": "R. Perry",
 		"EntityType": "Player",
+		"EnemyType": "NONE",
 		"Location":
 		{
 			"X": 0,
@@ -75,6 +77,7 @@
 		"Name": "ranger",
 		"EntityName": "J. Manziel",
 		"EntityType": "Player",
+		"EnemyType": "NONE",
 		"Location":
 		{
 			"X": 0,

@@ -44,13 +44,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION() void Roam();
+	UFUNCTION() 
+	void Roam();
 
-	UFUNCTION() void ResetPosition();
+	UFUNCTION() 
+	void ResetPosition();
 	
-	UFUNCTION() void Attack();
+	UFUNCTION() 
+	virtual void Attack() override;
 
-	UFUNCTION() void Die();
+	UFUNCTION() 
+	virtual void Die() override;
 
-	UFUNCTION() void DeleteSelf();
+	UFUNCTION() 
+	void DeleteSelf();
 };
