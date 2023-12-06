@@ -33,7 +33,7 @@ public:
 
 	TArray<AEnemyBase*> EnemyReferences;
 
-	TArray<FVector> EnemyPositions = { FVector(0, 300, 0), FVector(250, 300, 0), FVector(0, 100, 0) };
+	TArray<FVector> EnemyPositions = { FVector(250, 350, 5), FVector(100, 350, 5), FVector(-50, 350, 5) };
 
 	TArray<int32> PlayerActions;
 
