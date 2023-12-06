@@ -447,6 +447,7 @@ void UBattleManager::PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<F
 	Players.Empty();
 	Enemies.Empty();
 	PlayerActions.Empty();
+	EnemyReferences.Empty();
 	Players = NewPlayers;
 	Enemies = NewEnemies;
 	TotalEXP = 0;
