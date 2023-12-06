@@ -27,6 +27,9 @@ public:
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EntityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEntityType EntityType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -115,6 +118,7 @@ public:
 	FEntityStruct()
 	{
 		Name = FString(TEXT("NPC"));
+		EntityName = FString(TEXT("Unknown"));
 		EntityType = EEntityType::NPC;
 		Level = 1;
 		EXP = 0;

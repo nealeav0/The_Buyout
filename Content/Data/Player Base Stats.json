@@ -1,6 +1,7 @@
 [
 	{
 		"Name": "warrior",
+		"EntityName": "D. Campbell",
 		"EntityType": "Player",
 		"Location":
 		{
@@ -36,6 +37,7 @@
 	},
 	{
 		"Name": "mage",
+		"EntityName": "R. Perry",
 		"EntityType": "Player",
 		"Location":
 		{
@@ -71,6 +73,7 @@
 	},
 	{
 		"Name": "ranger",
+		"EntityName": "J. Manziel",
 		"EntityType": "Player",
 		"Location":
 		{

@@ -20,7 +20,7 @@ void UTargetButton::InitializeUI(UBattleHUD* BattleHUD)
 void UTargetButton::UpdateTarget(FEntityStruct TargetStruct, int32 index)
 {
     if (TargetLabel) {
-        TargetLabel->SetText(FText::FromString(TargetStruct.Name));
+        TargetLabel->SetText(FText::FromString(TargetStruct.EntityName));
     }
 
     TargetButton->SetIsEnabled(!TargetStruct.bIsDead);

@@ -318,6 +318,7 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 					Enemy.Level = 1;
 				}
 				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
 				Enemy.EntityType = (*EnemyBase).EntityType;
 				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
 				Enemy.Health = Enemy.MaxHealth;
@@ -343,6 +344,7 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 					Enemy.Level = 1;
 				}
 				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
 				Enemy.EntityType = (*EnemyBase).EntityType;
 				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
 				Enemy.Health = Enemy.MaxHealth;
@@ -368,6 +370,7 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 					Enemy.Level = 1;
 				}
 				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
 				Enemy.EntityType = (*EnemyBase).EntityType;
 				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
 				Enemy.Health = Enemy.MaxHealth;

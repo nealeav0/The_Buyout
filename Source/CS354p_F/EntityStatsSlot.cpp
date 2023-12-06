@@ -17,7 +17,7 @@ void UEntityStatsSlot::InitializeStats(FEntityStruct EntityStruct)
 {
     if (NameLabel) {
         FFormatNamedArguments Args;
-        Args.Add(TEXT("Name"), FText::FromString(EntityStruct.Name));
+        Args.Add(TEXT("Name"), FText::FromString(EntityStruct.EntityName));
         NameLabel->SetText(FText::Format(LOCTEXT("NameLabel", "{Name}"), Args));
     }
 

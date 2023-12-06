@@ -23,13 +23,13 @@ void UPartySelectWidget::InitializeUI(TArray<FEntityStruct> PlayerStructs, UBatt
     ParentHUD = BattleHUD;
 
     if (WarriorLabel)
-        WarriorLabel->SetText(FText::FromString(PlayerStructs[0].Name));
+        WarriorLabel->SetText(FText::FromString(PlayerStructs[0].EntityName));
     
     if (MageLabel)
-        MageLabel->SetText(FText::FromString(PlayerStructs[1].Name));
+        MageLabel->SetText(FText::FromString(PlayerStructs[1].EntityName));
 
     if (RangerLabel)
-        RangerLabel->SetText(FText::FromString(PlayerStructs[2].Name));
+        RangerLabel->SetText(FText::FromString(PlayerStructs[2].EntityName));
 }
 
 void UPartySelectWidget::UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions)
