@@ -188,7 +188,7 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			}
 		}
 	}
-	else if (Entity.Name.Equals("common"))
+	else if (Entity.EnemyType == EEnemyType::COMMON)
 	{
 		if (CommonAbilityDataTable)
 		{
@@ -200,7 +200,7 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			}
 		}
 	}
-	else if (Entity.Name.Equals("evasive"))
+	else if (Entity.EnemyType == EEnemyType::EVASIVE)
 	{
 		if (EvasiveAbilityDataTable)
 		{
@@ -212,7 +212,7 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			}
 		}
 	}
-	else if (Entity.Name.Equals("defensive"))
+	else if (Entity.EnemyType == EEnemyType::DEFENSIVE)
 	{
 		if (DefensiveAbilityDataTable)
 		{

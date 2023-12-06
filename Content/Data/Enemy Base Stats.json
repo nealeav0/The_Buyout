@@ -2,6 +2,7 @@
 	{
 		"Name": "common",
 		"EntityType": "ENEMY",
+		"EnemyType": "COMMON",
 		"Location":
 		{
 			"X": 0,
@@ -36,6 +37,7 @@
 	{
 		"Name": "evasive",
 		"EntityType": "ENEMY",
+		"EnemyType": "EVASIVE",
 		"Location":
 		{
 			"X": 0,
@@ -70,6 +72,7 @@
 	{
 		"Name": "defensive",
 		"EntityType": "ENEMY",
+		"EnemyType": "DEFENSIVE",
 		"Location":
 		{
 			"X": 0,

@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "BattleManager.h"
 #include "AbilityManager.h"
+#include "EnemyBase.h"
 #include "MainGameInstance.generated.h"
 
 /**
@@ -43,9 +44,6 @@ public:
 	// /Script/Engine.DataTable'/Game/Data/Dialogue.Dialogue'
 	UPROPERTY(VisibleAnywhere)
 	FSoftObjectPath DialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/Dialogue.Dialogue'"));
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
 
 	virtual void Init() override;
 
@@ -87,5 +85,5 @@ public:
 	void SpawnEnemies();
 
 	UFUNCTION()
-	ACommonEnemy* SpawnEnemyAtLocation(FVector Location);
+	AEnemyBase* SpawnEnemyAtLocation(EEnemyType EnemyType, FVector Location);
 };
