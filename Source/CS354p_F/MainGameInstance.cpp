@@ -136,6 +136,8 @@ void UMainGameInstance::ToggleMute()
 	if (BattleMusic)
 		BattleMusic->SetVolumeMultiplier(Volume);
 
+}
+
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)
 {
 	PlayerLastSavedLocation = Location;
