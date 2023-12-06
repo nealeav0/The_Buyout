@@ -63,10 +63,22 @@ public:
 	UDataTable* GetDialogueDataTable();
 
 	UFUNCTION(BlueprintCallable, Category = "Audio")
-    UAudioComponent* PlayAudio();
+    UAudioComponent* PlayBGAudio();
+
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+    UAudioComponent* PlayBattleAudio();
+
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+    void ToggleMute();
 
 	UPROPERTY()
 	class UAudioComponent* BGMusic;
+
+	UPROPERTY()
+	class UAudioComponent* BattleMusic;
+
+	UPROPERTY()
+	float Volume;
 
 	UPROPERTY()
 	TArray<ACommonEnemy*> Enemies;

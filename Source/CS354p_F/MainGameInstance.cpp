@@ -68,6 +68,8 @@ void UMainGameInstance::Init()
 		FVector(600.f, 1160.f, 56.f),
 		FVector(500.f, -1190.f, 56.f)
 	};
+
+	Volume = 0.75f;
 }
 
 void UMainGameInstance::Shutdown()
@@ -89,14 +91,34 @@ UDataTable* UMainGameInstance::GetDialogueDataTable()
 	return DialogueDataTable;
 }
 
-UAudioComponent* UMainGameInstance::PlayAudio()
+UAudioComponent* UMainGameInstance::PlayBGAudio()
 {
 	USoundBase* SoundCue = Cast<USoundBase>(StaticLoadObject(USoundBase::StaticClass(), nullptr, TEXT("/Game/Assets/BGMusicCue")));
 
 	// const UObject * WorldContextObject, USoundBase * Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundConcurrency * ConcurrencySettings, bool bPersistAcrossLevelTransition, bool bAutoDestroy
-	BGMusic = UGameplayStatics::CreateSound2D(GetWorld(), SoundCue, 1.0f, 1.0f, 0.0f, nullptr, true, true);
+	BGMusic = UGameplayStatics::CreateSound2D(GetWorld(), SoundCue, Volume, 1.0f, 0.0f, nullptr, true, true);
 	BGMusic->Play();
 	return BGMusic;
+}
+
+UAudioComponent *UMainGameInstance::PlayBattleAudio()
+{
+	USoundBase* SoundCue = Cast<USoundBase>(StaticLoadObject(USoundBase::StaticClass(), nullptr, TEXT("/Game/Assets/BattleMusicCue")));
+
+	BattleMusic = UGameplayStatics::CreateSound2D(GetWorld(), SoundCue, Volume, 1.0f, 0.0f, nullptr, false, true);
+	BattleMusic->Play();
+	return BattleMusic;
+}
+
+void UMainGameInstance::ToggleMute()
+{
+	Volume = (Volume == 0.0f) ? 0.75f : 0.0f;
+
+	if (BGMusic)
+		BGMusic->SetVolumeMultiplier(Volume);
+
+	if (BattleMusic)
+		BattleMusic->SetVolumeMultiplier(Volume);
 }
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)

@@ -9,13 +9,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/GameEngine.h"
-#include "Components/AudioComponent.h"
 #include "MainGameInstance.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 
 #define LOCTEXT_NAMESPACE "UMG"
-
-bool bPlayingSound;
 
 void UPauseMenuWidget::NativeConstruct()
 {
@@ -24,8 +21,6 @@ void UPauseMenuWidget::NativeConstruct()
     ResumeButton->OnClicked.AddUniqueDynamic(this, &UPauseMenuWidget::OnResumeClicked);
     AudioButton->OnClicked.AddUniqueDynamic(this, &UPauseMenuWidget::OnAudioClicked);
     QuitButton->OnClicked.AddUniqueDynamic(this, &UPauseMenuWidget::OnQuitClicked);
-
-    bPlayingSound = true;
 
     PC = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController());
 }
@@ -58,12 +53,7 @@ void UPauseMenuWidget::OnAudioClicked()
     UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 	if (GameInstance) {
         // toggle audio
-        if (bPlayingSound)
-            GameInstance->BGMusic->Stop();
-        else
-            GameInstance->BGMusic->Play();
-        
-        bPlayingSound = !bPlayingSound;
+        GameInstance->ToggleMute();
     }
 }
 
