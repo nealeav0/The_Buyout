@@ -158,6 +158,12 @@ public:
 		StunStacks = 0;
 		PoisonStacks = 0;
 	}
+
+	FEntityStruct(FString NewName, EEnemyType NewEnemyType)
+	{
+		EntityName = NewName;
+		EnemyType = NewEnemyType;
+	}
 };
 
 /**
