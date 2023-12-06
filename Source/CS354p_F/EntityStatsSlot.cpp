@@ -24,7 +24,7 @@ void UEntityStatsSlot::InitializeStats(FEntityStruct EntityStruct)
     if (LevelLabel) {
         FFormatNamedArguments Args;
         Args.Add(TEXT("Level"), FText::AsNumber(EntityStruct.Level));
-        LevelLabel->SetText(FText::Format(LOCTEXT("PlayerLabel", "(Lv. {Level})"), Args));
+        LevelLabel->SetText(FText::Format(LOCTEXT("LevelLabel", "(Lv. {Level})"), Args));
     }
 
     UpdateHealth(EntityStruct);

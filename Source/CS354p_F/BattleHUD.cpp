@@ -4,9 +4,13 @@
 #include "BattleHUD.h"
 #include "EntityBase.h"
 #include "EntityStatsWidget.h"
+#include "PartySelectWidget.h"
+#include "ActionsSelectWidget.h"
+#include "TargetsSelectWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
+#include "Components/SlateWrapperTypes.h"
 #include "MainGameInstance.h"
 
 void UBattleHUD::NativeConstruct()
@@ -17,16 +21,21 @@ void UBattleHUD::NativeConstruct()
     if (GameInstance)
         BattleManager = GameInstance->BattleManager();
 
-    DefendButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnDefendClicked);
+    PartySelect->SetVisibility(ESlateVisibility::Collapsed);
+    ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
+
+    SelectButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnSelectClicked);
     EscapeButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnEscapeClicked);
-    AbilitiesButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnAbilitiesClicked);
 }
 
 void UBattleHUD::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
 {
     UpdateStats(PlayerStructs, EnemyStructs);
     UpdateTurn(bIsPlayerTurn);
-    UpdateAbilities(PlayerAbilities);
+    PartySelect->InitializeUI(PlayerStructs, this);
+    ActionsSelect->InitializeUI(this);
+    TargetsSelect->InitializeUI(this);
 }
 
 void UBattleHUD::UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
@@ -49,21 +58,69 @@ void UBattleHUD::UpdateTurn(bool bIsPlayerTurn)
             TurnLabel->SetText(FText::FromString("ENEMY'S TURN"));
         }
     }
+    // update players menu every time round ends would be good
+    UpdatePlayers(BattleManager->Players, BattleManager->PlayerActions);
+}
+
+void UBattleHUD::UpdatePlayers(TArray<FEntityStruct> PlayerStructs, TArray<int32> PlayerActions)
+{
+    PartySelect->UpdatePlayers(PlayerStructs, PlayerActions);
 }
 
 void UBattleHUD::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
 {
-    // deprecated probably
+    ActionsSelect->UpdateAbilities(PlayerAbilities);
 }
 
-void UBattleHUD::OnAbilitiesClicked()
+void UBattleHUD::UpdateTargets(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, ETargetTypeEnum TargetType)
 {
-    // spawn menu of abilities !
+    TargetsSelect->UpdateTargets(PlayerStructs, EnemyStructs, TargetType);
+}
+
+void UBattleHUD::OnSelectClicked()
+{
+    if (PartySelect->Visibility == ESlateVisibility::Visible) {
+        PartySelect->SetVisibility(ESlateVisibility::Collapsed);
+        ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
+        TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    }
+    else
+        PartySelect->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UBattleHUD::OnPlayerSelected(int32 index)
+{
+    BattleManager->SelectPlayer(index);
+    UpdateAbilities(BattleManager->GetPlayer().Abilities);
+    ActionsSelect->SetVisibility(ESlateVisibility::Visible);
+    TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void UBattleHUD::OnAbilitySelected(int32 index)
+{
+    BattleManager->SelectAbility(index);
+    ETargetTypeEnum ETargetType = BattleManager->GetPlayer().Abilities[index].TargetType;
+    if (ETargetType == ETargetTypeEnum::ALLY || ETargetType == ETargetTypeEnum::SINGLE ) {
+        UpdateTargets(BattleManager->Players, BattleManager->Enemies, ETargetType);
+        TargetsSelect->SetVisibility(ESlateVisibility::Visible);
+    } else {
+        OnTargetSelected(0);
+    }
+}
+
+void UBattleHUD::OnTargetSelected(int32 index)
+{
+    BattleManager->SelectTarget(index);
+    BattleManager->ConfirmSelection();
+    ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    UpdatePlayers(BattleManager->Players, BattleManager->PlayerActions);
 }
 
 void UBattleHUD::OnDefendClicked()
 {
     BattleManager->DefendHandler();
+    ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UBattleHUD::OnEscapeClicked()
