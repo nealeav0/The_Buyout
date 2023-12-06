@@ -37,7 +37,7 @@ AMainCharacter::AMainCharacter()
 	Hitbox->SetupAttachment(RootComponent);
 	Hitbox->InitCapsuleSize(55.f, 100.f);
 	
-	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -87.f));
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
 	SpawnLocation = GetActorLocation();
