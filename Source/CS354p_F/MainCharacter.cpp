@@ -260,7 +260,10 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			TArray<FVector> AllLocations;
 			TArray<EEnemyType> EnemyTypes;
 			for (AActor* CurrEnemy : SpawnedEnemies) {
-				EnemyTypes.Add((Cast<AEnemyBase>(CurrEnemy))->GetEntityStruct().EnemyType);
+				if (Cast<ACommonEnemy>(CurrEnemy))
+					EnemyTypes.Add(EEnemyType::COMMON);
+				else if (Cast<AEvasiveEnemy>(CurrEnemy))
+					EnemyTypes.Add(EEnemyType::EVASIVE);
 				AllLocations.Add(CurrEnemy->GetActorLocation());
 			}
 			GameInstance->SaveEnemyTypes(EnemyTypes);

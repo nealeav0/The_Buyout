@@ -196,19 +196,17 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVecto
 {
 	if (GetWorld())
     {
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("got world!"));
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
         FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
 		
 		if (EnemyType == EEnemyType::COMMON)
-        	return GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
+			return GetWorld()->SpawnActor<ACommonEnemy>(CommonEnemyBPClass, Location, SpawnRotation, SpawnParams);
 
 		else if (EnemyType == EEnemyType::EVASIVE)
 			return GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
     }
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("can't spawn :("));
 
 	return nullptr;
 
