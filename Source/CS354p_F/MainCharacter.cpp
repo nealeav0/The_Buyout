@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "EnemyBase.h"
 
 ABattleCamera* BattleCam;
 AMainPlayerController* MainController;
@@ -257,9 +258,15 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			TArray<AActor*> SpawnedEnemies;
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, SpawnedEnemies);
 			TArray<FVector> AllLocations;
+			TArray<EEnemyType> EnemyTypes;
 			for (AActor* CurrEnemy : SpawnedEnemies) {
+				if (Cast<ACommonEnemy>(CurrEnemy))
+					EnemyTypes.Add(EEnemyType::COMMON);
+				else if (Cast<AEvasiveEnemy>(CurrEnemy))
+					EnemyTypes.Add(EEnemyType::EVASIVE);
 				AllLocations.Add(CurrEnemy->GetActorLocation());
 			}
+			GameInstance->SaveEnemyTypes(EnemyTypes);
 			GameInstance->SaveEnemyLocations(AllLocations);
 			// handle info for this specific enemy we've encountered
 			enemy->SetEntityStructLocation(enemy->GetActorLocation());
