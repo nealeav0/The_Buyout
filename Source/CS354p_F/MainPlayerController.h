@@ -18,6 +18,9 @@ class CS354P_F_API AMainPlayerController : public APlayerController
 public:
 	AMainPlayerController();
 
+	UFUNCTION()
+	void SwitchMeshMaterial(int32 index);
+
 	/* --- MAIN MENU UI --- */
 
     UFUNCTION()

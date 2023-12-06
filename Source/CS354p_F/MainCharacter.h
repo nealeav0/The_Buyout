@@ -10,6 +10,7 @@
 #include "Engine/DataTable.h"
 #include "EntityBase.h"
 #include "Ability.h"
+#include "Materials/Material.h"
 #include "MainCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -91,4 +92,16 @@ public:
 
 	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	UPROPERTY(EditAnywhere)
+	class UMaterial* WarriorMaterial;
+
+	UPROPERTY(EditAnywhere)
+	class UMaterial* MageMaterial;
+
+	UPROPERTY(EditAnywhere)
+	class UMaterial* RangerMaterial;
+
+	UFUNCTION()
+	void SetMaterial(int32 index);
 };

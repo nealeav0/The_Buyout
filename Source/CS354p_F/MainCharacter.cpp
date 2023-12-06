@@ -37,6 +37,12 @@ AMainCharacter::AMainCharacter()
 	Hitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Hitbox"));
 	Hitbox->SetupAttachment(RootComponent);
 	Hitbox->InitCapsuleSize(55.f, 100.f);
+
+	WarriorMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Warrior Material"));
+	MageMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Mage Material"));
+	RangerMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Ranger Material"));
+
+	SetMaterial(0);
 	
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -87.f));
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
@@ -46,6 +52,25 @@ AMainCharacter::AMainCharacter()
 	bBattleReady = false;
 
 	Players.Init(FEntityStruct(), PLAYERCOUNT);
+}
+
+void AMainCharacter::SetMaterial(int32 index)
+{
+	switch (index) {
+		case 0:
+			GetMesh()->SetMaterial(1, WarriorMaterial);
+			break;
+		case 1:
+			GetMesh()->SetMaterial(1, MageMaterial);
+			break;
+		case 2:
+			GetMesh()->SetMaterial(1, RangerMaterial);
+			break;
+		default:
+			GetMesh()->SetMaterial(1, WarriorMaterial);
+			break;
+	}
+	
 }
 
 // Called when the game starts or when spawned

@@ -31,6 +31,12 @@ AMainPlayerController::AMainPlayerController()
 	PauseMenuWidget = nullptr;
 }
 
+void AMainPlayerController::SwitchMeshMaterial(int32 index)
+{
+	AMainCharacter* MC = Cast<AMainCharacter>(GetPawn());
+	MC->SetMaterial(index);
+}
+
 /* --- MAIN MENU UI --- */
 
 void AMainPlayerController::OpenMainMenuUI() {

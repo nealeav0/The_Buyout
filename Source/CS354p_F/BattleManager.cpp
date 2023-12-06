@@ -35,6 +35,9 @@ void UBattleManager::SelectPlayer(int32 index)
 {
 	PlayerIndex = index;
 
+	// switch mesh material to indicate which player we're using
+	MainPlayerController->SwitchMeshMaterial(index);
+
 	if (GEngine && Players.IsValidIndex(PlayerIndex))
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player Index: %d. Player: %s"), PlayerIndex, *(Players[PlayerIndex].Name)));
 }
