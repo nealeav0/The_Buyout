@@ -62,6 +62,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UDataTable* GetDialogueDataTable();
 
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+    UAudioComponent* PlayAudio();
+
+	UPROPERTY()
+	class UAudioComponent* BGMusic;
+
 	UPROPERTY()
 	TArray<ACommonEnemy*> Enemies;
 

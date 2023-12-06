@@ -4,7 +4,10 @@
 #include "MainGameInstance.h"
 #include "MainCharacter.h"
 #include "CommonEnemy.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 #include "Engine/AssetManager.h"
+#include "Kismet/GameplayStatics.h"
 
 UBattleManager* UMainGameInstance::BattleManager()
 {
@@ -84,6 +87,16 @@ void UMainGameInstance::UpdateBattleManager()
 UDataTable* UMainGameInstance::GetDialogueDataTable()
 {
 	return DialogueDataTable;
+}
+
+UAudioComponent* UMainGameInstance::PlayAudio()
+{
+	USoundBase* SoundCue = Cast<USoundBase>(StaticLoadObject(USoundBase::StaticClass(), nullptr, TEXT("/Game/Assets/BGMusicCue")));
+
+	// const UObject * WorldContextObject, USoundBase * Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundConcurrency * ConcurrencySettings, bool bPersistAcrossLevelTransition, bool bAutoDestroy
+	BGMusic = UGameplayStatics::CreateSound2D(GetWorld(), SoundCue, 1.0f, 1.0f, 0.0f, nullptr, true, true);
+	BGMusic->Play();
+	return BGMusic;
 }
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)

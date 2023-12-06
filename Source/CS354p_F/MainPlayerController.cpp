@@ -133,7 +133,11 @@ void AMainPlayerController::BeginPlay()
 		// set up the click-only input behavior 
 		UpdateInputMode(BattleWidget, true); // needs to be udated to true later
 
-	} else if (MainMenuMode) { // main/starting menu 
+	} else if (MainMenuMode) { // main/starting menu
+		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+		if (GameInstance)
+			GameInstance->PlayAudio();
+			
 		OpenMainMenuUI();
 		// set up the click-only input behavior 
 		UpdateInputMode(MainMenuWidget, true);
