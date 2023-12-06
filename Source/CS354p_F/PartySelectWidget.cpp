@@ -34,7 +34,7 @@ void UPartySelectWidget::InitializeUI(TArray<FEntityStruct> PlayerStructs, UBatt
 
 void UPartySelectWidget::OnWarriorClicked()
 {
-    ParentHUD->OnWarriorClicked();
+    ParentHUD->OnPlayerSelected(0);
 }
 
 // void UPartySelectWidget::OnWarriorReleased()
@@ -44,10 +44,10 @@ void UPartySelectWidget::OnWarriorClicked()
 
 void UPartySelectWidget::OnMageClicked()
 {
-    ParentHUD->OnMageClicked();
+    ParentHUD->OnPlayerSelected(1);
 }
 
 void UPartySelectWidget::OnRangerClicked()
 {
-    ParentHUD->OnRangerClicked();
+    ParentHUD->OnPlayerSelected(2);
 }

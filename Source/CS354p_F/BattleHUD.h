@@ -31,16 +31,13 @@ public:
 	void OnSelectClicked();
 
 	UFUNCTION(BlueprintCallable)
-	void OnWarriorClicked();
-
-	UFUNCTION(BlueprintCallable)
-	void OnMageClicked();
-
-	UFUNCTION(BlueprintCallable)
-	void OnRangerClicked();
+	void OnPlayerSelected(int32 index);
 
     UFUNCTION(BlueprintCallable)
-	void OnAbilityClicked(int32 index);
+	void OnAbilitySelected(int32 index);
+
+	UFUNCTION(BlueprintCallable)
+	void OnTargetSelected(int32 index);
 
     UFUNCTION(BlueprintCallable)
 	void OnDefendClicked();
@@ -70,6 +67,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UActionsSelectWidget* ActionsSelect;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTargetsSelectWidget* TargetsSelect;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* EscapeButton;

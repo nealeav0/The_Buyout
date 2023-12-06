@@ -35,5 +35,5 @@ void UActionButton::UpdateAbility(FAbilityStruct Ability, int32 index)
 
 void UActionButton::OnButtonClicked()
 {
-    ParentHUD->OnAbilityClicked(AbilityIndex);
+    ParentHUD->OnAbilitySelected(AbilityIndex);
 }

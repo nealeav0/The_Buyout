@@ -6,6 +6,7 @@
 #include "EntityStatsWidget.h"
 #include "PartySelectWidget.h"
 #include "ActionsSelectWidget.h"
+#include "TargetsSelectWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
@@ -22,6 +23,7 @@ void UBattleHUD::NativeConstruct()
 
     PartySelect->SetVisibility(ESlateVisibility::Collapsed);
     ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
 
     SelectButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnSelectClicked);
     EscapeButton->OnClicked.AddUniqueDynamic(this, &UBattleHUD::OnEscapeClicked);
@@ -65,42 +67,37 @@ void UBattleHUD::UpdateAbilities(TArray<FAbilityStruct> PlayerAbilities)
 void UBattleHUD::OnSelectClicked()
 {
     if (PartySelect->Visibility == ESlateVisibility::Visible) 
-        PartySelect->SetVisibility(ESlateVisibility::Hidden);
+        PartySelect->SetVisibility(ESlateVisibility::Collapsed);
     else
         PartySelect->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UBattleHUD::OnWarriorClicked()
+void UBattleHUD::OnPlayerSelected(int32 index)
 {
-    BattleManager->SelectPlayer(0);
+    BattleManager->SelectPlayer(index);
     BattleManager->ConfirmSelection();
     ActionsSelect->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UBattleHUD::OnMageClicked()
-{
-    BattleManager->SelectPlayer(1);
-    BattleManager->ConfirmSelection();
-    ActionsSelect->SetVisibility(ESlateVisibility::Visible);
-}
-
-void UBattleHUD::OnRangerClicked()
-{
-    BattleManager->SelectPlayer(2);
-    BattleManager->ConfirmSelection();
-    ActionsSelect->SetVisibility(ESlateVisibility::Visible);
-}
-
-void UBattleHUD::OnAbilityClicked(int32 index)
+void UBattleHUD::OnAbilitySelected(int32 index)
 {
     BattleManager->SelectAbility(index);
     BattleManager->ConfirmSelection();
+    TargetsSelect->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UBattleHUD::OnTargetSelected(int32 index)
+{
+    BattleManager->SelectTarget(index);
+    BattleManager->ConfirmSelection();
+    ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
+    TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UBattleHUD::OnDefendClicked()
 {
-    // need to adjust for multiplayer maybe?
     BattleManager->DefendHandler();
+    ActionsSelect->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UBattleHUD::OnEscapeClicked()
