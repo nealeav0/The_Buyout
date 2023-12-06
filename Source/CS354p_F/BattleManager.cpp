@@ -165,6 +165,9 @@ void UBattleManager::EscapeHandler()
 * Prepare to segue out of battle. At the end of battle, players are given EXP. In addition, all temporary buffs, debuffs, cooldowns, and status effects are reset back to 0
 */
 void UBattleManager::LeaveBattle() {
+	// handle removing enemies in overworld iff ALL enemies in this battle have been killed
+	if (CheckEnemiesIsDead())
+		GameInstance->RemoveEnemy(Enemies[0]);
 	// before we leave the battle, let's clean up a bit
 	
 	// We should tally up our EXP at the end of battle
@@ -689,8 +692,8 @@ void UBattleManager::HandleAttack(FAbilityStruct Ability, FEntityStruct Source, 
 				EnemyReferences[TargetIndex]->Die();
 		}
 		// somehow flag to delete in overworld
-		if (GameInstance)
-			GameInstance->RemoveEnemyAtLocation(Target.Location);
+		// if (GameInstance)
+		// 	GameInstance->RemoveEnemyAtLocation(Target.Location);
 	}
 }
 

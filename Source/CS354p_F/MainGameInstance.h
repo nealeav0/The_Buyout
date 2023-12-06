@@ -121,7 +121,7 @@ public:
 	void SaveEnemyLocations(TArray<FVector> AllLocations);
 
 	UFUNCTION()
-	void RemoveEnemyAtLocation(FVector Location);
+	void RemoveEnemy(FEntityStruct Enemy);
 
     UFUNCTION()
 	void SpawnEnemies();

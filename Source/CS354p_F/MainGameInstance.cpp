@@ -9,6 +9,7 @@
 #include "Sound/SoundBase.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Containers/Array.h"
 
 UMainGameInstance::UMainGameInstance() {
 	static ConstructorHelpers::FClassFinder<ACommonEnemy> CommonBPClass(TEXT("/Game/Blueprints/BP_CommonEnemy"));
@@ -177,9 +178,11 @@ void UMainGameInstance::SaveEnemyLocations(TArray<FVector> AllLocations)
 	EnemyLocations = AllLocations;
 }
 
-void UMainGameInstance::RemoveEnemyAtLocation(FVector Location)
+void UMainGameInstance::RemoveEnemy(FEntityStruct Enemy)
 {
-	EnemyLocations.Remove(Location);
+	int32 index = EnemyLocations.Find(Enemy.Location);
+	EnemyLocations.RemoveAt(index);
+	EnemyTypes.RemoveAt(index);
 }
 
 void UMainGameInstance::SpawnEnemies()
@@ -193,6 +196,7 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVecto
 {
 	if (GetWorld())
     {
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("got world!"));
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -204,6 +208,8 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(EEnemyType EnemyType, FVecto
 		else if (EnemyType == EEnemyType::EVASIVE)
 			return GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
     }
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("can't spawn :("));
+
 	return nullptr;
 
 }
