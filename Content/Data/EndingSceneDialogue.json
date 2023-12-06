@@ -1,0 +1,226 @@
+[
+    {
+        "Name": 0,
+        "RowID": 0,
+        "ParentRowID": 1,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry) We've finally made it. I can't believe we managed to pull it off. "
+    },
+    {
+        "Name": 1,
+        "RowID": 1,
+        "ParentRowID": -1,
+        "ChildrenIDs": [2,3,4],
+        "Dialogue": "(Rick Perry) Should we take some time to prepare before going in?"
+    },
+    {
+        "Name": 2,
+        "RowID": 2,
+        "ParentRowID": 5,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Let's do it."
+    },
+    {
+        "Name": 3,
+        "RowID": 3,
+        "ParentRowID": 5,
+        "ChildrenIDs": [-1],
+        "Dialogue": "We stand now upon the hallowed grounds of this blessed victory."
+    },
+    {
+        "Name": 4,
+        "RowID": 4,
+        "ParentRowID": 5,
+        "ChildrenIDs": [-1],
+        "Dialogue": "I couldn't have done it without you guys."
+    },
+    {
+        "Name": 5,
+        "RowID": 5,
+        "ParentRowID": 6,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell) I'M GONNA MISS YOU, GENERAL. WE'VE BEEN THROUGH A LOT TOGETHER."
+    },
+    {
+        "Name": 6,
+        "RowID": 6,
+        "ParentRowID": 7,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel) Even though we've had our differences, I gotta admit - you do know how to command an army. "
+    },
+    {
+        "Name": 7,
+        "RowID": 7,
+        "ParentRowID": 8,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry) As always, it was an honor working with you, General. … It is time. "
+    },
+    {
+        "Name": 8,
+        "RowID": 8,
+        "ParentRowID": 9,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell) JIMBOOOOOOO! IT'S OVER, JIMBO. WE HAVE YOU SURROUNDED! SURRENDER!"
+    },
+    {
+        "Name": 9,
+        "RowID": 9,
+        "ParentRowID": 10,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo Fisher) Ah, my financial minions, tread carefully in the realm of buyouts."
+    },
+    {
+        "Name": 10,
+        "RowID": 10,
+        "ParentRowID": 11,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo Fisher) Should you fail to disturb the contractual equilibrium, know this: the winds of fate may carry the bitter whispers of 8-5 seasons for years untold. "
+    },
+    {
+        "Name": 11,
+        "RowID": 11,
+        "ParentRowID": 12,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo Fisher) If thy lack the gold necessary to appease the contractual spirits…the shadows of mediocrity shall engulf your gridiron ambitions, and the haunting echoes of missed championships will be your eternal refrain. "
+    },
+    {
+        "Name": 12,
+        "RowID": 12,
+        "ParentRowID": 13,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo Fisher) Tread wisely, for the cursed magic I have brought to your program will turn victory into perennial defeat. Consider the cost, for the toll may extend far beyond mere coin."
+    },
+    {
+        "Name": 13,
+        "RowID": 13,
+        "ParentRowID": 14,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell) WE'VE GOT YOUR MONEY, JIMBO. $77,600,000…IN CASH."
+    },
+    {
+        "Name": 14,
+        "RowID": 14,
+        "ParentRowID": 15,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo Fisher) …Wait, actually?"
+    },
+    {
+        "Name": 15,
+        "RowID": 15,
+        "ParentRowID": 16,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry) Yes. Your services are no longer needed here."
+    },
+    {
+        "Name": 16,
+        "RowID": 16,
+        "ParentRowID": 17,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo Fisher) Oh. Sweet. Thanks, guys."
+    },
+    {
+        "Name": 17,
+        "RowID": 17,
+        "ParentRowID": 18,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Jimbo leaves the room)"
+    },
+    {
+        "Name": 18,
+        "RowID": 18,
+        "ParentRowID": 19,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry) …it is finished. "
+    },
+    {
+        "Name": 19,
+        "RowID": 19,
+        "ParentRowID": 20,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell) …NOT YET. WE'RE STILL DOWN A HEAD COACH. GENERAL, NOBODY KNOWS HOW TO IDENTIFY A STRONG LEADER BETTER THAN YOU DO. "
+    },
+    {
+        "Name": 20,
+        "RowID": 20,
+        "ParentRowID": -1,
+        "ChildrenIDs": [21, 26, 28],
+        "Dialogue": "(Dan Campbell) WHO SHOULD BE THE NEXT HEAD COACH OF TEXAS A&M?"
+    },
+    {
+        "Name": 21,
+        "RowID": 21,
+        "ParentRowID": 22,
+        "ChildrenIDs": [-1],
+        "Dialogue": "You."
+    },
+    {
+        "Name": 22,
+        "RowID": 22,
+        "ParentRowID": -1,
+        "ChildrenIDs": [23, 24],
+        "Dialogue": "(Dan Campbell) GENERAL…I…I'M NOT SURE I HAVE THE STRENGTH TO ACCEPT…"
+    },
+    {
+        "Name": 23,
+        "RowID": 23,
+        "ParentRowID": 20,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Actually, never mind."
+    },
+    {
+        "Name": 24,
+        "RowID": 24,
+        "ParentRowID": 25,
+        "ChildrenIDs": [-1],
+        "Dialogue": "You're literally the only actual coach here."
+    },
+    {
+        "Name": 25,
+        "RowID": 25,
+        "ParentRowID": 31,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Dan Campbell) …I GUESS YOU'RE RIGHT. GENERAL…I HUMBLY ACCEPT YOUR OFFER."
+    },
+    {
+        "Name": 26,
+        "RowID": 26,
+        "ParentRowID": 27,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Rick Perry."
+    },
+    {
+        "Name": 27,
+        "RowID": 27,
+        "ParentRowID": 31,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Rick Perry) General…I…I'm honored. First, the State of Texas…and now, the state of our beloved football program. I won't let you down."
+    },
+    {
+        "Name": 28,
+        "RowID": 28,
+        "ParentRowID": 29,
+        "ChildrenIDs": [-1],
+        "Dialogue": "Johnny Manziel."
+    },
+    {
+        "Name": 29,
+        "RowID": 29,
+        "ParentRowID": 30,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel) I…I never thought you looked at me that way. I guess it can't be helped. I'll take the job."
+    },
+    {
+        "Name": 30,
+        "RowID": 30,
+        "ParentRowID": 31,
+        "ChildrenIDs": [-1],
+        "Dialogue": "(Johnny Manziel) I've never thought of myself as much of a leader…but maybe with the right staff, we could have a future together. I-it's not like I like you or anything though, okay???"
+    },
+    {
+        "Name": 31,
+        "RowID": 31,
+        "ParentRowID": -1,
+        "ChildrenIDs": [-1],
+        "Dialogue": "The End."
+    }
+]

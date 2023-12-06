@@ -58,6 +58,17 @@ void UMainGameInstance::Init()
 		}
 	}
 
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EndingSceneDialogueDataPath);
+	if (AssetHandle)
+	{
+		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
+		if (ReturnedTable)
+		{
+			EndingSceneDialogue = ReturnedTable;
+
+		}
+	}
+
 	// some predetermined locations in the overworld for enemies that we've placed just so we can spawn them in the first place
 	// EnemyLocations = {	FVector(-455.f, -1440.f, 50.f)	}; // old overworld
 	EnemyLocations = {
@@ -84,6 +95,11 @@ void UMainGameInstance::UpdateBattleManager()
 UDataTable* UMainGameInstance::GetDialogueDataTable()
 {
 	return DialogueDataTable;
+}
+
+UDataTable* UMainGameInstance::GetEndingSceneDialogue()
+{
+	return EndingSceneDialogue;
 }
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)
