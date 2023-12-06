@@ -62,6 +62,12 @@ protected:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UVerticalBox* AbilitiesContainer;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* AbilityPointLabel;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* AbilityPointButton;
+
 	UAbilityManager* AbilityManager;
 
 	UPROPERTY(EditAnywhere)

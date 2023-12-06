@@ -33,6 +33,9 @@ void UAbilityUpgradeWidget::InitializeUI(UAbilityManager* AbilityManagerIn) {
     if (RangerButton)
         RangerButton->SetIsEnabled(false);
 
+    if (AbilityPointButton)
+        AbilityPointButton->SetVisibility(ESlateVisibility::Hidden);
+
     AbilityManager->PlayerIndex = 0;
 }
 
@@ -82,7 +85,29 @@ void UAbilityUpgradeWidget::SelectAbility(float NavInput) {
 
     AbilityWidgets[AbilityManager->AbilityIndex]->EnableButton();
     // Select Ability on UI
-
+    FEntityStruct SelectedPlayer = AbilityManager->GetPlayersArray()[AbilityManager->PlayerIndex];
+    TArray<FAbilityStruct> PlayerAbilities;
+    switch (AbilityManager->PlayerIndex)
+    {
+    case 0:
+        PlayerAbilities = AbilityManager->WarriorAbilities;
+        break;
+    case 1:
+        PlayerAbilities = AbilityManager->MageAbilities;
+        break;
+    case 2:
+        PlayerAbilities = AbilityManager->RangerAbilities;
+        break;
+    default:
+        break;
+    }
+    FAbilityStruct SelectedAbility = PlayerAbilities[AbilityManager->AbilityIndex];
+    if (SelectedAbility.Level >= SelectedAbility.MaxLevel) {
+        AbilityPointLabel->SetText(FText::FromString(TEXT("Ability At Max Level")));
+    }
+    else {
+        AbilityPointLabel->SetText(FText::FromString(FString::Printf(TEXT("Ability Points: %d/%d"), SelectedPlayer.AbilityPoints, SelectedAbility.APCosts[SelectedAbility.Level])));
+    }
 }
 
 
@@ -125,9 +150,13 @@ void UAbilityUpgradeWidget::SetupAbilityUI(TArray<FAbilityStruct> PlayerAbilitie
         AbilityWidgets.Add(AbilityWidget);
     }
     AbilityWidgets[0]->EnableButton();
+    AbilityPointButton->SetVisibility(ESlateVisibility::Visible);
+    FEntityStruct SelectedPlayer = AbilityManager->GetPlayersArray()[AbilityManager->PlayerIndex];
+    AbilityPointLabel->SetText(FText::FromString(FString::Printf(TEXT("Ability Points: %d/%d"), SelectedPlayer.AbilityPoints, PlayerAbilities[0].APCosts[PlayerAbilities[0].Level])));
 }
 
 void UAbilityUpgradeWidget::ClearAbilityUI() {
     AbilitiesContainer->ClearChildren();
     AbilityWidgets.Empty();
+    AbilityPointButton->SetVisibility(ESlateVisibility::Hidden);
 }
