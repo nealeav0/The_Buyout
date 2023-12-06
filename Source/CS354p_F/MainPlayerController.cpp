@@ -15,6 +15,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "BattleManager.h"
 #include "MainGameInstance.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABattleGameModeBase* BattleMode;
 AMainMenuGameModeBase* MainMenuMode;
@@ -127,18 +129,27 @@ void AMainPlayerController::BeginPlay()
 
 	BattleMode = Cast<ABattleGameModeBase>(GetWorld()->GetAuthGameMode());
 	MainMenuMode = Cast<AMainMenuGameModeBase>(GetWorld()->GetAuthGameMode());
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 
 	if (BattleMode) {
+		GameInstance->BGMusic->SetPaused(true);
+		GameInstance->PlayBattleAudio();
+
 		OpenBattleUI();
 		// set up the click-only input behavior 
 		UpdateInputMode(BattleWidget, true); // needs to be udated to true later
 
-	} else if (MainMenuMode) { // main/starting menu 
+	} else if (MainMenuMode) { // main/starting menu
+		GameInstance->PlayBGAudio();
+			
 		OpenMainMenuUI();
 		// set up the click-only input behavior 
 		UpdateInputMode(MainMenuWidget, true);
 
 	} else { // we're in the overworld
+		if (GameInstance->BGMusic->bIsPaused)
+			GameInstance->BGMusic->SetPaused(false);
+		
 		// set up no click behavior
 		UpdateInputMode(nullptr, false);
 	}

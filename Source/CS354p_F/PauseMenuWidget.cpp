@@ -9,10 +9,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/GameEngine.h"
+#include "MainGameInstance.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 
 #define LOCTEXT_NAMESPACE "UMG"
-
 
 void UPauseMenuWidget::NativeConstruct()
 {
@@ -32,7 +32,7 @@ void UPauseMenuWidget::InitializePauseUI()
     }
 
     if (AudioLabel) {
-        AudioLabel->SetText(FText::FromString("TOGGLE AUDIO")); // or use boolean to show audio on/off
+        AudioLabel->SetText(FText::FromString("AUDIO ON/OFF"));
     }
 
     if (QuitLabel) {
@@ -50,7 +50,11 @@ void UPauseMenuWidget::OnResumeClicked()
 
 void UPauseMenuWidget::OnAudioClicked()
 {
-    // toggle audio volume
+    UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance) {
+        // toggle audio
+        GameInstance->ToggleMute();
+    }
 }
 
 void UPauseMenuWidget::OnQuitClicked()
