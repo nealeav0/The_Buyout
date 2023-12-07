@@ -448,30 +448,30 @@ void UBattleManager::SpawnEnemies()
 			Enemy = GetWorld()->SpawnActor<ADefensiveEnemy>(DefensiveEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
 		case EEnemyType::SUPPORT:
-			if (!DefensiveEnemyBP)
+			if (!SupportEnemyBP)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("SupportEnemyBP does not exist.")));
 			}
 			Enemy = GetWorld()->SpawnActor<ASupportEnemy>(SupportEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
 		case EEnemyType::SENIOR:
-			if (!DefensiveEnemyBP)
+			if (!SeniorEnemyBP)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("SeniorEnemyBP does not exist.")));
 			}
 			Enemy = GetWorld()->SpawnActor<ASeniorEnemy>(SeniorEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
 		case EEnemyType::DONOR:
-			if (!DefensiveEnemyBP)
+			if (!DonorEnemyBP)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DonorEnemyBP does not exist.")));
 			}
 			Enemy = GetWorld()->SpawnActor<ADonorEnemy>(DonorEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
 		case EEnemyType::BARON:
-			if (!DefensiveEnemyBP)
+			if (!BaronEnemyBP)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("BarronEnemyBP does not exist.")));
 			}
 			Enemy = GetWorld()->SpawnActor<ABaronEnemy>(BaronEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
@@ -561,12 +561,6 @@ void UBattleManager::SetPlayerAbility()
 			// maybe just have a parameter here that takes in ability index and sets it instead of setting ability index in BattleWidget
 		}
 	}
-}
-
-// I might use this to help determine which player to target.
-void UBattleManager::SetEnemyTarget()
-{
-
 }
 
 /**
@@ -683,7 +677,7 @@ void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct Selec
 		{
 		case ETargetTypeEnum::SINGLE:
 			// Missing Targeting
-			HandleAttack(Ability, Enemies[0], Players[0]);
+			HandleAttack(Ability, Source, Players[0]);
 			break;
 		case ETargetTypeEnum::ALL:
 			for (FEntityStruct &Player: Players)
@@ -721,12 +715,12 @@ void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct Selec
 		case ETargetTypeEnum::ALL:
 			for (FEntityStruct&Player : Players)
 			{
-				HandleMagic(Ability, Enemies[0], Player);
+				HandleMagic(Ability, Source, Player);
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
 			EnemyTargetIndex = FMath::RandHelper(Players.Num());
-			HandleMagic(Ability, Enemies[0], Players[EnemyTargetIndex]);
+			HandleMagic(Ability, Source, Players[EnemyTargetIndex]);
 			break;
 		}
 		break;
@@ -735,12 +729,12 @@ void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct Selec
 		{
 		case ETargetTypeEnum::ALLY:
 			EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
-			HandleHealing(Ability, Enemies[0], Enemies[EnemyTargetIndex]);
+			HandleHealing(Ability, Source, Enemies[EnemyTargetIndex]);
 			break;
 		case ETargetTypeEnum::ALLIES:
 			for (FEntityStruct&Enemy : Enemies)
 			{
-				HandleHealing(Ability, Enemies[0], Enemy);
+				HandleHealing(Ability, Source, Enemy);
 			}
 			break;
 		}
@@ -1113,20 +1107,23 @@ void UBattleManager::AdjustStatus(FEntityStruct& Target)
 */
 void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target)
 {
-	if (Source.EntityType == EEntityType::PLAYER)
+	if (!Target.bIsDead)
 	{
-		Target.Health += Ability.Power[Ability.Level - 1] * 2;
-		Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player healed %f health"), Ability.Power[Ability.Level - 1] * 2));
-	}
-	else
-	{
-		// I will need to add some sort of HitToHP modifier. This is based on the percent max hp.
-		Target.Health += Target.MaxHealth * 0.3;
-		Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Enemy healed %f health"), Target.MaxHealth * 0.3));
+		if (Source.EntityType == EEntityType::PLAYER)
+		{
+			Target.Health += Ability.Power[Ability.Level - 1] * 2;
+			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Player healed %f health"), Ability.Power[Ability.Level - 1] * 2));
+		}
+		else
+		{
+			// I will need to add some sort of HitToHP modifier. This is based on the percent max hp.
+			Target.Health += Target.MaxHealth * 0.3;
+			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Magenta, FString::Printf(TEXT("Enemy healed %f health"), Target.MaxHealth * 0.3));
+		}
 	}
 	MainPlayerController->UpdateBattleStats(Players, Enemies);
 }
@@ -1220,6 +1217,8 @@ void UBattleManager::StartRound()
 			}
 		}
 	}
+
+
 	// TODO: Stun Handling if for some reason everyone is stunned
 	/*bool bNotStunned = false;
 	for (int i = 0; i < PlayerActions.Num(); i++)
@@ -1324,6 +1323,14 @@ void UBattleManager::EnemyToPlayerTransition()
 */
 void UBattleManager::PlayerTurn()
 {
+	for (FEntityStruct Enemy : Enemies)
+	{
+		if (Enemy.Abilities.IsEmpty())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::Printf(TEXT("%s is empty"), *(Enemy.EntityName)));
+		}
+	}
+
 	bPlayerTurn = false;
 	if (!CheckEnemiesIsDead())
 	{
@@ -1362,6 +1369,7 @@ void UBattleManager::EnemyTurn()
 				if (!CheckPlayersIsDead())
 				{
 					// Random Targetting behavior
+					check(!Enemies[i].Abilities.IsEmpty());
 					int EnemyAbilityIndex = FMath::RandHelper(Enemies[i].Abilities.Num());
 					HandleEnemyInput(Enemies[i], Enemies[i].Abilities[EnemyAbilityIndex], i);
 				}

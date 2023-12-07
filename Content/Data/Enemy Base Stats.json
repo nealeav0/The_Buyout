@@ -149,7 +149,7 @@
 	},
 	{
 		"Name": "SENIOR",
-		"EntityName": "Senior Student",
+		"EntityName": "Senior",
 		"EntityType": "ENEMY",
 		"EnemyType": "SENIOR",
 		"Location":

@@ -165,7 +165,10 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("common0")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("common1")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("common2")), TEXT(""), false)));
-			//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player Actions remaining: %s"), *(Entity.Abilities[0].AbilityName)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Common Abilities are empty")));
+			}
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::EVASIVE)
@@ -175,6 +178,10 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("evasive0")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("evasive1")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("evasive2")), TEXT(""), false)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Evasive Abilities are empty")));
+			}
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::DEFENSIVE)
@@ -184,6 +191,10 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("defensive0")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("defensive1")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("defensive2")), TEXT(""), false)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defensive Abilities are empty")));
+			}
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::SUPPORT)
@@ -193,6 +204,23 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("support0")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("support1")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("support2")), TEXT(""), false)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Support Abilities are empty")));
+			}
+		}
+	}
+	else if (Entity.EnemyType == EEnemyType::SENIOR)
+	{
+		if (EnemyAbilityDataTable)
+		{
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("senior0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("senior1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("senior2")), TEXT(""), false)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Senior Abilities are empty")));
+			}
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::DONOR)	
@@ -202,6 +230,10 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("donor0")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("donor1")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("donor2")), TEXT(""), false)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Donor Abilities are empty")));
+			}
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::BARON)
@@ -212,6 +244,10 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron1")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron2")), TEXT(""), false)));
 			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron3")), TEXT(""), false)));
+			if (Entity.Abilities.IsEmpty())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Baron Abilities are empty")));
+			}
 		}
 	}
 }

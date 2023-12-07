@@ -149,7 +149,7 @@ void UMainGameInstance::Init()
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Magenta, FString::Printf(TEXT("%s is here. Lv. %d"), *(MapEnemy->EntityName), MapEnemy->Level));
+				//GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Magenta, FString::Printf(TEXT("%s is here. Lv. %d"), *(MapEnemy->EntityName), MapEnemy->Level));
 			}
 			Enemies.Add(*MapEnemy);
 			EnemyLocations.Add(MapEnemy->Location);
