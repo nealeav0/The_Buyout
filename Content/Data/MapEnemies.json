@@ -1,9 +1,9 @@
 [
     {
         "Name": 0,
-        "EntityName": "Lord",
+        "EntityName": "Student",
         "Level": 1,
-        "EnemyType": "DONOR",
+        "EnemyType": "COMMON",
         "Location":
         {
             "X": 1500,
@@ -13,8 +13,8 @@
         "Allies": 
         [
             {
-                "EntityName": "Senior",
-                "EnemyType": "SENIOR",
+                "EntityName": "Professor",
+                "EnemyType": "EVASIVE",
                 "Level": 3
             },
             {
@@ -73,5 +73,731 @@
                 "Level": 3
             }
         ]
+    },
+    {
+        "Name": 3,
+        "EntityName": "Student",
+        "Level": 5,
+        "EnemyType": "EVASIVE",
+        "Location":
+        {
+            "X": 8500 ,
+            "Y": -1130 ,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 4
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 4
+            }
+        ]
+    },
+    {
+        "Name": 4,
+        "EntityName": "Student",
+        "Level": 5,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 8500 ,
+            "Y": -10,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 3
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 3
+            }
+        ]
+    },
+    {
+        "Name": 5,
+        "EntityName": "Student",
+        "Level": 5,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 8500 ,
+            "Y": 1150,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 3
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 3
+            }
+        ]
+    },
+    {
+        "Name": 6,
+        "EntityName": "Student",
+        "Level": 5,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 3960 ,
+            "Y": -4340,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 5
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 5
+            }
+        ]
+    },
+    {
+        "Name": 7,
+        "EntityName": "Student",
+        "Level": 5,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 3960 ,
+            "Y": -4180,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 5
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 5
+            }
+        ]
+    },
+    {
+        "Name": 8,
+        "EntityName": "Student",
+        "Level": 7,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 4802  ,
+            "Y": -7080,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 6
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 6
+            }
+        ]
+    },
+    {
+        "Name": 9,
+        "EntityName": "Student",
+        "Level": 7,
+        "EnemyType": "EVASIVE",
+        "Location":
+        {
+            "X": 4020 ,
+            "Y": -7050,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 7
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 7
+            }
+        ]
+    },
+    {
+        "Name": 10,
+        "EntityName": "Student",
+        "Level": 7,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 3180 ,
+            "Y": -7050,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 7
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 7
+            }
+        ]
+    },
+    {
+        "Name": 11,
+        "EntityName": "Student",
+        "Level": 7,
+        "EnemyType": "COMMON",
+        "Location":
+        {
+            "X": 4002 ,
+            "Y": 7088,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 7
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 7
+            }
+        ]
+    },
+    {
+        "Name": 12,
+        "EntityName": "Student",
+        "Level": 7,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 4020 ,
+            "Y": 7050,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 6
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 6
+            }
+        ]
+    },
+    {
+        "Name": 13,
+        "EntityName": "Student",
+        "Level": 7,
+        "EnemyType": "EVASIVE",
+        "Location":
+        {
+            "X": 3180 ,
+            "Y": 7050,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 5
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 5
+            }
+        ]
+    },
+    {
+        "Name": 14,
+        "EntityName": "Student",
+        "Level": 10,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 3960 ,
+            "Y": -10,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 9
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 9
+            }
+        ]
+    },
+    {
+        "Name": 15,
+        "EntityName": "Student",
+        "Level": 10,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 8490 ,
+            "Y": -8220,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 9
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 9
+            }
+        ]
+    },
+    {
+        "Name": 16,
+        "EntityName": "Student",
+        "Level": 10,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 8490 ,
+            "Y": -9950,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 8
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 8
+            }
+        ]
+    },
+    {
+        "Name": 17,
+        "EntityName": "Student",
+        "Level": 10,
+        "EnemyType": "EVASIVE",
+        "Location":
+        {
+            "X": 8490,
+            "Y": 8220,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 10
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 10
+            }
+        ]
+    },
+    {
+        "Name": 18,
+        "EntityName": "Student",
+        "Level": 10,
+        "EnemyType": "COMMON",
+        "Location":
+        {
+            "X": 8490,
+            "Y": 9950,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 10
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 10
+            }
+        ]
+    },
+    {
+        "Name": 19,
+        "EntityName": "Student",
+        "Level": 15,
+        "EnemyType": "DONOR",
+        "Location":
+        {
+            "X": 13239,
+            "Y": -50,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 14
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SENIOR",
+                "Level": 15
+            }
+        ]
+    },
+    {
+        "Name": 20,
+        "EntityName": "Student",
+        "Level": 15,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 13130 ,
+            "Y": -4510,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "EVASIVE",
+                "Level": 15
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SENIOR",
+                "Level": 15
+            }
+        ]
+    },
+    {
+        "Name": 21,
+        "EntityName": "Student",
+        "Level": 15,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 14010,
+            "Y": -4510,
+            "Z": 15
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 3
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 15
+            }
+        ]
+    },
+    {
+        "Name": 22,
+        "EntityName": "Support",
+        "Level": 15,
+        "EnemyType": "SUPPORT",
+        "Location":
+        {
+            "X": 12180,
+            "Y": -4510,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 15
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 15
+            }
+        ]
+    },
+    {
+        "Name": 23,
+        "EntityName": "Student",
+        "Level": 15,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 13130 ,
+            "Y": 4510,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 15
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 15
+            }
+        ]
+    },
+    {
+        "Name": 24,
+        "EntityName": "Student",
+        "Level": 15,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 14010 ,
+            "Y": 4510,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 14
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 14
+            }
+        ]
+    },
+    {
+        "Name": 25,
+        "EntityName": "Student",
+        "Level": 15,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 12180 ,
+            "Y": 4510,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 15
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "COMMON",
+                "Level": 14
+            }
+        ]
+    },
+    {
+        "Name": 26,
+        "EntityName": "Student",
+        "Level": 17,
+        "EnemyType": "DEFENSIVE",
+        "Location":
+        {
+            "X": 15750 ,
+            "Y": 0,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 16
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 16
+            }
+        ]
+    },
+    {
+        "Name": 27,
+        "EntityName": "Student",
+        "Level": 17,
+        "EnemyType": "SENIOR",
+        "Location":
+        {
+            "X": 15750 ,
+            "Y": -1170,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SENIOR",
+                "Level": 17
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 17
+            }
+        ]
+    },
+    {
+        "Name": 28,
+        "EntityName": "Student",
+        "Level": 17,
+        "EnemyType": "DONOR",
+        "Location":
+        {
+            "X": 15750 ,
+            "Y": 1150,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 17
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "DEFENSIVE",
+                "Level": 17
+            }
+        ]
+    },
+    {
+        "Name": 29,
+        "EntityName": "Student",
+        "Level": 20,
+        "EnemyType": "BARON",
+        "Location":
+        {
+            "X": 16730 ,
+            "Y": -20,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "DONOR",
+                "Level": 19
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 17
+            }
+        ]
+    },
+    {
+        "Name": 30,
+        "EntityName": "Student",
+        "Level": 20,
+        "EnemyType": "DONOR",
+        "Location":
+        {
+            "X": 17270 ,
+            "Y": -610,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 19
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SUPPORT",
+                "Level": 19
+            }
+        ]
+    },
+    {
+        "Name": 31,
+        "EntityName": "Student",
+        "Level": 20,
+        "EnemyType": "BARON",
+        "Location":
+        {
+            "X": 17270 ,
+            "Y": 540,
+            "Z": 0
+        },
+        "Allies": 
+        [
+            {
+                "EntityName": "Student",
+                "EnemyType": "SENIOR",
+                "Level": 20
+            },
+            {
+                "EntityName": "Student",
+                "EnemyType": "SENIOR",
+                "Level": 20
+            }
+        ]
     }
+    
 ]
