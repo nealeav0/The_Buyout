@@ -28,25 +28,29 @@ UMainGameInstance::UMainGameInstance() {
 		DefensiveEnemyBPClass = DefensiveBPClass.Class;
 	}
 
-	/*static ConstructorHelpers::FClassFinder<ASupportEnemy> SupportBPClass(TEXT("/Game/Blueprints/BP_DefensiveEnemy"));
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_SupportEnemy.BP_SupportEnemy'
+	static ConstructorHelpers::FClassFinder<ASupportEnemy> SupportBPClass(TEXT("/Game/Blueprints/BP_SupportEnemy"));
 	if (SupportBPClass.Class) {
 		SupportEnemyBPClass = SupportBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<ASeniorEnemy> SeniorBPClass(TEXT("/Game/Blueprints/BP_DefensiveEnemy"));
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_SeniorEnemy.BP_SeniorEnemy'
+	static ConstructorHelpers::FClassFinder<ASeniorEnemy> SeniorBPClass(TEXT("/Game/Blueprints/BP_SeniorEnemy"));
 	if (SeniorBPClass.Class) {
 		SeniorEnemyBPClass = SeniorBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<ADonorEnemy> DonorBPClass(TEXT("/Game/Blueprints/BP_DefensiveEnemy"));
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_DonorEnemy.BP_DonorEnemy'
+	static ConstructorHelpers::FClassFinder<ADonorEnemy> DonorBPClass(TEXT("/Game/Blueprints/BP_DonorEnemy"));
 	if (DonorBPClass.Class) {
 		DonorEnemyBPClass = DonorBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<ABaronEnemy> BaronBPClass(TEXT("/Game/Blueprints/BP_DefensiveEnemy"));
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_BaronEnemy.BP_BaronEnemy'
+	static ConstructorHelpers::FClassFinder<ABaronEnemy> BaronBPClass(TEXT("/Game/Blueprints/BP_BaronEnemy"));
 	if (BaronBPClass.Class) {
 		BaronEnemyBPClass = BaronBPClass.Class;
-	}*/
+	}
 
 }
 
@@ -275,12 +279,16 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(FEntityStruct Enemy, FVector
 			Result = GetWorld()->SpawnActor<ADefensiveEnemy>(DefensiveEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			break;
 		case EEnemyType::SUPPORT:
+			Result = GetWorld()->SpawnActor<ASupportEnemy>(SupportEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			break;
 		case EEnemyType::SENIOR:
+			Result = GetWorld()->SpawnActor<ASeniorEnemy>(SeniorEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			break;
 		case EEnemyType::DONOR:
+			Result = GetWorld()->SpawnActor<ADonorEnemy>(DonorEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			break;
 		case EEnemyType::BARON:
+			Result = GetWorld()->SpawnActor<ABaronEnemy>(BaronEnemyBPClass, Location, SpawnRotation, SpawnParams);
 			break;
 		}
 

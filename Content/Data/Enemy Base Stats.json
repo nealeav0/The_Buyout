@@ -112,7 +112,7 @@
 	},
 	{
 		"Name": "SUPPORT",
-		"EntityName": "Teaching Assistant",
+		"EntityName": "Assistant",
 		"EntityType": "ENEMY",
 		"EnemyType": "SUPPORT",
 		"Location":

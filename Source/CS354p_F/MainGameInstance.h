@@ -6,8 +6,12 @@
 #include "Engine/GameInstance.h"
 #include "BattleManager.h"
 #include "AbilityManager.h"
-#include "EnemyBase.h"
-#include "DefensiveEnemy.h"
+//#include "EnemyBase.h"
+//#include "DefensiveEnemy.h"
+//#include "SupportEnemy.h"
+//#include "SeniorEnemy.h"
+//#include "DonorEnemy.h"
+//#include "BaronEnemy.h"
 #include "MainGameInstance.generated.h"
 
 /**
@@ -72,17 +76,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ADefensiveEnemy> DefensiveEnemyBPClass;
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ADefensiveEnemy> SupportEnemyBPClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ASupportEnemy> SupportEnemyBPClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ADefensiveEnemy> SeniorEnemyBPClass;
+	TSubclassOf<ASeniorEnemy> SeniorEnemyBPClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ADefensiveEnemy> DonorEnemyBPClass;
+	TSubclassOf<ADonorEnemy> DonorEnemyBPClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ADefensiveEnemy> BaronEnemyBPClass;*/
+	TSubclassOf<ABaronEnemy> BaronEnemyBPClass;
 
 	virtual void Init() override;
 
