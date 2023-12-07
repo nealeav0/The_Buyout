@@ -81,49 +81,19 @@ void UAbilityManager::InitializeAbilityDataTables()
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Ranger abilities data table was not loaded in.")));
 	}
 	
-	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(CommonAbilityDataPath);
+	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EnemyAbilityDataPath);
 	if (AssetHandle)
 	{
 		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
 		if (ReturnedTable)
 		{
-			CommonAbilityDataTable = ReturnedTable;
+			EnemyAbilityDataTable = ReturnedTable;
 		}
 	}
 	else
 	{
 		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Common enemy abilities data table was not loaded in.")));
-	}
-
-	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(EvasiveAbilityDataPath);
-	if (AssetHandle)
-	{
-		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
-		if (ReturnedTable)
-		{
-			EvasiveAbilityDataTable = ReturnedTable;
-		}
-	}
-	else
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Evasive enemy abilities data table was not loaded in.")));
-	}
-
-	AssetHandle = UAssetManager::GetStreamableManager().RequestSyncLoad(DefensiveAbilityDataPath);
-	if (AssetHandle)
-	{
-		UDataTable* ReturnedTable = Cast<UDataTable>(AssetHandle->GetLoadedAsset());
-		if (ReturnedTable)
-		{
-			DefensiveAbilityDataTable = ReturnedTable;
-		}
-	}
-	else
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defensive enemy abilities data table was not loaded in.")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Enemy abilities data table was not loaded in.")));
 	}
 }
 
@@ -190,38 +160,58 @@ void UAbilityManager::InitializeAbilities(FEntityStruct& Entity)
 	}
 	else if (Entity.EnemyType == EEnemyType::COMMON)
 	{
-		if (CommonAbilityDataTable)
+		if (EnemyAbilityDataTable)
 		{
-			TArray<FAbilityStruct*> AbilityData;
-			CommonAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting common abilities"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
-			{
-				Entity.Abilities.Add(*Ability);
-			}
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("common0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("common1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("common2")), TEXT(""), false)));
+			//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("Player Actions remaining: %s"), *(Entity.Abilities[0].AbilityName)));
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::EVASIVE)
 	{
-		if (EvasiveAbilityDataTable)
+		if (EnemyAbilityDataTable)
 		{
-			TArray<FAbilityStruct*> AbilityData;
-			EvasiveAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting evasive abilities"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
-			{
-				Entity.Abilities.Add(*Ability);
-			}
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("evasive0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("evasive1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("evasive2")), TEXT(""), false)));
 		}
 	}
 	else if (Entity.EnemyType == EEnemyType::DEFENSIVE)
 	{
-		if (DefensiveAbilityDataTable)
+		if (EnemyAbilityDataTable)
 		{
-			TArray<FAbilityStruct*> AbilityData;
-			DefensiveAbilityDataTable->GetAllRows<FAbilityStruct>(TEXT("Getting defensive abilities"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
-			{
-				Entity.Abilities.Add(*Ability);
-			}
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("defensive0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("defensive1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("defensive2")), TEXT(""), false)));
+		}
+	}
+	else if (Entity.EnemyType == EEnemyType::SUPPORT)
+	{
+		if (EnemyAbilityDataTable)
+		{
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("support0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("support1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("support2")), TEXT(""), false)));
+		}
+	}
+	else if (Entity.EnemyType == EEnemyType::DONOR)	
+	{
+		if (EnemyAbilityDataTable)
+		{
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("donor0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("donor1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("donor2")), TEXT(""), false)));
+		}
+	}
+	else if (Entity.EnemyType == EEnemyType::BARON)
+	{
+		if (EnemyAbilityDataTable)
+		{
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron0")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron1")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron2")), TEXT(""), false)));
+			Entity.Abilities.Add(*(EnemyAbilityDataTable->FindRow<FAbilityStruct>(FName(TEXT("baron3")), TEXT(""), false)));
 		}
 	}
 }

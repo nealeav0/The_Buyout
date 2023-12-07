@@ -18,10 +18,18 @@ TArray<FVector> Movements = {
 
 ACommonEnemy::ACommonEnemy()
 {
-    TriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("TriggerComponent"));
+	/*MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	MeshComponent->SetupAttachment(RootComponent);
+
+	HitBox = CreateDefaultSubobject<USphereComponent>(TEXT("Hitbox"));
+	HitBox->SetupAttachment(MeshComponent);*/
+	//HitBox->SetRelativeLocation(FVector(0, 0, 30.f));
+	HitBox->InitSphereRadius(200);
+
+    /*TriggerComponent = CreateDefaultSubobject<USphereComponent>(TEXT("TriggerComponent"));
 	TriggerComponent->SetupAttachment(RootComponent);
 	TriggerComponent->InitSphereRadius(200.f);
-	TriggerComponent->SetMobility(EComponentMobility::Movable);
+	TriggerComponent->SetMobility(EComponentMobility::Movable);*/
 
 	SpawnLocation = GetActorLocation();
 }

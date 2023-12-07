@@ -2,12 +2,22 @@
 
 
 #include "EnemyBase.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	MeshComponent->SetupAttachment(RootComponent);
+
+	HitBox = CreateDefaultSubobject<USphereComponent>(TEXT("Hitbox"));
+	HitBox->SetupAttachment(MeshComponent);
+	HitBox->SetRelativeLocation(FVector(0, 0, 30.f));
+	HitBox->InitSphereRadius(100);
+
 	EnemyStats.Abilities.Add(FAbilityStruct());
 }
 

@@ -26,6 +26,35 @@ UBattleManager::UBattleManager()
 	static ConstructorHelpers::FClassFinder<AEvasiveEnemy> EvasiveBPClass(TEXT("/Game/Blueprints/BP_EvasiveEnemy"));
 	if (EvasiveBPClass.Class)
 		EvasiveEnemyBP = EvasiveBPClass.Class;
+
+	static ConstructorHelpers::FClassFinder<ADefensiveEnemy> DefensiveBPClass(TEXT("/Game/Blueprints/BP_DefensiveEnemy"));
+	if (DefensiveBPClass.Class) {
+		DefensiveEnemyBP = DefensiveBPClass.Class;
+	}
+
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_SupportEnemy.BP_SupportEnemy'
+	static ConstructorHelpers::FClassFinder<ASupportEnemy> SupportBPClass(TEXT("/Game/Blueprints/BP_SupportEnemy"));
+	if (SupportBPClass.Class) {
+		SupportEnemyBP = SupportBPClass.Class;
+	}
+
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_SeniorEnemy.BP_SeniorEnemy'
+	static ConstructorHelpers::FClassFinder<ASeniorEnemy> SeniorBPClass(TEXT("/Game/Blueprints/BP_SeniorEnemy"));
+	if (SeniorBPClass.Class) {
+		SeniorEnemyBP = SeniorBPClass.Class;
+	}
+
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_DonorEnemy.BP_DonorEnemy'
+	static ConstructorHelpers::FClassFinder<ADonorEnemy> DonorBPClass(TEXT("/Game/Blueprints/BP_DonorEnemy"));
+	if (DonorBPClass.Class) {
+		DonorEnemyBP = DonorBPClass.Class;
+	}
+
+	// /Script/Engine.Blueprint'/Game/Blueprints/BP_BaronEnemy.BP_BaronEnemy'
+	static ConstructorHelpers::FClassFinder<ABaronEnemy> BaronBPClass(TEXT("/Game/Blueprints/BP_BaronEnemy"));
+	if (BaronBPClass.Class) {
+		BaronEnemyBP = BaronBPClass.Class;
+	}
 }
 
 /**
@@ -284,6 +313,106 @@ void UBattleManager::InitializeEnemyStats(FEntityStruct& Enemy)
 				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
 			}
 			break;
+		case EEnemyType::SUPPORT:
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("support")), FString(TEXT("Getting support Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+			break;
+		case EEnemyType::SENIOR:
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("senior")), FString(TEXT("Getting senior Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+			break;
+		case EEnemyType::DONOR:
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("donor")), FString(TEXT("Getting donor Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+			break;
+		case EEnemyType::BARON:
+			EnemyBase = GameInstance->EnemyBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("baron")), FString(TEXT("Getting baron Stats")));
+
+			if (EnemyBase)
+			{
+				if (Enemy.Level == 0)
+				{
+					Enemy.Level = 1;
+				}
+				Enemy.Name = (*EnemyBase).Name;
+				Enemy.EntityName = (*EnemyBase).EntityName;
+				Enemy.EntityType = (*EnemyBase).EntityType;
+				Enemy.MaxHealth = FMath::Floor((*EnemyBase).MaxHealth * FMath::Pow(1.191, Enemy.Level));
+				Enemy.Health = Enemy.MaxHealth;
+				Enemy.Attack = FMath::Floor((*EnemyBase).Attack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.MagicAttack = FMath::Floor((*EnemyBase).MagicAttack * FMath::Pow(1.29, Enemy.Level));
+				Enemy.Defense = FMath::Floor((*EnemyBase).Defense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.MagicDefense = FMath::Floor((*EnemyBase).MagicDefense + (*EnemyBase).Defense * (Enemy.Level / 25));
+				Enemy.Accuracy = FMath::Floor((*EnemyBase).Accuracy * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.Evasion = FMath::Floor((*EnemyBase).Evasion * 0.84 * FMath::Pow(1.0844, Enemy.Level) * 2);
+				Enemy.EXP = FMath::Floor((*EnemyBase).EXP * FMath::Pow(1.2, Enemy.Level));
+				Enemy.AbilityPoints = FMath::Floor((*EnemyBase).AbilityPoints * FMath::Pow(1.25, Enemy.Level));
+				Enemy.ElementalResistances = (*EnemyBase).ElementalResistances;
+			}
+			break;
 		}
 	}
 }
@@ -311,7 +440,43 @@ void UBattleManager::SpawnEnemies()
 			}
 			Enemy = GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
+		case EEnemyType::DEFENSIVE:
+			if (!DefensiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<ADefensiveEnemy>(DefensiveEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		case EEnemyType::SUPPORT:
+			if (!DefensiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<ASupportEnemy>(SupportEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		case EEnemyType::SENIOR:
+			if (!DefensiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<ASeniorEnemy>(SeniorEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		case EEnemyType::DONOR:
+			if (!DefensiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<ADonorEnemy>(DonorEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		case EEnemyType::BARON:
+			if (!DefensiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<ABaronEnemy>(BaronEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
 		}
+		
 		if (Enemy)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("We got a thing.")));
@@ -502,9 +667,10 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 /**
 * Handle the enemy's input. Abilities have two properties that are checked: Move Types and Target Types.
 */
-void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
+void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility)
 {
 	FAbilityStruct Ability = SelectedAbility;
+	int EnemyTargetIndex = 0;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Used %s"), *(Ability.AbilityName)));
 	switch (Ability.MoveType)
 	{
@@ -522,12 +688,12 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		case ETargetTypeEnum::ALL:
 			for (FEntityStruct &Player: Players)
 			{
-				HandleAttack(Ability, Enemies[0], Player);
+				HandleAttack(Ability, Source, Player);
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			int EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
-			HandleAttack(Ability, Enemies[0], Players[EnemyTargetIndex]);
+			EnemyTargetIndex = FMath::RandHelper(Players.Num());
+			HandleAttack(Ability, Source, Players[EnemyTargetIndex]);
 			break;
 		}
 		break;
@@ -539,17 +705,18 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		switch (Ability.TargetType)
 		{
 		case ETargetTypeEnum::ALLY:
-			HandleMagic(Ability, Enemies[0], Enemies[0]);
+			EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			HandleMagic(Ability, Source, Enemies[EnemyTargetIndex]);
 			break;
 		case ETargetTypeEnum::ALLIES:
 			for (FEntityStruct &Enemy : Enemies)
 			{
-				HandleMagic(Ability, Enemies[0], Enemy);
+				HandleMagic(Ability, Source, Enemy);
 			}
 			break;
 		case ETargetTypeEnum::SINGLE:
 			// Missing Targeting
-			HandleMagic(Ability, Enemies[0], Players[0]);
+			HandleMagic(Ability, Source, Players[0]);
 			break;
 		case ETargetTypeEnum::ALL:
 			for (FEntityStruct&Player : Players)
@@ -558,7 +725,7 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			int EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			EnemyTargetIndex = FMath::RandHelper(Players.Num());
 			HandleMagic(Ability, Enemies[0], Players[EnemyTargetIndex]);
 			break;
 		}
@@ -567,7 +734,8 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		switch (Ability.TargetType)
 		{
 		case ETargetTypeEnum::ALLY:
-			HandleHealing(Ability, Enemies[0], Enemies[0]);
+			EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			HandleHealing(Ability, Enemies[0], Enemies[EnemyTargetIndex]);
 			break;
 		case ETargetTypeEnum::ALLIES:
 			for (FEntityStruct&Enemy : Enemies)
@@ -1193,7 +1361,7 @@ void UBattleManager::EnemyTurn()
 				{
 					// Random Targetting behavior
 					int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
-					HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+					HandleEnemyInput(Enemy, Enemy.Abilities[EnemyAbilityIndex]);
 				}
 				
 

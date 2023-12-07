@@ -26,8 +26,16 @@ public:
 	TArray<FEntityStruct> Enemies = { EnemyStats };
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	class UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	class USphereComponent* HitBox;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	FORCEINLINE class USphereComponent* GetTriggerComponent() const { return HitBox; }
 
 public:	
 	// Called every frame

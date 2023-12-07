@@ -1,9 +1,9 @@
 [
     {
         "Name": 0,
-        "EntityName": "This Guy",
+        "EntityName": "Lord",
         "Level": 1,
-        "EnemyType": "COMMON",
+        "EnemyType": "DONOR",
         "Location":
         {
             "X": 1500,
@@ -13,13 +13,13 @@
         "Allies": 
         [
             {
-                "EntityName": "Professor",
-                "EnemyType": "EVASIVE",
+                "EntityName": "Senior",
+                "EnemyType": "SENIOR",
                 "Level": 3
             },
             {
-                "EntityName": "Student",
-                "EnemyType": "COMMON",
+                "EntityName": "Support",
+                "EnemyType": "SUPPORT",
                 "Level": 1
             }
         ]

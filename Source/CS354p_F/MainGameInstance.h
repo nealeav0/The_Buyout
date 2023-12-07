@@ -6,7 +6,12 @@
 #include "Engine/GameInstance.h"
 #include "BattleManager.h"
 #include "AbilityManager.h"
-#include "EnemyBase.h"
+//#include "EnemyBase.h"
+//#include "DefensiveEnemy.h"
+//#include "SupportEnemy.h"
+//#include "SeniorEnemy.h"
+//#include "DonorEnemy.h"
+//#include "BaronEnemy.h"
 #include "MainGameInstance.generated.h"
 
 /**
@@ -53,8 +58,6 @@ public:
 	UPROPERTY()
 	FSoftObjectPath MapEnemiesDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/MapEnemies.MapEnemies'"));
 
-	// /Script/Engine.DataTable'/Game/Data/Dialogue.Dialogue'
-
 	// /Script/Engine.DataTable'/Game/Data/NewDialogue.NewDialogue'
 	UPROPERTY(VisibleAnywhere)
 	FSoftObjectPath DialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/NewDialogue.NewDialogue'"));
@@ -63,11 +66,27 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FSoftObjectPath EndingSceneDialogueDataPath = FSoftObjectPath(TEXT("DataTable'/Game/Data/EndingSceneDialogue.EndingSceneDialogue'"));
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACommonEnemy> CommonEnemyBPClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AEvasiveEnemy> EvasiveEnemyBPClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ADefensiveEnemy> DefensiveEnemyBPClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ASupportEnemy> SupportEnemyBPClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ASeniorEnemy> SeniorEnemyBPClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ADonorEnemy> DonorEnemyBPClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ABaronEnemy> BaronEnemyBPClass;
 
 	virtual void Init() override;
 
