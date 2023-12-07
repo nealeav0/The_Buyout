@@ -17,6 +17,7 @@
 #include "MainGameInstance.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilityUpgradeWidget.h"
 
 ABattleGameModeBase* BattleMode;
 AMainMenuGameModeBase* MainMenuMode;
@@ -74,6 +75,25 @@ void AMainPlayerController::ClosePauseMenuUI()
 	if (PauseMenuWidgetClass) {
 		PauseMenuWidget->RemoveFromParent();
 		PauseMenuWidget = nullptr;
+	}
+}
+
+/* --- ABILITY UPGRADE MENU UI --- */
+
+void AMainPlayerController::OpenAbilityUpgradeUI() {
+	if (AbilityUpgradeWidgetClass) {
+		AbilityUpgradeWidget = CreateWidget<UAbilityUpgradeWidget>(this, AbilityUpgradeWidgetClass);
+		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+		if (AbilityUpgradeWidget && GameInstance)
+			AbilityUpgradeWidget->AddToPlayerScreen();
+			AbilityUpgradeWidget->InitializeUI(GameInstance->AbilityManager());
+	}
+}
+
+void AMainPlayerController::CloseAbilityUpgradeUI() {
+	if (AbilityUpgradeWidget) {
+		AbilityUpgradeWidget->RemoveFromParent();
+		AbilityUpgradeWidget = nullptr;
 	}
 }
 
@@ -176,6 +196,7 @@ void AMainPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
 			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnPausePressed);
+			EnhancedInputComponent->BindAction(UpgradeAction, ETriggerEvent::Started, this, &AMainPlayerController::OnUpgradePressed);
 			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
 			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
 			EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCancelPressed);
@@ -188,6 +209,13 @@ void AMainPlayerController::SetupInputComponent()
 		}
 	}
 } 
+
+void AMainPlayerController::OnUpgradePressed() {
+	OpenAbilityUpgradeUI();
+	this->SetPause(true);
+	if (AbilityUpgradeWidget)
+		UpdateInputMode(AbilityUpgradeWidget, true);
+}
 
 void AMainPlayerController::OnMovePressed(const FInputActionValue& Value)
 {
@@ -208,7 +236,7 @@ void AMainPlayerController::OnCameraMoved(const FInputActionValue& Value)
 
 void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 {
-	// float Navigation = Value.Get<float>();
+	float Navigation = Value.Get<float>();
 	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f navigate."), Navigation));
 	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 	if (GameInstance)
@@ -233,14 +261,18 @@ void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
 		}
 		else
 		{
-			if (GameInstance->AbilityManager()->bSelectingPlayer)
-			{
-				// GameInstance->AbilityManager()->SelectPlayer(Navigation);
-			}
-			else if (GameInstance->AbilityManager()->bSelectingAbility)
-			{
-				// GameInstance->AbilityManager()->SelectAbility(Navigation);
-			}
+			//if (AbilityUpgradeWidget) {
+			//	if (GameInstance->AbilityManager()->bSelectingPlayer)
+			//	{
+			//		AbilityUpgradeWidget->SelectPlayer(Navigation);
+			//		// GameInstance->AbilityManager()->SelectPlayer(Navigation);
+			//	}
+			//	else if (GameInstance->AbilityManager()->bSelectingAbility)
+			//	{
+			//		AbilityUpgradeWidget->SelectAbility(Navigation);
+			//		// GameInstance->AbilityManager()->SelectAbility(Navigation);
+			//	}
+			//}
 		}
 	}
 }
@@ -256,7 +288,19 @@ void AMainPlayerController::OnConfirmPressed()
 		}
 		else
 		{
-			GameInstance->AbilityManager()->ConfirmSelection();
+			/*if(AbilityUpgradeWidget)
+			{
+				if (GameInstance->AbilityManager()->bSelectingPlayer) {
+					AbilityUpgradeWidget->ConfirmPlayer();
+				}
+				else {
+					AbilityUpgradeWidget->ConfirmAbility();
+					CloseAbilityUpgradeUI();
+				}
+			}
+			else {
+				OpenAbilityUpgradeUI();
+			}*/
 		}
 	}
 }
@@ -272,7 +316,12 @@ void AMainPlayerController::OnCancelPressed()
 		}
 		else
 		{
-			GameInstance->AbilityManager()->CancelSelection();
+			/*if (GameInstance->AbilityManager()->bSelectingPlayer) {
+				CloseAbilityUpgradeUI();
+			}
+			else {
+				AbilityUpgradeWidget->CancelSelection();
+			}*/
 		}
 	}
 }

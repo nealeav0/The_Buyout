@@ -43,6 +43,14 @@ public:
 	UFUNCTION()
 	void ResumeGame();
 
+	/* --- ABILITY MENU UI --- */
+
+	UFUNCTION()
+	void OpenAbilityUpgradeUI();
+	
+	UFUNCTION()
+	void CloseAbilityUpgradeUI();
+
 	/* --- BATTLE UI --- */
 
     UFUNCTION()
@@ -80,6 +88,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* UpgradeAction;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -92,6 +103,7 @@ protected:
 	void OnConfirmPressed();
 	void OnCancelPressed();
     void OnPausePressed(const FInputActionValue &Value);
+	void OnUpgradePressed();
 
 	UFUNCTION()
 	void UpdateInputMode(UUserWidget* WidgetToFocus, bool bEnableCursor);
@@ -102,6 +114,13 @@ protected:
 
 	UPROPERTY()
 	class UBattleHUD* BattleWidget;
+
+	/* Ability Upgrade Menu */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UAbilityUpgradeWidget> AbilityUpgradeWidgetClass;
+
+	UPROPERTY()
+	class UAbilityUpgradeWidget* AbilityUpgradeWidget;
 
 	/* Main Menu */
 	UPROPERTY(EditAnywhere)
