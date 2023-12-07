@@ -177,6 +177,7 @@ void UAbilityUpgradeWidget::OnWarriorClicked() {
     ClearAbilityUI();
     SetupAbilityUI(AbilityManager->WarriorAbilities);
     AbilityManager->PlayerIndex = 0;
+    AbilityManager->AbilityIndex = 0;
     AbilityManager->bSelectingPlayer = false;
     AbilityManager->bSelectingAbility = true;
     ConfirmUpgradeMenu->SetVisibility(ESlateVisibility::Hidden);
@@ -186,6 +187,7 @@ void UAbilityUpgradeWidget::OnMageClicked() {
     ClearAbilityUI();
     SetupAbilityUI(AbilityManager->MageAbilities);
     AbilityManager->PlayerIndex = 1;
+    AbilityManager->AbilityIndex = 0;
     AbilityManager->bSelectingPlayer = false;
     AbilityManager->bSelectingAbility = true;
     ConfirmUpgradeMenu->SetVisibility(ESlateVisibility::Hidden);
@@ -195,6 +197,7 @@ void UAbilityUpgradeWidget::OnRangerClicked() {
     ClearAbilityUI();
     SetupAbilityUI(AbilityManager->RangerAbilities);
     AbilityManager->PlayerIndex = 2;
+    AbilityManager->AbilityIndex = 0;
     AbilityManager->bSelectingPlayer = false;
     AbilityManager->bSelectingAbility = true;
     ConfirmUpgradeMenu->SetVisibility(ESlateVisibility::Hidden);
@@ -232,8 +235,23 @@ void UAbilityUpgradeWidget::OnAbilitySelect(int AbilityIndex) {
 
 void UAbilityUpgradeWidget::OnUpgradeClicked() {
     if (SelectedAbility > -1) {
+        int OldIndex = AbilityManager->PlayerIndex;
         AbilityManager->AbilityIndex = SelectedAbility;
         AbilityManager->ConfirmSelection();
+        switch (OldIndex)
+        {
+        case 0:
+            OnWarriorClicked();
+            break;
+        case 1:
+            OnMageClicked();
+            break;
+        case 2:
+            OnRangerClicked();
+            break;
+        default:
+            break;
+        }
     }
 }
 
