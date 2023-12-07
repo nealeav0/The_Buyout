@@ -90,7 +90,7 @@
 		"MaxLevel": 3,
 		"Level": 1,
 		"Description": "Simple healing magic which heals one ally. 1-turn cooldown",
-		"MoveType": "MAGIC",
+		"MoveType": "HEAL",
 		"bIsPhysical": false,
         "ElementType": "NONELEMENTAL",
         "ElementalPercent": 1,

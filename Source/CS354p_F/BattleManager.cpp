@@ -208,6 +208,11 @@ void UBattleManager::LeaveBattle() {
 	// We should set all of the temporary stuff back to 0;
 	for (FEntityStruct& Player : Players)
 	{
+		if (Player.bIsDead)
+		{
+			Player.bIsDead = false;
+			Player.Health = 1;
+		}
 		Player.AttackBuff = 0;
 		Player.MagicAttackBuff = 0;
 		Player.DefenseBuff = 0;
@@ -1109,7 +1114,7 @@ void UBattleManager::HandleHealing(FAbilityStruct Ability, FEntityStruct Source,
 {
 	if (!Target.bIsDead)
 	{
-		if (Source.EntityType == EEntityType::PLAYER)
+		if (Source.EntityType == EEntityType::PLAYER || Target.EntityType == EEntityType::PLAYER)
 		{
 			Target.Health += Ability.Power[Ability.Level - 1] * 2;
 			Target.Health = FMath::Clamp(Target.Health, 0, Target.MaxHealth);
@@ -1460,12 +1465,15 @@ void UBattleManager::HandleEXP()
 		Player.AbilityPoints += TotalAP;
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("%s has %d EXP"), *(Player.Name), Player.EXP));
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("EXP Threshold is %d"), Player.EXPThreshold));
-		if (Player.EXP >= Player.EXPThreshold)
+		while (Player.EXP >= Player.EXPThreshold)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("%s has leveled up!"), *(Player.Name)));
+			Player.EXP = Player.EXP - Player.EXPThreshold;
 			Player.Level++;
+			Player.Health = Player.MaxHealth;
+			Player.EXPThreshold = (int32) (50 * FMath::Pow(1.39, Player.Level));
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("New EXP threshold: %.0f."), 50 * FMath::Pow(1.39, Player.Level)));
-			Player.EXP = Player.EXP - Player.EXPThreshold; // Handle overflow
+			 // Handle overflow
 		}
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("%s has %d ability points"), *(Player.Name), Player.AbilityPoints));
 	}
