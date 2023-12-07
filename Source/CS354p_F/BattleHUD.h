@@ -22,6 +22,9 @@ public:
 	void UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdateBuffs(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs);
+
+	UFUNCTION(BlueprintCallable)
 	void UpdateTurn(bool bIsPlayerTurn);
 
 	UFUNCTION(BlueprintCallable)
@@ -79,5 +82,16 @@ protected:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* EscapeButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UBuffsWidget* Enemy1Buffs;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UBuffsWidget* Enemy2Buffs;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UBuffsWidget* Enemy3Buffs;
 	
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UBuffsWidget* PlayerBuffs;
 };

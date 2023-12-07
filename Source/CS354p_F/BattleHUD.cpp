@@ -7,6 +7,7 @@
 #include "PartySelectWidget.h"
 #include "ActionsSelectWidget.h"
 #include "TargetsSelectWidget.h"
+#include "BuffsWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
@@ -32,6 +33,7 @@ void UBattleHUD::NativeConstruct()
 void UBattleHUD::InitializeUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
 {
     UpdateStats(PlayerStructs, EnemyStructs);
+    UpdateBuffs(PlayerStructs, EnemyStructs);
     UpdateTurn(bIsPlayerTurn);
     PartySelect->InitializeUI(PlayerStructs, this);
     ActionsSelect->InitializeUI(this);
@@ -47,6 +49,17 @@ void UBattleHUD::UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntity
     if (EnemyStats) {
         EnemyStats->InitializeStats(EnemyStructs);
     }
+
+    UpdateBuffs(PlayerStructs, EnemyStructs);
+}
+
+void UBattleHUD::UpdateBuffs(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
+{
+    Enemy1Buffs->InitializeUI(EnemyStructs[0]);
+    Enemy1Buffs->InitializeUI(EnemyStructs[0]);
+    Enemy1Buffs->InitializeUI(EnemyStructs[0]);
+
+    PlayerBuffs->InitializeUI(PlayerStructs[0]);
 }
 
 void UBattleHUD::UpdateTurn(bool bIsPlayerTurn)
@@ -92,6 +105,7 @@ void UBattleHUD::OnPlayerSelected(int32 index)
 {
     BattleManager->SelectPlayer(index);
     UpdateAbilities(BattleManager->GetPlayer().Abilities);
+    PlayerBuffs->InitializeUI(BattleManager->GetPlayer());
     ActionsSelect->SetVisibility(ESlateVisibility::Visible);
     TargetsSelect->SetVisibility(ESlateVisibility::Collapsed);
 }
