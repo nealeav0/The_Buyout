@@ -667,7 +667,7 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 /**
 * Handle the enemy's input. Abilities have two properties that are checked: Move Types and Target Types.
 */
-void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility)
+void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility, int32 EnemyIndex)
 {
 	FAbilityStruct Ability = SelectedAbility;
 	int EnemyTargetIndex = 0;
@@ -675,9 +675,9 @@ void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct Selec
 	switch (Ability.MoveType)
 	{
 	case EMoveTypeEnum::ATTACK:
-		if (EnemyReferences.IsValidIndex(TargetIndex))
+		if (EnemyReferences.IsValidIndex(EnemyIndex))
 		{
-			EnemyReferences[TargetIndex]->Attack();
+			EnemyReferences[EnemyIndex]->Attack();
 		}
 		switch (Ability.TargetType)
 		{
@@ -698,9 +698,9 @@ void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct Selec
 		}
 		break;
 	case EMoveTypeEnum::MAGIC:
-		if (EnemyReferences.IsValidIndex(TargetIndex))
+		if (EnemyReferences.IsValidIndex(EnemyIndex))
 		{
-			EnemyReferences[TargetIndex]->Attack();
+			EnemyReferences[EnemyIndex]->Attack();
 		}
 		switch (Ability.TargetType)
 		{
@@ -1352,18 +1352,18 @@ void UBattleManager::PlayerTurn()
 void UBattleManager::EnemyTurn()
 {
 	MainPlayerController->UpdateTurnUI(bPlayerTurn); // Updating the turn UI
-	for (FEntityStruct Enemy : Enemies)
+	for (int i = 0; i < Enemies.Num(); i++)
 	{
-		if (!Enemy.bIsDead)
+		if (!Enemies[i].bIsDead)
 		{
-			if (Enemy.StunStacks == 0)
+			if (Enemies[i].StunStacks == 0)
 			{
 				// We should not attack if there are no valid targets
 				if (!CheckPlayersIsDead())
 				{
 					// Random Targetting behavior
-					int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
-					HandleEnemyInput(Enemy, Enemy.Abilities[EnemyAbilityIndex]);
+					int EnemyAbilityIndex = FMath::RandHelper(Enemies[i].Abilities.Num());
+					HandleEnemyInput(Enemies[i], Enemies[i].Abilities[EnemyAbilityIndex], i);
 				}
 				
 
