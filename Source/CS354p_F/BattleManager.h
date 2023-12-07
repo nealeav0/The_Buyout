@@ -118,7 +118,7 @@ public:
 
 	void HandlePlayerInput(FAbilityStruct SelectedAbility);
 
-	void HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility);
+	void HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility, int32 EnemyIndex);
 
 	void AdjustCooldowns();
 

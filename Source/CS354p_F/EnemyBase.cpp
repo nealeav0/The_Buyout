@@ -42,12 +42,26 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void AEnemyBase::ResetPosition()
+{
+	SetActorLocation(SpawnLocation);
+}
+
 void AEnemyBase::Attack()
 {
+	// maybe we can add some animation 
+	SpawnLocation = GetActorLocation();
+	SetActorLocation(SpawnLocation + FVector(0.f, -150.f, 0.f));
+	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AEnemyBase::ResetPosition, 0.1f, false);
 }
 
 void AEnemyBase::Die()
 {
+	SpawnLocation = GetActorLocation();
+	SetActorLocation(SpawnLocation + FVector(0.f, 0.f, 25.f));
+	SetActorScale3D(GetActorScale3D() * 0.5);
+	SpawnLocation -= FVector(0.f, 0.f, 25.f);
+	GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AEnemyBase::ResetPosition, 0.1f, false);
 	GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("EnemyBase Died.")));
 }
 

@@ -28,12 +28,12 @@ protected:
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* TriggerComponent;*/
 
-	UPROPERTY() FVector SpawnLocation;
+	// UPROPERTY() FVector SpawnLocation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	class UCharacterMovementComponent* CommonEnemyMovementComponent;
 
-	FTimerHandle TransitionTimer;
+	// FTimerHandle TransitionTimer;
 
 	FVector CurrentDirection;
 	int32 itercounter;
