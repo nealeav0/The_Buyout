@@ -1,13 +1,13 @@
-# Team Serendipity: CS354p Final Project
-##### Welcome to our **Final Game Project**!
+# Team Serendipity: The Buyout
+##### Welcome to our **Final Game Project**: _**The Buyout**_!
 Our finalized, working code is stored on our `codefreeze` branch.
 
-Our _**Alpha Report**_ can be found here: https://docs.google.com/document/d/1JS10h2ct08d1U--IQM-fSsFgsuIOpkfjNbIW_d2dNGE/edit?usp=sharing
+Our Alpha Report can be found here: https://docs.google.com/document/d/1JS10h2ct08d1U--IQM-fSsFgsuIOpkfjNbIW_d2dNGE/edit?usp=sharing
 
-## Game Objective Summary (Current Implementation)
-Our game is a 3d traditional turn-based RPG with emphasis on our party-based combat system.
+## Game Objective Summary
 
-In the overworld, the player explores dungeons. When they comes into range with an Enemy (currently a cube), we switch into the Battle mode. When the player escapes or the round ends (either the player or the enemy dies), they are transported back into the overworld.
+
+A transcript of the dialogue can be found here: https://docs.google.com/document/d/1T4mgx-ijddAEV-dop8nFy1PdC_i_rgj1C3YNNTaEths/edit?usp=sharing
 
 ### Player Controls
 | Key | Action |
@@ -17,5 +17,25 @@ In the overworld, the player explores dungeons. When they comes into range with 
 | S | Backward |
 | D | Right |
 | Mouse | Move to Pan Camera |
+| P | Open Pause Menu |
+| U | Open Ability Upgrades Menu |
 
-> The above controls are only for the Overworld. In the battles, the player is expected to only click on the UI displayed. 
+> The above controls are only for the overworld. In combat, the player is can only click on the UI displayed. 
+
+## Feature Implementations
+
+### Game World
+	
+### Gameplay Loop
+	
+###  Multiple States
+	
+### Player Interactions
+	
+### GUIs
+	
+### Sound
+	
+### Win/Lose Conditions
+	
+### Advanced Feature -- Party-Based Combat System
