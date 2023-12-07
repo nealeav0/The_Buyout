@@ -3,11 +3,20 @@
 
 #include "ActionButton.h"
 #include "Ability.h"
+#include "Components/Widget.h"
 #include "BattleHUD.h"
+#include "AbilityContextMenu.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 
 #define LOCTEXT_NAMESPACE "UMG"
+
+UActionButton::UActionButton(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
+{
+    static ConstructorHelpers::FClassFinder<UAbilityContextMenu> AbilityMenuBPClass(TEXT("/Game/GUI/BP_AbilityContextMenu"));
+    if (AbilityMenuBPClass.Class)
+        AbilityMenuClass = AbilityMenuBPClass.Class;
+}
 
 void UActionButton::NativeConstruct()
 {
@@ -30,8 +39,15 @@ void UActionButton::UpdateAbility(FAbilityStruct Ability, int32 index)
         LevelLabel->SetText(FText::Format(LOCTEXT("LevelLabel", "(Lv. {Level})"), Args));
     }
 
-    ActionButton->SetIsEnabled(!(Ability.Cooldown > 0));
+    if (AbilityMenuClass) {
+        AbilityMenuWidget = CreateWidget<UAbilityContextMenu>(this, AbilityMenuClass);
+        if (AbilityMenuWidget) {
+            AbilityMenuWidget->InitializeUI(Ability);
+            SetToolTip(AbilityMenuWidget);
+        }
+    }
 
+    ActionButton->SetIsEnabled(!(Ability.Cooldown > 0));
     AbilityIndex = index;
 }
 

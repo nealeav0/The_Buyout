@@ -15,6 +15,8 @@ class CS354P_F_API UActionButton : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UActionButton(const FObjectInitializer &ObjectInitializer);
+	
 	UFUNCTION(BlueprintCallable)
 	void InitializeUI(UBattleHUD *BattleHUD);
 
@@ -25,7 +27,7 @@ public:
 	void OnButtonClicked();
 
 protected:
-	virtual void NativeConstruct() override;
+    virtual void NativeConstruct() override;
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UTextBlock* ActionLabel;
@@ -41,4 +43,10 @@ protected:
 
 	UPROPERTY()
 	int32 AbilityIndex;
+
+	UPROPERTY()
+	TSubclassOf<class UAbilityContextMenu> AbilityMenuClass;
+
+	UPROPERTY()
+	class UAbilityContextMenu* AbilityMenuWidget;
 };
