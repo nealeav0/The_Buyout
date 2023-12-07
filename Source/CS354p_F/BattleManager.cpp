@@ -1285,6 +1285,8 @@ void UBattleManager::EndRound()
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("BATTLE ENDED! RETURNING TO THE OVERWORLD...")));
 		// let's add some buffer time for death animations to finish
+		AMainCharacter* MainPlayer = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
+		MainPlayer->ResetCamera();
 		GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &UBattleManager::LeaveBattle, 1.0f, false);
 	}
 }

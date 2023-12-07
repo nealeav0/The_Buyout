@@ -239,8 +239,8 @@ void AMainCharacter::Escape()
 		SetActorLocation(SpawnLocation + FVector(0.f, -150.f, 0.f));
 		// commented since escaping always means leaving the game for now; if evade we will need this again
 		// GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::ResetPosition, 0.1f, false);
-		AMainCharacter* MainPlayer = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
-		MainPlayer->ResetCamera();
+		// AMainCharacter* MainPlayer = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
+		ResetCamera();
 	}
 }
 
