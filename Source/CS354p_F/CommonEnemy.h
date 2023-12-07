@@ -21,14 +21,12 @@ public:
 	// Sets default values for this actor's properties
 	ACommonEnemy();
 
-	FORCEINLINE class USphereComponent* GetTriggerComponent() const { return TriggerComponent; }
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
-	class USphereComponent* TriggerComponent;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* TriggerComponent;*/
 
 	UPROPERTY() FVector SpawnLocation;
 

@@ -2,20 +2,18 @@
 
 
 #include "EvasiveEnemy.h"
-#include "Components/SphereComponent.h"
 
 AEvasiveEnemy::AEvasiveEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	/*MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	MeshComponent->SetupAttachment(RootComponent);
-	//MeshComponent->SetRelativeRotation(FRotator(0, 0, 180.f));
 
 	HitBox = CreateDefaultSubobject<USphereComponent>(TEXT("Hitbox"));
 	HitBox->SetupAttachment(MeshComponent);
 	HitBox->SetRelativeLocation(FVector(0, 0, 30.f));
-	HitBox->InitSphereRadius(100);
+	HitBox->InitSphereRadius(100);*/
 }
 
 void AEvasiveEnemy::BeginPlay()

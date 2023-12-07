@@ -19,7 +19,7 @@
             },
             {
                 "EntityName": "Student",
-                "EnemyType": "COMMON",
+                "EnemyType": "DEFENSIVE",
                 "Level": 1
             }
         ]

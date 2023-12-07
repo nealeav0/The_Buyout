@@ -22,7 +22,11 @@ enum class EEnemyType
 	NONE,
 	COMMON,
 	EVASIVE,
-	DEFENSIVE
+	DEFENSIVE,
+	SUPPORT,
+	SENIOR,
+	DONOR,
+	BARON
 };
 
 USTRUCT(BlueprintType)

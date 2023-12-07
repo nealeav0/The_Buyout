@@ -26,6 +26,11 @@ UBattleManager::UBattleManager()
 	static ConstructorHelpers::FClassFinder<AEvasiveEnemy> EvasiveBPClass(TEXT("/Game/Blueprints/BP_EvasiveEnemy"));
 	if (EvasiveBPClass.Class)
 		EvasiveEnemyBP = EvasiveBPClass.Class;
+
+	static ConstructorHelpers::FClassFinder<ADefensiveEnemy> DefensiveBPClass(TEXT("/Game/Blueprints/BP_DefensiveEnemy"));
+	if (DefensiveBPClass.Class) {
+		DefensiveEnemyBP = DefensiveBPClass.Class;
+	}
 }
 
 /**
@@ -311,7 +316,23 @@ void UBattleManager::SpawnEnemies()
 			}
 			Enemy = GetWorld()->SpawnActor<AEvasiveEnemy>(EvasiveEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
 			break;
+		case EEnemyType::DEFENSIVE:
+			if (!DefensiveEnemyBP)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("DefensiveEnemyBP does not exist.")));
+			}
+			Enemy = GetWorld()->SpawnActor<ADefensiveEnemy>(DefensiveEnemyBP, EnemyPositions[i], FRotator(), SpawnParams);
+			break;
+		case EEnemyType::SUPPORT:
+			break;
+		case EEnemyType::SENIOR:
+			break;
+		case EEnemyType::DONOR:
+			break;
+		case EEnemyType::BARON:
+			break;
 		}
+		
 		if (Enemy)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.5f, FColor::Magenta, FString::Printf(TEXT("We got a thing.")));
@@ -502,9 +523,10 @@ void UBattleManager::HandlePlayerInput(FAbilityStruct SelectedAbility)
 /**
 * Handle the enemy's input. Abilities have two properties that are checked: Move Types and Target Types.
 */
-void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
+void UBattleManager::HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility)
 {
 	FAbilityStruct Ability = SelectedAbility;
+	int EnemyTargetIndex = 0;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Used %s"), *(Ability.AbilityName)));
 	switch (Ability.MoveType)
 	{
@@ -522,12 +544,12 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		case ETargetTypeEnum::ALL:
 			for (FEntityStruct &Player: Players)
 			{
-				HandleAttack(Ability, Enemies[0], Player);
+				HandleAttack(Ability, Source, Player);
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			int EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
-			HandleAttack(Ability, Enemies[0], Players[EnemyTargetIndex]);
+			EnemyTargetIndex = FMath::RandHelper(Players.Num());
+			HandleAttack(Ability, Source, Players[EnemyTargetIndex]);
 			break;
 		}
 		break;
@@ -539,17 +561,18 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		switch (Ability.TargetType)
 		{
 		case ETargetTypeEnum::ALLY:
-			HandleMagic(Ability, Enemies[0], Enemies[0]);
+			EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			HandleMagic(Ability, Source, Enemies[EnemyTargetIndex]);
 			break;
 		case ETargetTypeEnum::ALLIES:
 			for (FEntityStruct &Enemy : Enemies)
 			{
-				HandleMagic(Ability, Enemies[0], Enemy);
+				HandleMagic(Ability, Source, Enemy);
 			}
 			break;
 		case ETargetTypeEnum::SINGLE:
 			// Missing Targeting
-			HandleMagic(Ability, Enemies[0], Players[0]);
+			HandleMagic(Ability, Source, Players[0]);
 			break;
 		case ETargetTypeEnum::ALL:
 			for (FEntityStruct&Player : Players)
@@ -558,7 +581,7 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 			}
 			break;
 		case ETargetTypeEnum::RANDOM:
-			int EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			EnemyTargetIndex = FMath::RandHelper(Players.Num());
 			HandleMagic(Ability, Enemies[0], Players[EnemyTargetIndex]);
 			break;
 		}
@@ -567,7 +590,8 @@ void UBattleManager::HandleEnemyInput(FAbilityStruct SelectedAbility)
 		switch (Ability.TargetType)
 		{
 		case ETargetTypeEnum::ALLY:
-			HandleHealing(Ability, Enemies[0], Enemies[0]);
+			EnemyTargetIndex = FMath::RandHelper(Enemies.Num());
+			HandleHealing(Ability, Enemies[0], Enemies[EnemyTargetIndex]);
 			break;
 		case ETargetTypeEnum::ALLIES:
 			for (FEntityStruct&Enemy : Enemies)
@@ -1193,7 +1217,7 @@ void UBattleManager::EnemyTurn()
 				{
 					// Random Targetting behavior
 					int EnemyAbilityIndex = FMath::RandHelper(Enemy.Abilities.Num());
-					HandleEnemyInput(Enemy.Abilities[EnemyAbilityIndex]);
+					HandleEnemyInput(Enemy, Enemy.Abilities[EnemyAbilityIndex]);
 				}
 				
 

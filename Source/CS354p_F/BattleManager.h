@@ -7,6 +7,7 @@
 #include "EnemyBase.h"
 #include "CommonEnemy.h"
 #include "EvasiveEnemy.h"
+#include "DefensiveEnemy.h"
 #include "EntityBase.h"
 #include "UObject/NoExportTypes.h"
 #include "BattleManager.generated.h"
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY()
 	TSubclassOf<AEvasiveEnemy> EvasiveEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<ADefensiveEnemy> DefensiveEnemyBP;
 
 	TArray<FEntityStruct> Enemies;
 
@@ -98,7 +102,7 @@ public:
 
 	void HandlePlayerInput(FAbilityStruct SelectedAbility);
 
-	void HandleEnemyInput(FAbilityStruct SelectedAbility);
+	void HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility);
 
 	void AdjustCooldowns();
 
