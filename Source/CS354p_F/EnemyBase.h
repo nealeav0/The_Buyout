@@ -9,71 +9,6 @@
 #include "EntityBase.h"
 #include "EnemyBase.generated.h"
 
-USTRUCT(BlueprintType)
-struct FEnemyStruct : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Level;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FAbilityStruct> EnemyAbilites;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Defense;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Accuracy;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Evasion;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EXP;
-
-	UPROPERTY()
-	float AttackBuff;
-
-	UPROPERTY()
-	float DefenseBuff;
-
-	UPROPERTY()
-	float EvasionBuff;
-
-	UPROPERTY()
-	float AccuracyBuff;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Location;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsDefending;
-
-	FEnemyStruct()
-	{
-		Name = FString(TEXT("Enemy"));
-		Level = 1;
-	}
-	FEnemyStruct(FString NewName, int NewLevel)
-	{
-		Name = NewName;
-		Level = NewLevel;
-	}
-};
 
 UCLASS()
 class CS354P_F_API AEnemyBase : public APawn
@@ -87,9 +22,24 @@ public:
 	UPROPERTY(EditAnywhere)
 	FEntityStruct EnemyStats = FEntityStruct();
 
+	UPROPERTY(EditAnywhere)
+	TArray<FEntityStruct> Enemies = { EnemyStats };
+
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	class UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	class USphereComponent* HitBox;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	FORCEINLINE class USphereComponent* GetTriggerComponent() const { return HitBox; }
+
+	UPROPERTY() FVector SpawnLocation;
+	
+	FTimerHandle TransitionTimer;
 
 public:	
 	// Called every frame
@@ -98,6 +48,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    void ResetPosition();
+
+    virtual void Attack();
+
+	virtual void Die();
+
 	UFUNCTION()
 	FEntityStruct GetEntityStruct();
+    
+	UFUNCTION()
+	void SetEntityStructLocation(FVector Location);
 };

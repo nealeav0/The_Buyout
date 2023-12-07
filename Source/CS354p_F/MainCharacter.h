@@ -10,79 +10,13 @@
 #include "Engine/DataTable.h"
 #include "EntityBase.h"
 #include "Ability.h"
+#include "Materials/Material.h"
 #include "MainCharacter.generated.h"
 
 UENUM(BlueprintType)
 enum class ECharacterActionStateEnum : uint8  {
 	IDLE UMETA(DisplayName = "Idling"), 
 	MOVE UMETA(DisplayName = "Moving")
-};
-
-USTRUCT(BlueprintType)
-struct FPlayerStruct : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Level;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FAbilityStruct> PlayerAbilities;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Defense;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Evasion;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Accuracy;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EXP;
-
-	// AtkBuf (multiplier added to player attack)
-	// > 1 benefits player
-	// < 1 benefits enemy  
-	UPROPERTY()
-	float AttackBuff;
-
-	// DefBuf (multiplier added to player's received attacks)
-	// < 1 benefits player
-	// > 1 benefits enemy 
-	UPROPERTY()
-	float DefenseBuff;
-
-	UPROPERTY()
-	float EvasionBuff;
-
-	UPROPERTY()
-	float AccuracyBuff;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Location;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsDefending;
-
-	FPlayerStruct()
-	{
-		Name = FString("Player");
-		Level = 1;
-	}
 };
 
 UCLASS()
@@ -95,11 +29,7 @@ public:
 	AMainCharacter();
 
 	UPROPERTY(EditAnywhere)
-	FEntityStruct PlayerStats = FEntityStruct();
-
-	// Temporary
-	/*UPROPERTY(EditAnywhere)
-	FEnemyStruct EnemyStats = FEnemyStruct();*/
+	TArray<FEntityStruct> Players;
 
 	virtual void Landed(const FHitResult& Hit);
 
@@ -162,4 +92,16 @@ public:
 
 	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	UPROPERTY(EditAnywhere)
+	class UMaterial* WarriorMaterial;
+
+	UPROPERTY(EditAnywhere)
+	class UMaterial* MageMaterial;
+
+	UPROPERTY(EditAnywhere)
+	class UMaterial* RangerMaterial;
+
+	UFUNCTION()
+	void SetMaterial(int32 index);
 };

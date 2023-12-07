@@ -18,8 +18,40 @@ class CS354P_F_API AMainPlayerController : public APlayerController
 public:
 	AMainPlayerController();
 
+	UFUNCTION()
+	void SwitchMeshMaterial(int32 index);
+
+	/* --- MAIN MENU UI --- */
+
     UFUNCTION()
 	void OpenMainMenuUI();
+
+	UFUNCTION()
+	void CloseMainMenuUI();
+
+	/* --- PAUSE MENU UI --- */
+
+	UFUNCTION()
+	void OpenPauseMenuUI();
+
+    UFUNCTION()
+	void ClosePauseMenuUI();
+
+	// UFUNCTION()
+	// void PauseGame();
+
+	UFUNCTION()
+	void ResumeGame();
+
+	/* --- ABILITY MENU UI --- */
+
+	UFUNCTION()
+	void OpenAbilityUpgradeUI();
+	
+	UFUNCTION()
+	void CloseAbilityUpgradeUI();
+
+	/* --- BATTLE UI --- */
 
     UFUNCTION()
 	void OpenBattleUI();
@@ -28,15 +60,15 @@ public:
 	void CloseBattleUI();
 
 	UFUNCTION()
-	void UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
+	void InitUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
+
+	UFUNCTION()
+	void UpdateBattleStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs);
 
 	UFUNCTION()
 	void UpdateTurnUI(bool bIsPlayerTurn);
 
-	UFUNCTION()
-	void InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
@@ -44,6 +76,21 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
 	class UInputAction* MoveCameraAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* NavigateAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* ConfirmAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* CancelAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = true))
+	class UInputAction* UpgradeAction;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -52,13 +99,28 @@ protected:
 	// Events
 	void OnMovePressed(const FInputActionValue& Value);
 	void OnCameraMoved(const FInputActionValue& Value);
+	void OnNavigatePressed(const FInputActionValue& Value);
+	void OnConfirmPressed();
+	void OnCancelPressed();
+    void OnPausePressed(const FInputActionValue &Value);
+	void OnUpgradePressed();
 
-	/* Battle HUD */
+	UFUNCTION()
+	void UpdateInputMode(UUserWidget* WidgetToFocus, bool bEnableCursor);
+
+    /* Battle HUD */
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UBattleWidget> BattleWidgetClass;
+	TSubclassOf<class UBattleHUD> BattleWidgetClass;
 
 	UPROPERTY()
-	class UBattleWidget* BattleWidget;
+	class UBattleHUD* BattleWidget;
+
+	/* Ability Upgrade Menu */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UAbilityUpgradeWidget> AbilityUpgradeWidgetClass;
+
+	UPROPERTY()
+	class UAbilityUpgradeWidget* AbilityUpgradeWidget;
 
 	/* Main Menu */
 	UPROPERTY(EditAnywhere)
@@ -66,4 +128,11 @@ protected:
 
 	UPROPERTY()
 	class UMainMenuWidget* MainMenuWidget;
+
+	/* Pause Menu */
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UPauseMenuWidget> PauseMenuWidgetClass;
+
+	UPROPERTY()
+	class UPauseMenuWidget* PauseMenuWidget;
 };

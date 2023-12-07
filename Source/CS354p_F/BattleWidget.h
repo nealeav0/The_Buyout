@@ -52,6 +52,9 @@ public:
 	void OnAbility6Clicked();
 
 protected:
+	class UMainGameInstance* GameInstance;
+	class UBattleManager* BattleManager;
+
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))

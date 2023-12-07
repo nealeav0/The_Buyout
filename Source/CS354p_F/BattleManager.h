@@ -6,15 +6,16 @@
 #include "MainCharacter.h"
 #include "EnemyBase.h"
 #include "CommonEnemy.h"
+#include "EvasiveEnemy.h"
+#include "DefensiveEnemy.h"
+#include "SupportEnemy.h"
+#include "SeniorEnemy.h"
+#include "DonorEnemy.h"
+#include "BaronEnemy.h"
 #include "EntityBase.h"
 #include "UObject/NoExportTypes.h"
 #include "BattleManager.generated.h"
 
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnDelegate);
-/**
- * 
- */
 UCLASS()
 class CS354P_F_API UBattleManager : public UObject
 {
@@ -25,51 +26,85 @@ public:
 
 	TArray<FEntityStruct> Players;
 
+	TArray<FVector> PlayerPositions = { FVector(-1590, 1560, 110), FVector(-1590, 1380, 110), FVector(-1590, 1200, 110) };
+
+	UPROPERTY()
+	TSubclassOf<ACommonEnemy> CommonEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<AEvasiveEnemy> EvasiveEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<ADefensiveEnemy> DefensiveEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<ASupportEnemy> SupportEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<ASeniorEnemy> SeniorEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<ADonorEnemy> DonorEnemyBP;
+
+	UPROPERTY()
+	TSubclassOf<ABaronEnemy> BaronEnemyBP;
+
 	TArray<FEntityStruct> Enemies;
 
-	TArray<int32> PlayerActions = { 1 };
+	TArray<AEnemyBase*> EnemyReferences;
 
-	//FTurnDelegate TurnDelegate;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDataTableRowHandle DataHandle = FDataTableRowHandle();
+	TArray<FVector> EnemyPositions = { FVector(250, 350, 5), FVector(100, 350, 5), FVector(-50, 350, 5) };
 
-	int Rounds = 0;
+	TArray<int32> PlayerActions;
+
+	class UMainGameInstance* GameInstance;
 
 	bool bPlayerTurn = true;
 
 	bool bBattleEnd = false;
 
-	FAbilityStruct LoadedAbility;
+	int PlayerIndex = 0; // Q and E to cycle through players. Spacebar to confirm.
 
-	FEnemyStruct LoadedEnemyTarget;
+	int AbilityIndex = 0; // Q and E to cycle through abilities. Spacebar to confirm.
 
-	bool bAbilityChosen = false;
+	int TargetIndex = 0; // Q and E to cycle through enemies. Spacebar to confirm.
 
-	bool bTargetChosen = false;
+	bool bSelectingPlayer = true;
 
-	int AbilityIndex = 0;
+	void SelectPlayer(int32 index);
 
-	void StartTurn();
+	bool bSelectingAbility = false;
 
-	/*void AttackHandler(FAbilityStruct Ability, FEnemyStruct &Target);
+	void SelectAbility(int32 index);
 
-	void AttackHandler(FAbilityStruct Ability, FPlayerStruct &Target);*/
+	bool bSelectingTarget = false;
+
+	void SelectTarget(int32 index);
+
+	void ConfirmSelection();
+
+	void CancelSelection();
 
 	void DefendHandler();
 
 	void EscapeHandler();
 
-	void EndTurn();
-
 	FTimerHandle TransitionTimer;
 
-	UFUNCTION() void LeaveBattle();
+	UFUNCTION() 
+	void LeaveBattle();
 
-	UFUNCTION() void LoadBattle();
+	UFUNCTION() 
+	void LoadBattle();
 
-	UFUNCTION() void StartBattle();
+	UFUNCTION() 
+	void StartBattle();
 
-	void PrepareForBattle(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct);
+	void PrepareForBattle(TArray<FEntityStruct> NewPlayers, TArray<FEntityStruct> NewEnemies);
+
+	void InitializeEnemyStats(FEntityStruct& Enemy);
+
+	void SpawnEnemies();
 
 	UFUNCTION(BlueprintCallable) 
 	FEntityStruct GetPlayer();
@@ -79,27 +114,9 @@ public:
 
 	void SetPlayerAbility();
 
-	void SetEnemyTarget();
-
 	void HandlePlayerInput(FAbilityStruct SelectedAbility);
 
-	void HandleEnemyInput(FAbilityStruct SelectedAbility);
-
-	/*void HandleStatus(EStatusTypeEnum Status, float StatusPower, FPlayerStruct &Target);
-
-	void HandleStatus(EStatusTypeEnum Status, float StatusPower, FEnemyStruct &Target);
-
-	void HandleMagic(FAbilityStruct Ability, FPlayerStruct& Target);
-
-	void HandleMagic(FAbilityStruct Ability, FEnemyStruct& Target);
-
-	void HandleHealing(FAbilityStruct Ability, FPlayerStruct &Target);
-
-	void HandleHealing(FAbilityStruct Ability, FEnemyStruct &Target);*/
-
-	/*void AdjustBuffs(FPlayerStruct &Target);
-
-	void AdjustBuffs(FEnemyStruct &Target);*/
+	void HandleEnemyInput(FEntityStruct Source, FAbilityStruct SelectedAbility, int32 EnemyIndex);
 
 	void AdjustCooldowns();
 
@@ -109,15 +126,19 @@ public:
 
 	void AdjustBuffs(FEntityStruct& Target);
 
+	void AdjustStatus(FEntityStruct& Target);
+
 	void HandleMagic(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
 
 	void HandleHealing(FAbilityStruct Ability, FEntityStruct Source, FEntityStruct& Target);
 
 	void HandleBurnDamage(FEntityStruct& Target);
 
+	void HandlePoisonDamage(FEntityStruct& Target);
+
 	// Round scripting
 
-	void StartRound(); //Perhaps we could have a counter in each array to represent the number of actions a player can take [1, 1, 1]
+	void StartRound();
 
 	void EndRound();
 
@@ -125,11 +146,21 @@ public:
 
 	void EnemyToPlayerTransition();
 
-	UPROPERTY()
-	float TotalEXP = 0.f;
+	void PlayerTurn();
+
+	void EnemyTurn();
+	
+	bool CheckPlayersIsDead();
+
+	bool CheckEnemiesIsDead();
+
+	void Die(FEntityStruct& Target);
 
 	UPROPERTY()
-	float EXPThreshold = 10.f;
+	int32 TotalEXP = 0;
+
+	UPROPERTY()
+	int32 TotalAP = 0;
 
 	void HandleEXP();
 

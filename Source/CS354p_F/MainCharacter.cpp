@@ -10,10 +10,12 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "EnemyBase.h"
 
 ABattleCamera* BattleCam;
 AMainPlayerController* MainController;
 bool bBattleReady;
+const int32 PLAYERCOUNT = 3;
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -35,13 +37,40 @@ AMainCharacter::AMainCharacter()
 	Hitbox = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Hitbox"));
 	Hitbox->SetupAttachment(RootComponent);
 	Hitbox->InitCapsuleSize(55.f, 100.f);
+
+	WarriorMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Warrior Material"));
+	MageMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Mage Material"));
+	RangerMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Ranger Material"));
+
+	SetMaterial(0);
 	
-	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -87.f));
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
 	SpawnLocation = GetActorLocation();
 
 	bBattleReady = false;
+
+	Players.Init(FEntityStruct(), PLAYERCOUNT);
+}
+
+void AMainCharacter::SetMaterial(int32 index)
+{
+	switch (index) {
+		case 0:
+			GetMesh()->SetMaterial(1, WarriorMaterial);
+			break;
+		case 1:
+			GetMesh()->SetMaterial(1, MageMaterial);
+			break;
+		case 2:
+			GetMesh()->SetMaterial(1, RangerMaterial);
+			break;
+		default:
+			GetMesh()->SetMaterial(1, WarriorMaterial);
+			break;
+	}
+	
 }
 
 // Called when the game starts or when spawned
@@ -61,51 +90,106 @@ void AMainCharacter::BeginPlay()
 			BattleCam = Cast<ABattleCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), ABattleCamera::StaticClass()));
 			MainController = Cast<AMainPlayerController>(GetController());
 			MainController->SetViewTargetWithBlend(BattleCam, 0.5f, EViewTargetBlendFunction::VTBlend_Linear);
-		} else {
+		}
+		else {
 			// let's go back to where we last were before the battle
 			// make sure this is NOT the very beginning of the game
-			if (GameInstance->BattleManager()->Rounds > 0) {
-				PlayerStats = GameInstance->BattleManager()->GetPlayer();
+			// Since the BattleManager does not empty its arrays until PrepareForBattle, we can use whatever is stored inside.
+			if (!GameInstance->BattleManager()->Players.IsEmpty()) {
+				for (int i = 0; i < Players.Num(); i++)
+				{
+					Players[i] = GameInstance->BattleManager()->Players[i];
+				}
 				SetActorLocation(GameInstance->GetPlayerLastLocation());
 				GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::ReadyForBattle, 3.f, false); // give player enough time to run away before retriggering battle if they had just escaped
-			} else {
+			}
+			else {
 				ReadyForBattle();
 			}
 		}
-		
-		// Set the player's stats based on level
-		if (GameInstance->PlayerBaseDataTable)
-		{
-			FPlayerStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FPlayerStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Stats")));
-
-			if (PlayerBase)
-			{
-				PlayerStats.MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, PlayerStats.Level));
-				PlayerStats.Health = PlayerStats.MaxHealth;
-				PlayerStats.Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, PlayerStats.Level));
-				PlayerStats.Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, PlayerStats.Level));
-				PlayerStats.Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, PlayerStats.Level) * 2);
-				PlayerStats.Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, PlayerStats.Level) * 2);
-			}
-		}
-
-		// Set the player's abilities
-		if (GameInstance->PlayerDataTable)
-		{
-			// Get all of the player abilities from data and place them into the PlayerAbilities array.
-			TArray<FAbilityStruct*> AbilityData;
-			GameInstance->PlayerDataTable->GetAllRows<FAbilityStruct>(TEXT("TEST"), AbilityData);
-			for (FAbilityStruct* Ability : AbilityData)
-			{
-				PlayerStats.Abilities.Add(*Ability);
-				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, PlayerStats.PlayerAbilities.Last().AbilityName);
-			}
-		}
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Level: %d"), PlayerStats.Level));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Max Health: %f"), PlayerStats.MaxHealth));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Attack: %f"), PlayerStats.Attack));
-		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Defense: %f"), PlayerStats.Defense));
 	}
+
+	// Set the player's stats based on level
+	if (GameInstance->PlayerBaseDataTable)
+	{
+		FEntityStruct* PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("warrior")), FString(TEXT("Getting Warrior Stats")));
+		if (PlayerBase)
+		{
+
+			if (Players[0].Level == 0)
+			{
+				Players[0].Level = 1;
+			}
+			Players[0].Name = (*PlayerBase).Name;
+			Players[0].EntityName = (*PlayerBase).EntityName;
+			Players[0].EntityType = (*PlayerBase).EntityType;
+			Players[0].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[0].Level));
+			if (GameInstance->BattleManager()->Players.IsEmpty())
+			{
+				Players[0].Health = Players[0].MaxHealth;
+			}
+			Players[0].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[0].Level));
+			Players[0].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[0].Level));
+			Players[0].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[0].Level));
+			Players[0].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[0].Level));
+			Players[0].MagicDefense = FMath::Floor((*PlayerBase).MagicDefense * FMath::Pow(1.11, Players[0].Level));
+			Players[0].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[0].Level) * 2);
+			Players[0].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[0].Level) * 2);
+			/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Max Health: %f"), Players[0].MaxHealth));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player Health: %f"), Players[0].Health));*/
+		}
+
+		PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("mage")), FString(TEXT("Getting Mage Stats")));
+		if (PlayerBase)
+		{
+			if (Players[1].Level == 0)
+			{
+				Players[1].Level = 1;
+			}
+			Players[1].Name = (*PlayerBase).Name;
+			Players[1].EntityName = (*PlayerBase).EntityName;
+			Players[1].EntityType = (*PlayerBase).EntityType;
+			Players[1].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[1].Level));
+			if (GameInstance->BattleManager()->Players.IsEmpty())
+			{
+				Players[1].Health = Players[1].MaxHealth;
+			}
+			Players[1].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[1].Level));
+			Players[1].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[1].Level));
+			Players[1].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[1].Level));
+			Players[1].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[1].Level));
+			Players[1].MagicDefense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[1].Level));
+			Players[1].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[1].Level) * 2);
+			Players[1].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[1].Level) * 2);
+		}
+
+		PlayerBase = GameInstance->PlayerBaseDataTable->FindRow<FEntityStruct>(FName(TEXT("ranger")), FString(TEXT("Getting Ranger Stats")));
+		if (PlayerBase)
+		{
+			if (Players[2].Level == 0)
+			{
+				Players[2].Level = 1;
+			}
+			Players[2].Name = (*PlayerBase).Name;
+			Players[2].EntityName = (*PlayerBase).EntityName;
+			Players[2].EntityType = (*PlayerBase).EntityType;
+			Players[2].MaxHealth = FMath::Floor((*PlayerBase).MaxHealth * FMath::Pow(1.15, Players[2].Level));
+			if (GameInstance->BattleManager()->Players.IsEmpty())
+			{
+				Players[2].Health = Players[2].MaxHealth;
+			}
+			Players[2].EXPThreshold = FMath::Floor(50 * FMath::Pow(1.39, Players[2].Level));
+			Players[2].Attack = FMath::Floor((*PlayerBase).Attack * FMath::Pow(1.13, Players[2].Level));
+			Players[2].MagicAttack = FMath::Floor((*PlayerBase).MagicAttack * FMath::Pow(1.13, Players[2].Level));
+			Players[2].Defense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[2].Level));
+			Players[2].MagicDefense = FMath::Floor((*PlayerBase).Defense * FMath::Pow(1.11, Players[2].Level));
+			Players[2].Accuracy = FMath::Floor((*PlayerBase).Accuracy * FMath::Pow(1.08, Players[2].Level) * 2);
+			Players[2].Evasion = FMath::Floor((*PlayerBase).Evasion * FMath::Pow(1.08, Players[2].Level) * 2);
+		}
+	}
+
+
+	GameInstance->AbilityManager()->InitializePlayerArray(Players);
 
 	Hitbox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnOverlapBegin);
 }
@@ -155,14 +239,14 @@ void AMainCharacter::Escape()
 		SetActorLocation(SpawnLocation + FVector(0.f, -150.f, 0.f));
 		// commented since escaping always means leaving the game for now; if evade we will need this again
 		// GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::ResetPosition, 0.1f, false);
-		AMainCharacter* MainPlayer = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
-		MainPlayer->ResetCamera();
+		// AMainCharacter* MainPlayer = Cast<AMainCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCharacter::StaticClass()));
+		ResetCamera();
 	}
 }
 
 FEntityStruct AMainCharacter::GetEntityStruct()
 {
-	return PlayerStats;
+	return Players[0];
 }
 
 void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -176,10 +260,43 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 		if (GameInstance)
 		{
-			PlayerStats.Location = GetActorLocation();
-			GameInstance->SetPlayerLastLocation(PlayerStats.Location);
-			enemy->GetEntityStruct().Location = enemy->GetActorLocation();
-			GameInstance->BattleManager()->PrepareForBattle(GetEntityStruct(), enemy->GetEntityStruct());
+
+			GameInstance->AbilityManager()->InitializePlayerArray(Players);
+
+			// set up player to respawn where they last were
+			for (FEntityStruct& Player : Players)
+			{
+				Player.Location = GetActorLocation();
+				GameInstance->AbilityManager()->InitializeAbilities(Player);
+			}
+			for (FEntityStruct& Enemy : enemy->Enemies)
+			{
+				/*Enemy.Location = enemy->GetActorLocation();*/
+				GameInstance->AbilityManager()->InitializeAbilities(Enemy);
+				GameInstance->BattleManager()->InitializeEnemyStats(Enemy);
+			}
+
+			GameInstance->SetPlayerLastLocation(Players[0].Location);
+
+			//// save all enemy positions in overworld so we know where to respawn them again 
+			//TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
+			//TArray<AActor*> SpawnedEnemies;
+			//UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, SpawnedEnemies);
+			//TArray<FVector> AllLocations;
+			//TArray<EEnemyType> EnemyTypes;
+			//for (AActor* CurrEnemy : SpawnedEnemies) {
+			//	if (Cast<ACommonEnemy>(CurrEnemy))
+			//		EnemyTypes.Add(EEnemyType::COMMON);
+			//	else if (Cast<AEvasiveEnemy>(CurrEnemy))
+			//		EnemyTypes.Add(EEnemyType::EVASIVE);
+			//	AllLocations.Add(CurrEnemy->GetActorLocation());
+			//}
+			//GameInstance->SaveEnemyTypes(EnemyTypes);
+			//GameInstance->SaveEnemyLocations(AllLocations);
+			// handle info for this specific enemy we've encountered
+			enemy->SetEntityStructLocation(enemy->GetActorLocation());
+			// set up battle manager
+			GameInstance->BattleManager()->PrepareForBattle(Players, enemy->Enemies);
 			GetWorld()->GetTimerManager().SetTimer(TransitionTimer, this, &AMainCharacter::LoadBattle, 0.5f, false);
 		}
 	}

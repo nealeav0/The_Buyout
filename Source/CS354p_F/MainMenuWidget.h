@@ -16,7 +16,7 @@ class CS354P_F_API UMainMenuWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void InitializeUI();
+	void InitializeStartUI();
 
 	UFUNCTION(BlueprintCallable)
 	void OnStartClicked();
@@ -25,6 +25,9 @@ public:
 	void OnQuitClicked();
 
 protected:
+
+	class AMainPlayerController* PC;
+	
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))

@@ -16,6 +16,43 @@ enum class EEntityType
 	NPC
 };
 
+UENUM()
+enum class EEnemyType
+{
+	NONE,
+	COMMON,
+	EVASIVE,
+	DEFENSIVE,
+	SUPPORT,
+	SENIOR,
+	DONOR,
+	BARON
+};
+
+USTRUCT(BlueprintType)
+struct FEntityAllyStruct
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EntityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EEnemyType EnemyType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Level;
+
+	FEntityAllyStruct()
+	{
+		EntityName = FString(TEXT("Unkown"));
+		EnemyType = EEnemyType::NONE;
+		Level = 0;
+	}
+};
+
 USTRUCT(BlueprintType)
 struct FEntityStruct : public FTableRowBase
 {
@@ -27,7 +64,13 @@ public:
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EntityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEntityType EntityType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EEnemyType EnemyType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Location;
@@ -36,10 +79,19 @@ public:
 	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EXP;
+	int32 EXP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 EXPThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AbilityPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FAbilityStruct> Abilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEntityAllyStruct> Allies;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDead;
@@ -69,13 +121,7 @@ public:
 	float Evasion;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FireResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float IceResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ThunderResistance;
+	TArray<float> ElementalResistances;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackBuff;
@@ -109,30 +155,69 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 StunStacks;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PoisonStacks;
+
 	FEntityStruct()
 	{
 		Name = FString(TEXT("NPC"));
+		EntityName = FString(TEXT("Unknown"));
 		EntityType = EEntityType::NPC;
+		EnemyType = EEnemyType::NONE;
 		Level = 1;
+		EXP = 0;
+		EXPThreshold = 0;
+		AbilityPoints = 0;
 		bIsDead = false;
 		MaxHealth = 0.f;
 		Health = MaxHealth;
-		Attack = 0.f;
-		Defense = 0.f;
-		MagicAttack = 0.f;
-		MagicDefense = 0.f;
+		Attack = 4;
+		Defense = 4;
+		MagicAttack = 4;
+		MagicDefense = 4;
+		Accuracy = 4;
+		Evasion = 4;
 		AttackBuff = 0.f;
 		DefenseBuff = 0.f;
 		AccuracyBuff = 0.f;
 		EvasionBuff = 0.f;
-		FireResistance = 0.f;
-		IceResistance = 0.f;
-		ThunderResistance = 0.f;
+		ElementalResistances = { 0, 0, 0, 0 };
 		Location = FVector(0, 0, 0);
 		bIsDefending = false;
 		BurnStacks = 0;
 		ChillStacks = 0;
 		StunStacks = 0;
+		PoisonStacks = 0;
+	}
+
+	FEntityStruct(FString NewName, EEnemyType NewEnemyType, int32 NewLevel)
+	{
+		EntityName = NewName;
+		EnemyType = NewEnemyType;
+		Level = NewLevel;
+		EXP = 0;
+		EXPThreshold = 0;
+		AbilityPoints = 0;
+		bIsDead = false;
+		MaxHealth = 0.f;
+		Health = MaxHealth;
+		Attack = 4;
+		Defense = 4;
+		MagicAttack = 4;
+		MagicDefense = 4;
+		Accuracy = 4;
+		Evasion = 4;
+		AttackBuff = 0.f;
+		DefenseBuff = 0.f;
+		AccuracyBuff = 0.f;
+		EvasionBuff = 0.f;
+		ElementalResistances = { 0, 0, 0, 0 };
+		Location = FVector(0, 0, 0);
+		bIsDefending = false;
+		BurnStacks = 0;
+		ChillStacks = 0;
+		StunStacks = 0;
+		PoisonStacks = 0;
 	}
 };
 

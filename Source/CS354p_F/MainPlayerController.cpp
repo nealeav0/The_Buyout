@@ -5,15 +5,19 @@
 #include "MainCharacter.h"
 #include "MainGameInstance.h"
 #include "BattleGameModeBase.h"
-#include "BattleWidget.h"
+#include "BattleHUD.h"
 #include "MainMenuGameModeBase.h"
 #include "MainMenuWidget.h"
+#include "PauseMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "BattleManager.h"
 #include "MainGameInstance.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "AbilityUpgradeWidget.h"
 
 ABattleGameModeBase* BattleMode;
 AMainMenuGameModeBase* MainMenuMode;
@@ -24,7 +28,17 @@ AMainPlayerController::AMainPlayerController()
 	BattleWidget = nullptr;
 	MainMenuWidgetClass = nullptr;
 	MainMenuWidget = nullptr;
+	PauseMenuWidgetClass = nullptr;
+	PauseMenuWidget = nullptr;
 }
+
+void AMainPlayerController::SwitchMeshMaterial(int32 index)
+{
+	AMainCharacter* MC = Cast<AMainCharacter>(GetPawn());
+	MC->SetMaterial(index);
+}
+
+/* --- MAIN MENU UI --- */
 
 void AMainPlayerController::OpenMainMenuUI() {
 	if (MainMenuWidgetClass) {
@@ -32,14 +46,69 @@ void AMainPlayerController::OpenMainMenuUI() {
 		MainMenuWidget->AddToPlayerScreen();
 		
 		if (MainMenuWidget)
-			MainMenuWidget->InitializeUI();
+			MainMenuWidget->InitializeStartUI();
 	}
 }
+
+void AMainPlayerController::CloseMainMenuUI() {
+	if (MainMenuWidgetClass) {
+		MainMenuWidget->RemoveFromParent();
+		MainMenuWidget = nullptr;
+	}
+}
+
+/* --- PAUSE MENU UI --- */
+
+void AMainPlayerController::OpenPauseMenuUI()
+{
+	if (PauseMenuWidgetClass) {
+		PauseMenuWidget = CreateWidget<UPauseMenuWidget>(this, PauseMenuWidgetClass);
+		PauseMenuWidget->AddToPlayerScreen();
+		
+		if (PauseMenuWidget)
+			PauseMenuWidget->InitializePauseUI();
+	}
+}
+
+void AMainPlayerController::ClosePauseMenuUI()
+{
+	if (PauseMenuWidgetClass) {
+		PauseMenuWidget->RemoveFromParent();
+		PauseMenuWidget = nullptr;
+	}
+}
+
+/* --- ABILITY UPGRADE MENU UI --- */
+
+void AMainPlayerController::OpenAbilityUpgradeUI() {
+	if (AbilityUpgradeWidgetClass) {
+		AbilityUpgradeWidget = CreateWidget<UAbilityUpgradeWidget>(this, AbilityUpgradeWidgetClass);
+		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+		if (AbilityUpgradeWidget && GameInstance)
+			AbilityUpgradeWidget->AddToPlayerScreen();
+			AbilityUpgradeWidget->InitializeUI(GameInstance->AbilityManager());
+	}
+}
+
+void AMainPlayerController::CloseAbilityUpgradeUI() {
+	if (AbilityUpgradeWidget) {
+		AbilityUpgradeWidget->RemoveFromParent();
+		AbilityUpgradeWidget = nullptr;
+	}
+}
+
+void AMainPlayerController::ResumeGame()
+{
+	this->SetPause(false);
+	UpdateInputMode(nullptr, false);
+}
+
+/* --- BATTLE UI --- */
 
 void AMainPlayerController::OpenBattleUI()
 {
 	if (BattleWidgetClass) {
-		BattleWidget = CreateWidget<UBattleWidget>(this, BattleWidgetClass);
+		BattleWidget = CreateWidget<UBattleHUD>(this, BattleWidgetClass);
 		BattleWidget->AddToPlayerScreen();
 
 		// let battlemanager know everything's loaded in !!
@@ -57,22 +126,22 @@ void AMainPlayerController::CloseBattleUI()
 	}
 }
 
-void AMainPlayerController::UpdateBattleStats(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct)
+void AMainPlayerController::InitUI(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
 {
 	if (BattleWidget)
-		BattleWidget->UpdateStats(PlayerStruct, EnemyStruct);
+		BattleWidget->InitializeUI(PlayerStructs, EnemyStructs, bIsPlayerTurn, PlayerAbilities);
+}
+
+void AMainPlayerController::UpdateBattleStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
+{
+	if (BattleWidget)
+		BattleWidget->UpdateStats(PlayerStructs, EnemyStructs);
 }
 
 void AMainPlayerController::UpdateTurnUI(bool bIsPlayerTurn)
 {
 	if (BattleWidget) 
 		BattleWidget->UpdateTurn(bIsPlayerTurn);
-}
-
-void AMainPlayerController::InitUI(FEntityStruct PlayerStruct, FEntityStruct EnemyStruct, bool bIsPlayerTurn, TArray<FAbilityStruct> PlayerAbilities)
-{
-	if (BattleWidget)
-		BattleWidget->InitializeUI(PlayerStruct, EnemyStruct, bIsPlayerTurn, PlayerAbilities);
 }
 
 void AMainPlayerController::BeginPlay()
@@ -86,47 +155,29 @@ void AMainPlayerController::BeginPlay()
 
 	BattleMode = Cast<ABattleGameModeBase>(GetWorld()->GetAuthGameMode());
 	MainMenuMode = Cast<AMainMenuGameModeBase>(GetWorld()->GetAuthGameMode());
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
 
 	if (BattleMode) {
+		GameInstance->BGMusic->SetPaused(true);
+		GameInstance->PlayBattleAudio();
+
 		OpenBattleUI();
-		
 		// set up the click-only input behavior 
-		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-		if (BattleWidget)
-			InputMode.SetWidgetToFocus(BattleWidget->TakeWidget());
-		SetInputMode(InputMode);
+		UpdateInputMode(BattleWidget, true); // needs to be udated to true later
 
-		// let's also show the cursor
-		bShowMouseCursor = true;
-		bEnableClickEvents = true;
-		bEnableMouseOverEvents = true;
-
-	} else if (MainMenuMode) { // main/starting menu 
+	} else if (MainMenuMode) { // main/starting menu
+		GameInstance->PlayBGAudio();
+			
 		OpenMainMenuUI();
-
 		// set up the click-only input behavior 
-		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-		if (MainMenuWidget)
-			InputMode.SetWidgetToFocus(MainMenuWidget->TakeWidget());
-		SetInputMode(InputMode);
-
-		// let's also show the cursor
-		bShowMouseCursor = true;
-		bEnableClickEvents = true;
-		bEnableMouseOverEvents = true;
+		UpdateInputMode(MainMenuWidget, true);
 
 	} else { // we're in the overworld
-		// set up no click behavior
-		FInputModeGameOnly InputMode;
-		InputMode.SetConsumeCaptureMouseDown(false);
-		SetInputMode(InputMode);
+		if (GameInstance->BGMusic->bIsPaused)
+			GameInstance->BGMusic->SetPaused(false);
 		
-		// also hide cursor
-		bShowMouseCursor = false;
-		bEnableClickEvents = false;
-		bEnableMouseOverEvents = false;
+		// set up no click behavior
+		UpdateInputMode(nullptr, false);
 	}
 }
 
@@ -141,12 +192,30 @@ void AMainPlayerController::SetupInputComponent()
 	{
 		// in BattleMode we don't want to move
 		// so only bind these if we're in the overworld
-		if (!BattleMode && !MainMenuMode) { 
+		if (!(BattleMode || MainMenuMode)) { 
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnMovePressed);
 			EnhancedInputComponent->BindAction(MoveCameraAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCameraMoved);
+			EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnPausePressed);
+			EnhancedInputComponent->BindAction(UpgradeAction, ETriggerEvent::Started, this, &AMainPlayerController::OnUpgradePressed);
+			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
+			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnConfirmPressed);
+			EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCancelPressed);
+		} 
+		if (BattleMode)
+		{
+			EnhancedInputComponent->BindAction(NavigateAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnNavigatePressed);
+			EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, & AMainPlayerController::OnConfirmPressed);
+			EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, this, &AMainPlayerController::OnCancelPressed);
 		}
 	}
 } 
+
+void AMainPlayerController::OnUpgradePressed() {
+	OpenAbilityUpgradeUI();
+	this->SetPause(true);
+	if (AbilityUpgradeWidget)
+		UpdateInputMode(AbilityUpgradeWidget, true);
+}
 
 void AMainPlayerController::OnMovePressed(const FInputActionValue& Value)
 {
@@ -165,3 +234,124 @@ void AMainPlayerController::OnCameraMoved(const FInputActionValue& Value)
 		character->MoveCameraEvent(MovementVector);
 }
 
+void AMainPlayerController::OnNavigatePressed(const FInputActionValue& Value)
+{
+	float Navigation = Value.Get<float>();
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f navigate."), Navigation));
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		if (BattleMode)
+		{
+			if (GameInstance->BattleManager()->bPlayerTurn)
+			{
+				if (GameInstance->BattleManager()->bSelectingPlayer)
+				{
+					// GameInstance->BattleManager()->SelectPlayer(Navigation);
+				}
+				else if (GameInstance->BattleManager()->bSelectingAbility)
+				{
+					// GameInstance->BattleManager()->SelectAbility(Navigation);
+				}
+				else if (GameInstance->BattleManager()->bSelectingTarget)
+				{
+					// GameInstance->BattleManager()->SelectTarget(Navigation);
+				}
+			}
+		}
+		else
+		{
+			//if (AbilityUpgradeWidget) {
+			//	if (GameInstance->AbilityManager()->bSelectingPlayer)
+			//	{
+			//		AbilityUpgradeWidget->SelectPlayer(Navigation);
+			//		// GameInstance->AbilityManager()->SelectPlayer(Navigation);
+			//	}
+			//	else if (GameInstance->AbilityManager()->bSelectingAbility)
+			//	{
+			//		AbilityUpgradeWidget->SelectAbility(Navigation);
+			//		// GameInstance->AbilityManager()->SelectAbility(Navigation);
+			//	}
+			//}
+		}
+	}
+}
+
+void AMainPlayerController::OnConfirmPressed()
+{
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		if (BattleMode)
+		{
+			GameInstance->BattleManager()->ConfirmSelection();
+		}
+		else
+		{
+			/*if(AbilityUpgradeWidget)
+			{
+				if (GameInstance->AbilityManager()->bSelectingPlayer) {
+					AbilityUpgradeWidget->ConfirmPlayer();
+				}
+				else {
+					AbilityUpgradeWidget->ConfirmAbility();
+					CloseAbilityUpgradeUI();
+				}
+			}
+			else {
+				OpenAbilityUpgradeUI();
+			}*/
+		}
+	}
+}
+
+void AMainPlayerController::OnCancelPressed()
+{
+	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		if (BattleMode)
+		{
+			GameInstance->BattleManager()->CancelSelection();
+		}
+		else
+		{
+			/*if (GameInstance->AbilityManager()->bSelectingPlayer) {
+				CloseAbilityUpgradeUI();
+			}
+			else {
+				AbilityUpgradeWidget->CancelSelection();
+			}*/
+		}
+	}
+}
+
+void AMainPlayerController::OnPausePressed(const FInputActionValue& Value)
+{
+	OpenPauseMenuUI();
+	this->SetPause(true);
+	if (PauseMenuWidget)
+		UpdateInputMode(PauseMenuWidget, true);
+}
+
+void AMainPlayerController::UpdateInputMode(UUserWidget* WidgetToFocus, bool bEnableCursor)
+{
+	// update input mode
+	if (bEnableCursor) { // this means UI only
+		FInputModeUIOnly InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		if (WidgetToFocus)
+			InputMode.SetWidgetToFocus(WidgetToFocus->TakeWidget());
+		SetInputMode(InputMode);
+	} else { // for now
+		// update input mode to game
+		FInputModeGameOnly InputMode;
+		InputMode.SetConsumeCaptureMouseDown(false);
+		SetInputMode(InputMode);
+	}
+
+	// show/hide cursor
+	bShowMouseCursor = bEnableCursor;
+	bEnableClickEvents = bEnableCursor;
+	bEnableMouseOverEvents = bEnableCursor;
+}
