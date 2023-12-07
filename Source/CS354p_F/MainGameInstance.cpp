@@ -142,7 +142,7 @@ void UMainGameInstance::Init()
 				WarriorAbilities.Add(*Ability);
 			}
 		}*/
-		Enemies.Empty();
+		//Enemies.Empty();
 		TArray<FEntityStruct*> MapEnemiesData;
 		MapEnemiesDataTable->GetAllRows<FEntityStruct>(TEXT("Getting Map Enemies"), MapEnemiesData);
 		for (FEntityStruct* MapEnemy : MapEnemiesData)
@@ -151,8 +151,20 @@ void UMainGameInstance::Init()
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Magenta, FString::Printf(TEXT("%s is here. Lv. %d"), *(MapEnemy->EntityName), MapEnemy->Level));
 			}
-			Enemies.Add(*MapEnemy);
-			EnemyLocations.Add(MapEnemy->Location);
+			if (MapEnemy)
+			{
+				Enemies.Add(*MapEnemy);
+				EnemyLocations.Add(MapEnemy->Location);
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("Map Enemy does not exist.")));
+			}
+			/*if (Enemies.Num() == EnemyLocations.Num())
+			{
+				if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("They are the same size.")));
+			}*/
 		}
 	}
 
@@ -220,10 +232,10 @@ void UMainGameInstance::ToggleMute()
 
 }
 
-void UMainGameInstance::SaveEnemyTypes(TArray<EEnemyType> AllEnemyTypes)
-{
-	EnemyTypes = AllEnemyTypes;
-}
+//void UMainGameInstance::SaveEnemyTypes(TArray<EEnemyType> AllEnemyTypes)
+//{
+//	EnemyTypes = AllEnemyTypes;
+//}
 
 void UMainGameInstance::SetPlayerLastLocation(FVector Location)
 {
@@ -242,14 +254,26 @@ void UMainGameInstance::SaveEnemyLocations(TArray<FVector> AllLocations)
 
 void UMainGameInstance::RemoveEnemy(FEntityStruct Enemy)
 {
+
 	int32 index = EnemyLocations.Find(Enemy.Location);
-	EnemyLocations.RemoveAt(index);
-	Enemies.RemoveAt(index);
+	if (Enemies.Num() == EnemyLocations.Num())
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Cyan, FString::Printf(TEXT("They are the same size.")));
+		EnemyLocations.RemoveAt(index);
+		Enemies.RemoveAt(index);
+	}
+	else
+	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Red, FString::Printf(TEXT("They not are the same size.")));
+	}
+	
 }
 
 void UMainGameInstance::SpawnEnemies()
 {
-	for (int i = 0; i < EnemyLocations.Num(); i++) {
+	for (int i = 0; i < Enemies.Num(); i++) {
 		SpawnEnemyAtLocation(Enemies[i], EnemyLocations[i]);
 	}
 }
@@ -297,15 +321,16 @@ AEnemyBase* UMainGameInstance::SpawnEnemyAtLocation(FEntityStruct Enemy, FVector
 			Result->Enemies[0].EnemyType = Enemy.EnemyType;
 			Result->Enemies[0].Level = Enemy.Level;
 			Result->Enemies[0].Location = Enemy.Location;
-		}
 
-		if (!Enemy.Allies.IsEmpty())
-		{
-			for (FEntityAllyStruct Ally : Enemy.Allies)
+			if (!Enemy.Allies.IsEmpty())
 			{
-				Result->Enemies.Add(FEntityStruct(Ally.EntityName, Ally.EnemyType, Ally.Level));
+				for (FEntityAllyStruct Ally : Enemy.Allies)
+				{
+					Result->Enemies.Add(FEntityStruct(Ally.EntityName, Ally.EnemyType, Ally.Level));
+				}
 			}
 		}
+
 		return Result;
     }
 

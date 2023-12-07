@@ -271,28 +271,28 @@ void AMainCharacter::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherA
 			}
 			for (FEntityStruct& Enemy : enemy->Enemies)
 			{
-				Enemy.Location = enemy->GetActorLocation();
+				/*Enemy.Location = enemy->GetActorLocation();*/
 				GameInstance->AbilityManager()->InitializeAbilities(Enemy);
 				GameInstance->BattleManager()->InitializeEnemyStats(Enemy);
 			}
 
 			GameInstance->SetPlayerLastLocation(Players[0].Location);
 
-			// save all enemy positions in overworld so we know where to respawn them again 
-			TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
-			TArray<AActor*> SpawnedEnemies;
-			UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, SpawnedEnemies);
-			TArray<FVector> AllLocations;
-			TArray<EEnemyType> EnemyTypes;
-			for (AActor* CurrEnemy : SpawnedEnemies) {
-				if (Cast<ACommonEnemy>(CurrEnemy))
-					EnemyTypes.Add(EEnemyType::COMMON);
-				else if (Cast<AEvasiveEnemy>(CurrEnemy))
-					EnemyTypes.Add(EEnemyType::EVASIVE);
-				AllLocations.Add(CurrEnemy->GetActorLocation());
-			}
-			GameInstance->SaveEnemyTypes(EnemyTypes);
-			GameInstance->SaveEnemyLocations(AllLocations);
+			//// save all enemy positions in overworld so we know where to respawn them again 
+			//TSubclassOf<AEnemyBase> EnemyClass = AEnemyBase::StaticClass();
+			//TArray<AActor*> SpawnedEnemies;
+			//UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyClass, SpawnedEnemies);
+			//TArray<FVector> AllLocations;
+			//TArray<EEnemyType> EnemyTypes;
+			//for (AActor* CurrEnemy : SpawnedEnemies) {
+			//	if (Cast<ACommonEnemy>(CurrEnemy))
+			//		EnemyTypes.Add(EEnemyType::COMMON);
+			//	else if (Cast<AEvasiveEnemy>(CurrEnemy))
+			//		EnemyTypes.Add(EEnemyType::EVASIVE);
+			//	AllLocations.Add(CurrEnemy->GetActorLocation());
+			//}
+			//GameInstance->SaveEnemyTypes(EnemyTypes);
+			//GameInstance->SaveEnemyLocations(AllLocations);
 			// handle info for this specific enemy we've encountered
 			enemy->SetEntityStructLocation(enemy->GetActorLocation());
 			// set up battle manager

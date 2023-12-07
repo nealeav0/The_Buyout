@@ -127,11 +127,8 @@ public:
 	UPROPERTY()
 	TArray<FEntityStruct> Enemies;
 
-	UPROPERTY()
-	TArray<EEnemyType> EnemyTypes;
-
-	UFUNCTION()
-	void SaveEnemyTypes(TArray<EEnemyType> AllEnemyTypes);
+	/*UFUNCTION()
+	void SaveEnemyTypes(TArray<EEnemyType> AllEnemyTypes);*/
 
 	UPROPERTY()
 	TArray<FVector> EnemyLocations;
