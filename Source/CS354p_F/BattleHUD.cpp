@@ -56,8 +56,8 @@ void UBattleHUD::UpdateStats(TArray<FEntityStruct> PlayerStructs, TArray<FEntity
 void UBattleHUD::UpdateBuffs(TArray<FEntityStruct> PlayerStructs, TArray<FEntityStruct> EnemyStructs)
 {
     Enemy1Buffs->InitializeUI(EnemyStructs[0]);
-    Enemy1Buffs->InitializeUI(EnemyStructs[0]);
-    Enemy1Buffs->InitializeUI(EnemyStructs[0]);
+    Enemy2Buffs->InitializeUI(EnemyStructs[1]);
+    Enemy3Buffs->InitializeUI(EnemyStructs[2]);
 
     PlayerBuffs->InitializeUI(PlayerStructs[0]);
 }
